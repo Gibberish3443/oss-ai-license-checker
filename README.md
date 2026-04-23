@@ -5,9 +5,8 @@ strukturiert beantwortet: welches Modell darf ich in welchem Setup gegen welchen
 einsetzen, welche Risiken entstehen aus der Trainingsdatenlage, welche zusätzlichen Pflichten
 kommen durch Exportkontrolle und Jurisdiktion dazu.
 
-Das Projekt entsteht aus meiner Arbeit als Jurist im Umfeld KI-Lizenzrecht und dient zugleich
-als Portfolio-Referenz für Legal-Engineering-Themen. Fokus liegt auf Transparenz und
-Nachvollziehbarkeit der rechtlichen Einordnung, nicht auf einer „ja/nein"-Automatik.
+Der Fokus liegt auf Transparenz und Nachvollziehbarkeit der rechtlichen Einordnung, nicht
+auf einer automatisierten „ja/nein"-Antwort.
 
 ## Motivation
 
@@ -153,7 +152,9 @@ geprüft und welche auf generischer Einordnung beruhen.
 
 ## Lizenz
 
-Die Projekt-Lizenz für den Quellcode steht noch aus und wird separat festgelegt. Die unter
-[`licenses/raw/`](licenses/raw/) archivierten Lizenztexte Dritter bleiben Eigentum der
-jeweiligen Rechteinhaber und sind ausschließlich zu Dokumentations- und Analysezwecken in
-ihrer Originalfassung mitgeführt.
+Der Projekt-Quellcode steht unter der [MIT-Lizenz](LICENSE) und darf frei für jeden Zweck
+inklusive kommerzieller Nutzung verwendet, modifiziert und weitergegeben werden.
+
+Die unter [`licenses/raw/`](licenses/raw/) archivierten Lizenztexte Dritter bleiben Eigentum
+der jeweiligen Rechteinhaber und sind ausschließlich zu Dokumentations- und Analysezwecken in
+ihrer Originalfassung mitgeführt. Sie sind nicht Teil der MIT-Freigabe.

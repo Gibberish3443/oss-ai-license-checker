@@ -1,0 +1,178 @@
+[
+  {
+    "id": "web-crawl",
+    "name": "Web-Crawl (CommonCrawl, C4, eigene Crawls)",
+    "risk_level": "high",
+    "legal_issues": [
+      {
+        "issue": "TDM-Schranke und Opt-out",
+        "description": "Fuer kommerzielles Text-Data-Mining ist ein Opt-out des Rechteinhabers nach Art. 4 DSM-RL / § 44b UrhG zu beachten. Ob maschinenlesbare Opt-outs (robots.txt, ai.txt, TDM-Reservation-Protokoll) durchgaengig ausreichend dokumentiert sind, ist streitig.",
+        "relevant_law": "§ 44b UrhG; Art. 4 DSM-RL (EU) 2019/790",
+        "leading_case": "LG Hamburg, Urt. v. 27.09.2024 - 310 O 227/23 (LAION)",
+        "quote": null,
+        "clause_ref": null
+      },
+      {
+        "issue": "Fair Use im US-Recht",
+        "description": "Fair-Use-Wuerdigung nach Vierfaktorentest ist hoechst einzelfallabhaengig. Kommerzielle Nutzung und woertliche Reproduktionen geschuetzter Werke in Ausgaben senken die Fair-Use-Wahrscheinlichkeit deutlich.",
+        "relevant_law": "17 U.S.C. § 107",
+        "leading_case": "New York Times Co. v. Microsoft/OpenAI (S.D.N.Y. 2023, anhaengig)",
+        "quote": null,
+        "clause_ref": null
+      },
+      {
+        "issue": "Datenschutz bei personenbezogenen Inhalten",
+        "description": "Web-Crawls enthalten regelmaessig personenbezogene Daten. DSGVO-Rechtsgrundlage, Zweckbindung und Betroffenenrechte (Loeschung, Auskunft) sind regelmaessig ungeklaert.",
+        "relevant_law": "Art. 6, 17 DSGVO",
+        "leading_case": "Garante (IT), ChatGPT-Sperre 2023 (Bussgeld 2024)",
+        "quote": null,
+        "clause_ref": null
+      }
+    ],
+    "mitigation_hints": [
+      "Nur Modelle mit dokumentiertem Crawl-Zeitraum und Opt-out-Respektierung einsetzen",
+      "Output-Filter gegen woertliche Reproduktion langer Passagen",
+      "Dokumentation der Datenquellen im Einsatz-Register"
+    ]
+  },
+  {
+    "id": "github-code",
+    "name": "GitHub-Code / oeffentliche Code-Repositories",
+    "risk_level": "high",
+    "legal_issues": [
+      {
+        "issue": "Copyleft-Durchschlag auf generierten Code",
+        "description": "Ob Outputs, die auf GPL-/AGPL-lizenziertem Trainingscode basieren, selbst copyleft-gebunden sind, ist juristisch offen. Unternehmen mit restriktiver Inbound-Policy sollten dies fuer Copilot-aehnliche Tools bewerten.",
+        "relevant_law": "GPL-2.0/3.0 Section 5; AGPL-3.0 Section 13",
+        "leading_case": "Doe v. GitHub, Inc. (N.D. Cal. 2022, teilw. abgewiesen 2024)",
+        "quote": null,
+        "clause_ref": null
+      },
+      {
+        "issue": "Fehlende Attribution im Output",
+        "description": "Permissive Lizenzen (MIT, Apache-2.0, BSD) verlangen Copyright- und Lizenzhinweise bei Verbreitung. Generative Code-Modelle liefern diese typischerweise nicht mit.",
+        "relevant_law": "MIT License; Apache License 2.0 Section 4",
+        "leading_case": null,
+        "quote": null,
+        "clause_ref": null
+      }
+    ],
+    "mitigation_hints": [
+      "Trainings-Set auf permissive Lizenzen filtern (wenn Modellbieter Option anbietet)",
+      "Attribution-Layer im Coding-Assistenten aktivieren",
+      "Policy zu akzeptablen Lizenzen im generierten Output definieren"
+    ]
+  },
+  {
+    "id": "stock-images",
+    "name": "Stock-Bilder / Bildarchive",
+    "risk_level": "high",
+    "legal_issues": [
+      {
+        "issue": "Urheberrechtliche Reproduktion geschuetzter Bilder",
+        "description": "Trainingsdaten-Datenbanken wie LAION enthalten urheberrechtlich geschuetzte Bilder. Bild-Generatoren reproduzieren in bestimmten Faellen wiedererkennbare Elemente (Wasserzeichen, Stil, Komposition).",
+        "relevant_law": "§§ 15, 16 UrhG; 17 U.S.C. § 106",
+        "leading_case": "Getty Images v. Stability AI (UK High Court; D. Del.)",
+        "quote": null,
+        "clause_ref": null
+      },
+      {
+        "issue": "Leistungsschutzrecht Lichtbilder",
+        "description": "Auch nicht-schoepferische Lichtbilder sind als einfache Lichtbilder geschuetzt und duerfen ohne Lizenz nicht vervielfaeltigt werden. Umfasst viele Produktfotos und Pressebilder.",
+        "relevant_law": "§ 72 UrhG",
+        "leading_case": null,
+        "quote": null,
+        "clause_ref": null
+      }
+    ],
+    "mitigation_hints": [
+      "Nur Modelle mit verifiziert lizenzierten Trainingsdaten (z.B. Adobe Firefly-Claims) fuer Publikumsausgaben einsetzen",
+      "Style-Transfer auf benannte Kuenstler technisch blockieren",
+      "Output-Nutzung fuer kommerzielle Zwecke mit Bildrechte-Freigabe abgleichen"
+    ]
+  },
+  {
+    "id": "user-generated-content",
+    "name": "User-Generated-Content (Foren, Social Media, Reddit, Wikipedia)",
+    "risk_level": "medium",
+    "legal_issues": [
+      {
+        "issue": "Plattform-Terms vs. Nutzer-Rechteinhaberschaft",
+        "description": "Plattform-ToS raeumen der Plattform typischerweise eine Lizenz ein, nicht aber Dritten. Die Nutzerinhalte selbst bleiben beim Verfasser. Ein Freibrief zum KI-Training ist daraus in der Regel nicht ableitbar.",
+        "relevant_law": "§§ 31 ff. UrhG (Lizenzkette); Art. 3 DSM-RL",
+        "leading_case": null,
+        "quote": null,
+        "clause_ref": null
+      },
+      {
+        "issue": "Wikipedia-Inhalte unter CC BY-SA",
+        "description": "CC BY-SA verpflichtet zu Attribution und Share-Alike bei Bearbeitungen. Inwieweit Modellausgaben abgeleitete Werke i.S.d. CC-Lizenz sind, ist juristisch nicht abschliessend geklaert.",
+        "relevant_law": "Creative Commons BY-SA 3.0/4.0 Section 3(a)",
+        "leading_case": null,
+        "quote": null,
+        "clause_ref": null
+      }
+    ],
+    "mitigation_hints": [
+      "Plattform-spezifische Scraping-Verbote vor Einsatz pruefen",
+      "CC-BY-SA-basierte Ausgaben mit Hinweis auf Quelle und Share-Alike versehen, sofern erkennbar",
+      "Reddit/X-API-Lizenzen in Vertragskette dokumentieren"
+    ]
+  },
+  {
+    "id": "publisher-texts",
+    "name": "Verlagstexte / E-Books / Presseerzeugnisse",
+    "risk_level": "high",
+    "legal_issues": [
+      {
+        "issue": "Kommerzielles TDM nur mit Rechteinhaber-Zustimmung bei Opt-out",
+        "description": "Verlage haben fluchaeckendes TDM-Opt-out implementiert (Presseverlage-Opt-out, branchenweite Klagen). Nutzung ohne Lizenzkette droht als Urheberrechtsverletzung.",
+        "relevant_law": "§ 44b Abs. 3 UrhG; Art. 4 Abs. 3 DSM-RL",
+        "leading_case": "Authors Guild v. OpenAI (S.D.N.Y. 2023, konsolidiert 2024)",
+        "quote": null,
+        "clause_ref": null
+      },
+      {
+        "issue": "Leistungsschutzrecht Presseverleger",
+        "description": "Presseverleger-LSR schuetzt journalistische Veroeffentlichungen gegen Online-Nutzung durch Dienste der Informationsgesellschaft fuer zwei Jahre. Erfasst auch ausschnittweise Uebernahme.",
+        "relevant_law": "§ 87g UrhG",
+        "leading_case": null,
+        "quote": null,
+        "clause_ref": null
+      }
+    ],
+    "mitigation_hints": [
+      "Modellausgaben mit Verbots-Regelwerk fuer woertliche Presseschnipsel filtern",
+      "Lizenzvertraege der Modellanbieter mit Presseverlagen pruefen (z.B. OpenAI-Axel-Springer-Deal)",
+      "Bei kommerziellem Einsatz rechtliche Due-Diligence pro Modell"
+    ]
+  },
+  {
+    "id": "public-official",
+    "name": "Amtliche / oeffentliche Daten",
+    "risk_level": "low",
+    "legal_issues": [
+      {
+        "issue": "Grundsatz der Gemeinfreiheit amtlicher Werke",
+        "description": "Amtliche Werke (Gesetze, Urteile, Verwaltungsvorschriften) sind nach § 5 UrhG gemeinfrei. Verwendung fuer Training ist urheberrechtlich unproblematisch.",
+        "relevant_law": "§ 5 UrhG",
+        "leading_case": null,
+        "quote": null,
+        "clause_ref": null
+      },
+      {
+        "issue": "Datenschutzrechtliche Restpflichten",
+        "description": "Auch in amtlichen Entscheidungsdatenbanken koennen pseudonymisierte oder ungenuegend anonymisierte personenbezogene Daten enthalten sein, die DSGVO-Pflichten ausloesen.",
+        "relevant_law": "Art. 6, 17 DSGVO",
+        "leading_case": null,
+        "quote": null,
+        "clause_ref": null
+      }
+    ],
+    "mitigation_hints": [
+      "Amtliche Korpora bevorzugen (EUR-Lex, Rechtsprechung im Internet)",
+      "Anonymisierung vor Training pruefen",
+      "PSI-Richtlinie-konforme Open-Data-Portale als Quelle nutzen"
+    ]
+  }
+]

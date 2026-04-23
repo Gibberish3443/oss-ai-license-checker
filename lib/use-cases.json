@@ -1,0 +1,46 @@
+[
+  {
+    "id": "research-only",
+    "name": "Research only (non-kommerziell)",
+    "description": "Rein wissenschaftliche oder nicht-kommerzielle Nutzung im geschlossenen Kreis. Kein Vertrieb an Dritte, keine kommerzielle Verwertung der Ergebnisse. Deckt Forschungsprototypen, Universitaets-Demos und interne Machbarkeitsstudien ohne Produktisierungsabsicht ab.",
+    "license_sensitivity": {
+      "commercial_use_required": false,
+      "distribution_required": false,
+      "network_use": false,
+      "derivative_works": true
+    }
+  },
+  {
+    "id": "internal-commercial",
+    "name": "Internal commercial (interne Unternehmensnutzung)",
+    "description": "Kommerzielle Nutzung innerhalb der eigenen Organisation ohne externe Bereitstellung. Typischerweise interne Tools, Back-Office-Automatisierung, Mitarbeiter-Produktivitaet. Keine Weitergabe des Modells oder seiner Outputs an Dritte ueber Netzwerk.",
+    "license_sensitivity": {
+      "commercial_use_required": true,
+      "distribution_required": false,
+      "network_use": false,
+      "derivative_works": true
+    }
+  },
+  {
+    "id": "saas-external",
+    "name": "SaaS external (Hosted Service fuer externe Kunden)",
+    "description": "Bereitstellung einer Anwendung mit KI-Komponente an externe Nutzer ueber das Internet, ohne Weitergabe des Modells selbst. Relevanz: AGPL-Netzwerkklausel, Llama/Gemma MAU-Schwellen, Falcon 180B Hosting-Restriktion. Umfasst API-Produkte, Web-Apps, Chatbot-Dienste.",
+    "license_sensitivity": {
+      "commercial_use_required": true,
+      "distribution_required": false,
+      "network_use": true,
+      "derivative_works": true
+    }
+  },
+  {
+    "id": "redistribution",
+    "name": "Redistribution (Weitergabe des Modells/der Software)",
+    "description": "Aktive Weitergabe der Modellgewichte, der Software oder abgeleiteter Werke an Dritte. Umfasst Open-Source-Releases, OEM-Bundles, kommerzielle Lizenzierung an Wiederverkaeufer. Loest Attribution-, NOTICE- und Copyleft-Verpflichtungen maximal aus.",
+    "license_sensitivity": {
+      "commercial_use_required": true,
+      "distribution_required": true,
+      "network_use": false,
+      "derivative_works": true
+    }
+  }
+]

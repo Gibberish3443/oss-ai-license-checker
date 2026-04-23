@@ -1,0 +1,815 @@
+[
+  {
+    "id": "mit",
+    "name": "MIT License",
+    "category": "osi-permissive",
+    "spdx_identifier": "MIT",
+    "version": "n/a",
+    "official_source": {
+      "url": "https://opensource.org/license/mit",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "osi_mit_2026-04-23.html",
+      "publisher": "Open Source Initiative"
+    },
+    "rights": {
+      "commercial_use": "yes",
+      "modification": "yes",
+      "distribution": "yes",
+      "private_use": "yes",
+      "patent_grant": "no_explicit",
+      "attribution_required": true,
+      "copyleft": "none"
+    },
+    "restrictions": [
+      {
+        "id": "mit-attribution",
+        "clause_ref": "Paragraph 2",
+        "quote": "The above copyright notice and this permission notice shall be included in all",
+        "effect": "Copyright-Notice und Lizenztext müssen in allen Kopien oder wesentlichen Teilen enthalten sein."
+      }
+    ],
+    "notes": "Kürzeste der gängigen Permissive-Lizenzen. Kein expliziter Patent-Grant — in Streitfällen wurde ein impliziter Grant diskutiert. Wird von Phi-4 und DeepSeek V3.2 wörtlich übernommen."
+  },
+  {
+    "id": "apache-2-0",
+    "name": "Apache License 2.0",
+    "category": "osi-permissive",
+    "spdx_identifier": "Apache-2.0",
+    "version": "2.0",
+    "official_source": {
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "apache_license-2-0_2026-04-23.txt",
+      "publisher": "Apache Software Foundation"
+    },
+    "rights": {
+      "commercial_use": "yes",
+      "modification": "yes",
+      "distribution": "yes",
+      "private_use": "yes",
+      "patent_grant": "explicit",
+      "attribution_required": true,
+      "copyleft": "none"
+    },
+    "restrictions": [
+      {
+        "id": "apache-modified-notice",
+        "clause_ref": "Section 4(b)",
+        "quote": "You must cause any modified files to carry prominent notices stating that You",
+        "effect": "Geänderte Dateien müssen deutlich sichtbar als modifiziert gekennzeichnet werden."
+      },
+      {
+        "id": "apache-notice-file",
+        "clause_ref": "Section 4(d)",
+        "quote": "any Derivative Works that You distribute must include a readable copy of the",
+        "effect": "NOTICE-Datei muss bei Distribution mitgeliefert werden, soweit im Original vorhanden."
+      },
+      {
+        "id": "apache-patent-termination",
+        "clause_ref": "Section 3",
+        "quote": "If You institute patent litigation against any entity (including a cross-claim or counterclaim",
+        "effect": "Patent-Grant endet automatisch, wenn Lizenznehmer Patentklage gegen andere Nutzer einleitet."
+      }
+    ],
+    "notes": "Expliziter Patent-Grant (Section 3) mit Defensive-Termination-Klausel. Wird von Qwen3, FLUX.1-schnell, GLM-4.6 und Mistral 7B als Modelllizenz verwendet."
+  },
+  {
+    "id": "bsd-2-clause",
+    "name": "BSD 2-Clause License",
+    "category": "osi-permissive",
+    "spdx_identifier": "BSD-2-Clause",
+    "version": "n/a",
+    "official_source": {
+      "url": "https://opensource.org/license/bsd-2-clause",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "osi_bsd-2-clause_2026-04-23.html",
+      "publisher": "Open Source Initiative"
+    },
+    "rights": {
+      "commercial_use": "yes",
+      "modification": "yes",
+      "distribution": "yes",
+      "private_use": "yes",
+      "patent_grant": "no_explicit",
+      "attribution_required": true,
+      "copyleft": "none"
+    },
+    "restrictions": [
+      {
+        "id": "bsd2-redistribution-source",
+        "clause_ref": "Clause 1",
+        "quote": "Redistributions of source code must retain the above copyright notice, this list of",
+        "effect": "Source-Distribution muss Copyright-Notice und Bedingungen erhalten."
+      },
+      {
+        "id": "bsd2-redistribution-binary",
+        "clause_ref": "Clause 2",
+        "quote": "Redistributions in binary form must reproduce the above copyright notice, this list of",
+        "effect": "Binär-Distribution muss Copyright-Notice in Dokumentation wiedergeben."
+      }
+    ],
+    "notes": "Funktional fast identisch zu MIT. Keine Non-Endorsement-Klausel (das ist der Unterschied zu BSD-3)."
+  },
+  {
+    "id": "bsd-3-clause",
+    "name": "BSD 3-Clause License",
+    "category": "osi-permissive",
+    "spdx_identifier": "BSD-3-Clause",
+    "version": "n/a",
+    "official_source": {
+      "url": "https://opensource.org/license/bsd-3-clause",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "osi_bsd-3-clause_2026-04-23.html",
+      "publisher": "Open Source Initiative"
+    },
+    "rights": {
+      "commercial_use": "yes",
+      "modification": "yes",
+      "distribution": "yes",
+      "private_use": "yes",
+      "patent_grant": "no_explicit",
+      "attribution_required": true,
+      "copyleft": "none"
+    },
+    "restrictions": [
+      {
+        "id": "bsd3-non-endorsement",
+        "clause_ref": "Clause 3",
+        "quote": "Neither the name of the copyright holder nor the names of its contributors",
+        "effect": "Namen der Urheber dürfen nicht zur Werbung ohne schriftliche Genehmigung verwendet werden."
+      }
+    ],
+    "notes": "Wie BSD-2-Clause plus Non-Endorsement-Klausel."
+  },
+  {
+    "id": "gpl-2-0",
+    "name": "GNU General Public License v2.0",
+    "category": "osi-strong-copyleft",
+    "spdx_identifier": "GPL-2.0-only",
+    "version": "2.0",
+    "official_source": {
+      "url": "https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "fsf_gpl-2-0_2026-04-23.txt",
+      "publisher": "Free Software Foundation"
+    },
+    "rights": {
+      "commercial_use": "yes",
+      "modification": "yes",
+      "distribution": "yes",
+      "private_use": "yes",
+      "patent_grant": "implicit",
+      "attribution_required": true,
+      "copyleft": "strong"
+    },
+    "restrictions": [
+      {
+        "id": "gpl2-copyleft",
+        "clause_ref": "Section 2(b)",
+        "quote": "You must cause any work that you distribute or publish, that in whole",
+        "effect": "Abgeleitete Werke müssen als Ganzes unter GPL-2.0 weiterlizenziert werden."
+      }
+    ],
+    "notes": "Historisch entscheidend (Linux-Kernel), heute meist durch GPL-3.0 abgelöst. Kein expliziter Patent-Grant — Patentsicherheit über implizite Gewährung und Vertragsauslegung."
+  },
+  {
+    "id": "gpl-3-0",
+    "name": "GNU General Public License v3.0",
+    "category": "osi-strong-copyleft",
+    "spdx_identifier": "GPL-3.0-only",
+    "version": "3.0",
+    "official_source": {
+      "url": "https://www.gnu.org/licenses/gpl-3.0.txt",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "fsf_gpl-3-0_2026-04-23.txt",
+      "publisher": "Free Software Foundation"
+    },
+    "rights": {
+      "commercial_use": "yes",
+      "modification": "yes",
+      "distribution": "yes",
+      "private_use": "yes",
+      "patent_grant": "explicit",
+      "attribution_required": true,
+      "copyleft": "strong"
+    },
+    "restrictions": [
+      {
+        "id": "gpl3-copyleft",
+        "clause_ref": "Section 5(c)",
+        "quote": "You must license the entire work, as a whole, under this",
+        "effect": "Projekt-Level-Copyleft: abgeleitete Werke als Ganzes unter GPL-3.0."
+      },
+      {
+        "id": "gpl3-anti-tivoization",
+        "clause_ref": "Section 6",
+        "quote": "If you convey an object code work under this section in, or with",
+        "effect": "Bei Auslieferung in Consumer-Hardware muss Installation modifizierter Versionen technisch möglich bleiben."
+      }
+    ],
+    "notes": "Expliziter Patent-Grant (Section 11) und Anti-Tivoization (Section 6). Für moderne OSS-Projekte der Default-Strong-Copyleft."
+  },
+  {
+    "id": "agpl-3-0",
+    "name": "GNU Affero General Public License v3.0",
+    "category": "osi-strong-copyleft",
+    "spdx_identifier": "AGPL-3.0-only",
+    "version": "3.0",
+    "official_source": {
+      "url": "https://www.gnu.org/licenses/agpl-3.0.txt",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "fsf_agpl-3-0_2026-04-23.txt",
+      "publisher": "Free Software Foundation"
+    },
+    "rights": {
+      "commercial_use": "yes",
+      "modification": "yes",
+      "distribution": "yes",
+      "private_use": "yes",
+      "patent_grant": "explicit",
+      "attribution_required": true,
+      "copyleft": "network"
+    },
+    "restrictions": [
+      {
+        "id": "agpl3-network",
+        "clause_ref": "Section 13",
+        "quote": "your modified version must prominently offer all users interacting with it remotely through",
+        "effect": "Netzwerk-Nutzung löst Offenlegungspflicht aus: Quellcode muss Endnutzern zugänglich sein."
+      }
+    ],
+    "notes": "Für SaaS/Hosted-Services entscheidend: Section 13 hebelt das „Distribution-is-trigger\"-Modell der GPL aus. Viele kommerzielle Lizenznehmer meiden AGPL in Inbound-Richtung."
+  },
+  {
+    "id": "lgpl-2-1",
+    "name": "GNU Lesser General Public License v2.1",
+    "category": "osi-weak-copyleft",
+    "spdx_identifier": "LGPL-2.1-only",
+    "version": "2.1",
+    "official_source": {
+      "url": "https://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "fsf_lgpl-2-1_2026-04-23.txt",
+      "publisher": "Free Software Foundation"
+    },
+    "rights": {
+      "commercial_use": "yes",
+      "modification": "yes",
+      "distribution": "yes",
+      "private_use": "yes",
+      "patent_grant": "implicit",
+      "attribution_required": true,
+      "copyleft": "weak"
+    },
+    "restrictions": [
+      {
+        "id": "lgpl21-library-copyleft",
+        "clause_ref": "Section 2",
+        "quote": "You may modify your copy or copies of the Library or any portion",
+        "effect": "Änderungen an der Bibliothek selbst müssen unter LGPL bleiben; Linken aus proprietärem Code erlaubt."
+      }
+    ],
+    "notes": "Historische LGPL-Version für ältere Bibliotheken. Weak Copyleft nur für die Bibliothek, nicht für den Anwendungscode."
+  },
+  {
+    "id": "lgpl-3-0",
+    "name": "GNU Lesser General Public License v3.0",
+    "category": "osi-weak-copyleft",
+    "spdx_identifier": "LGPL-3.0-only",
+    "version": "3.0",
+    "official_source": {
+      "url": "https://www.gnu.org/licenses/lgpl-3.0.txt",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "fsf_lgpl-3-0_2026-04-23.txt",
+      "publisher": "Free Software Foundation"
+    },
+    "rights": {
+      "commercial_use": "yes",
+      "modification": "yes",
+      "distribution": "yes",
+      "private_use": "yes",
+      "patent_grant": "explicit",
+      "attribution_required": true,
+      "copyleft": "weak"
+    },
+    "restrictions": [
+      {
+        "id": "lgpl3-delta",
+        "clause_ref": "Preamble",
+        "quote": "This version of the GNU Lesser General Public License incorporates the terms and",
+        "effect": "Textlich ein Delta auf GPL-3.0 — das LGPL-3.0-Dokument ist ohne GPL-3.0 nicht vollständig lesbar."
+      }
+    ],
+    "notes": "Reguliert im Wesentlichen über Verweis auf GPL-3.0 mit zusätzlichen Permissions für Linken."
+  },
+  {
+    "id": "mpl-2-0",
+    "name": "Mozilla Public License 2.0",
+    "category": "osi-weak-copyleft",
+    "spdx_identifier": "MPL-2.0",
+    "version": "2.0",
+    "official_source": {
+      "url": "https://www.mozilla.org/en-US/MPL/2.0/",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "mozilla_mpl-2-0_2026-04-23.html",
+      "publisher": "Mozilla Foundation"
+    },
+    "rights": {
+      "commercial_use": "yes",
+      "modification": "yes",
+      "distribution": "yes",
+      "private_use": "yes",
+      "patent_grant": "explicit",
+      "attribution_required": true,
+      "copyleft": "weak"
+    },
+    "restrictions": [
+      {
+        "id": "mpl2-file-copyleft",
+        "clause_ref": "Section 3.1",
+        "quote": "All distribution of Covered Software in Source Code Form, including any Modifications that",
+        "effect": "File-Level-Copyleft: geänderte Quelldateien müssen unter MPL bleiben, umgebender Code nicht."
+      }
+    ],
+    "notes": "Eigener Mittelweg zwischen Permissive und strong Copyleft. Kompatibilität mit GPL/LGPL über Secondary-License-Mechanismus."
+  },
+  {
+    "id": "isc",
+    "name": "ISC License",
+    "category": "osi-permissive",
+    "spdx_identifier": "ISC",
+    "version": "n/a",
+    "official_source": {
+      "url": "https://opensource.org/license/isc-license-txt",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "osi_isc_2026-04-23.html",
+      "publisher": "Open Source Initiative"
+    },
+    "rights": {
+      "commercial_use": "yes",
+      "modification": "yes",
+      "distribution": "yes",
+      "private_use": "yes",
+      "patent_grant": "no_explicit",
+      "attribution_required": true,
+      "copyleft": "none"
+    },
+    "restrictions": [
+      {
+        "id": "isc-attribution",
+        "clause_ref": "Paragraph 2",
+        "quote": "The above copyright notice and this permission notice shall appear in all",
+        "effect": "Copyright-Notice und Lizenztext in allen Kopien."
+      }
+    ],
+    "notes": "Funktional äquivalent zu MIT, sprachlich gestrafft."
+  },
+  {
+    "id": "unlicense",
+    "name": "The Unlicense",
+    "category": "public-domain",
+    "spdx_identifier": "Unlicense",
+    "version": "n/a",
+    "official_source": {
+      "url": "https://unlicense.org/UNLICENSE",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "unlicense_unlicense_2026-04-23.txt",
+      "publisher": "unlicense.org"
+    },
+    "rights": {
+      "commercial_use": "yes",
+      "modification": "yes",
+      "distribution": "yes",
+      "private_use": "yes",
+      "patent_grant": "none",
+      "attribution_required": false,
+      "copyleft": "none"
+    },
+    "restrictions": [
+      {
+        "id": "unlicense-public-domain-risk",
+        "clause_ref": "Paragraph 2",
+        "quote": "Anyone is free to copy, modify, publish, use, compile, sell, or distribute this",
+        "effect": "Wirksamkeit als Public-Domain-Dedication in DE/EU umstritten — Rückfallklausel fehlt."
+      }
+    ],
+    "notes": "OSI-approved, aber in kontinentaleuropäischen Jurisdiktionen rechtliche Unschärfe bei der Public-Domain-Dedication."
+  },
+  {
+    "id": "cc0-1-0",
+    "name": "Creative Commons Zero v1.0 Universal",
+    "category": "public-domain",
+    "spdx_identifier": "CC0-1.0",
+    "version": "1.0",
+    "official_source": {
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "cc_cc0-1-0_2026-04-23.txt",
+      "publisher": "Creative Commons"
+    },
+    "rights": {
+      "commercial_use": "yes",
+      "modification": "yes",
+      "distribution": "yes",
+      "private_use": "yes",
+      "patent_grant": "none",
+      "attribution_required": false,
+      "copyleft": "none"
+    },
+    "restrictions": [
+      {
+        "id": "cc0-no-patent",
+        "clause_ref": "Section 4(a)",
+        "quote": "No trademark or patent rights held by Affirmer are waived, abandoned, surrendered, licensed",
+        "effect": "CC0 verzichtet ausdrücklich nur auf Urheber-, nicht auf Patent- und Markenrechte."
+      }
+    ],
+    "notes": "Nicht OSI-approved, aber im Data/Content-Bereich Standard. Fallback-Lizenz eingebaut für Jurisdiktionen ohne Public-Domain-Konzept."
+  },
+  {
+    "id": "epl-2-0",
+    "name": "Eclipse Public License 2.0",
+    "category": "osi-weak-copyleft",
+    "spdx_identifier": "EPL-2.0",
+    "version": "2.0",
+    "official_source": {
+      "url": "https://www.eclipse.org/legal/epl-2.0/",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "eclipse_epl-2-0_2026-04-23.html",
+      "publisher": "Eclipse Foundation"
+    },
+    "rights": {
+      "commercial_use": "yes",
+      "modification": "yes",
+      "distribution": "yes",
+      "private_use": "yes",
+      "patent_grant": "explicit",
+      "attribution_required": true,
+      "copyleft": "weak"
+    },
+    "restrictions": [
+      {
+        "id": "epl2-secondary-license",
+        "clause_ref": "Section 3.2",
+        "quote": "a Contributor may include the Program in a Larger Work if it complies",
+        "effect": "Secondary-License-Option erlaubt Kombination mit GPL, muss aber deklariert werden."
+      }
+    ],
+    "notes": "Nachfolger von EPL 1.0 / CPL. Weak-Copyleft mit expliziter Patent-Lizenz und Retaliation-Klausel."
+  },
+  {
+    "id": "bsl-1-0",
+    "name": "Boost Software License 1.0",
+    "category": "osi-permissive",
+    "spdx_identifier": "BSL-1.0",
+    "version": "1.0",
+    "official_source": {
+      "url": "https://www.boost.org/LICENSE_1_0.txt",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "boost_bsl-1-0_2026-04-23.txt",
+      "publisher": "Boost"
+    },
+    "rights": {
+      "commercial_use": "yes",
+      "modification": "yes",
+      "distribution": "yes",
+      "private_use": "yes",
+      "patent_grant": "no_explicit",
+      "attribution_required": true,
+      "copyleft": "none"
+    },
+    "restrictions": [
+      {
+        "id": "bsl-source-only-attribution",
+        "clause_ref": "Paragraph 2",
+        "quote": "The copyright notices in the Software and this entire statement, including the above",
+        "effect": "Attribution nur in Quellcode-Form nötig; Binärdistribution ohne Attribution zulässig."
+      }
+    ],
+    "notes": "Ungewöhnlich: keine Attribution-Pflicht bei Binärdistribution. Sonst MIT-ähnlich."
+  },
+  {
+    "id": "llama-4-community",
+    "name": "Llama 4 Community License Agreement",
+    "category": "source-available-restricted",
+    "spdx_identifier": null,
+    "version": "Llama 4 (April 5, 2025)",
+    "official_source": {
+      "url": "https://www.llama.com/llama4/license/",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "meta_llama-4-community-license_2026-04-23.txt",
+      "publisher": "Meta Platforms, Inc."
+    },
+    "rights": {
+      "commercial_use": "conditional",
+      "modification": "yes",
+      "distribution": "conditional",
+      "private_use": "yes",
+      "patent_grant": "no_explicit",
+      "attribution_required": true,
+      "copyleft": "none"
+    },
+    "restrictions": [
+      {
+        "id": "llama4-mau-threshold",
+        "clause_ref": "Section 2",
+        "quote": "is greater than 700 million monthly active users in the preceding calendar month",
+        "effect": "Ab 700 Mio. MAU ist Separatlizenz von Meta erforderlich, die diskretionär erteilt wird."
+      },
+      {
+        "id": "llama4-attribution",
+        "clause_ref": "Section 1(b)(i)",
+        "quote": "you shall (A) provide a copy of this Agreement with any such Llama",
+        "effect": "\"Built with Llama\" muss prominent angezeigt werden; abgeleitete Modelle müssen mit \"Llama\" beginnen."
+      },
+      {
+        "id": "llama4-aup-incorporation",
+        "clause_ref": "Section 1(b)(iv)",
+        "quote": "adhere to the Acceptable Use Policy for the Llama Materials (available at https://www.llama.com/llama4/use-policy)",
+        "effect": "Acceptable Use Policy ist vertraglich einbezogen und verbindlich."
+      },
+      {
+        "id": "llama4-patent-termination",
+        "clause_ref": "Section 5(c)",
+        "quote": "If you institute litigation or other proceedings against Meta or any entity (including",
+        "effect": "Lizenz endet, wenn Lizenznehmer Meta oder Dritte wegen Llama-Patenten verklagt."
+      }
+    ],
+    "notes": "Keine OSS-Lizenz im Sinne der OSI. Meta bezeichnet die Lizenz selbst als „Community License\"; die MAU-Schwelle von 700 Mio. wirkt als faktische Sperre für Hyperscaler.",
+    "additional_compliance_flags": {
+      "entity_list_status": "none",
+      "training_hardware_origin": "nvidia",
+      "publisher_jurisdiction": "US"
+    }
+  },
+  {
+    "id": "gemma-terms",
+    "name": "Gemma Terms of Use",
+    "category": "source-available-restricted",
+    "spdx_identifier": null,
+    "version": "Snapshot 2026-04-23",
+    "official_source": {
+      "url": "https://ai.google.dev/gemma/terms",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "google_gemma-terms_2026-04-23.html",
+      "publisher": "Google LLC"
+    },
+    "rights": {
+      "commercial_use": "conditional",
+      "modification": "yes",
+      "distribution": "conditional",
+      "private_use": "yes",
+      "patent_grant": "no_explicit",
+      "attribution_required": true,
+      "copyleft": "none"
+    },
+    "restrictions": [
+      {
+        "id": "gemma-prohibited-use",
+        "clause_ref": "Section 3.2 (via PUP)",
+        "quote": null,
+        "effect": "Prohibited Use Policy ist einbezogen; konkrete Verbotstatbestände werden dort aufgelistet (separater Snapshot)."
+      },
+      {
+        "id": "gemma-redistribution-notice",
+        "clause_ref": "Section 4",
+        "quote": null,
+        "effect": "Bei Weitergabe der Gewichte/abgeleiteter Modelle muss der Empfänger den gleichen Terms zustimmen und sie mitliefern."
+      }
+    ],
+    "notes": "HTML-Snapshot via Wayback Machine (Live-Abruf hatte Redirect-Loop). Verbindlicher Text steht im HTML, Quote-Extraktion noch nicht 1:1 verifiziert — deshalb `quote: \"unverified\"` mit geschärftem Effect.",
+    "additional_compliance_flags": {
+      "entity_list_status": "none",
+      "training_hardware_origin": "google-tpu",
+      "publisher_jurisdiction": "US"
+    }
+  },
+  {
+    "id": "mistral-mrl-0-1",
+    "name": "Mistral AI Research License 0.1",
+    "category": "research-only",
+    "spdx_identifier": null,
+    "version": "0.1",
+    "official_source": {
+      "url": "https://mistral.ai/licenses/MRL-0.1.md",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "mistral_mrl-0-1_2026-04-23.md",
+      "publisher": "Mistral AI SAS"
+    },
+    "rights": {
+      "commercial_use": "no",
+      "modification": "yes",
+      "distribution": "conditional",
+      "private_use": "yes",
+      "patent_grant": "no_explicit",
+      "attribution_required": true,
+      "copyleft": "none"
+    },
+    "restrictions": [
+      {
+        "id": "mrl-research-only",
+        "clause_ref": "Section 3.2",
+        "quote": "You shall only use the Mistral Models, Derivatives (whether or not created by",
+        "effect": "Nutzung ausschließlich für Research Purposes; kommerziell nur mit separater Mistral-Lizenz."
+      },
+      {
+        "id": "mrl-attribution",
+        "clause_ref": "Section 2.2",
+        "quote": "Licensed by Mistral AI under the Mistral AI Research License",
+        "effect": "NOTICE-Datei mit exakt diesem Attribution-Satz bei Distribution beizulegen."
+      },
+      {
+        "id": "mrl-patent-termination",
+        "clause_ref": "Section 7.3",
+        "quote": "any licenses granted to You under this Agreement will immediately terminate as of",
+        "effect": "Lizenz endet automatisch bei Patentklage des Lizenznehmers gegen Mistral."
+      }
+    ],
+    "notes": "Gilt für Mistral-Flaggschiffe (Large 3 etc.). Research Purposes explizit ohne Revenue-Aktivität und ohne SaaS (siehe §9 Definition).",
+    "additional_compliance_flags": {
+      "entity_list_status": "none",
+      "training_hardware_origin": "nvidia",
+      "publisher_jurisdiction": "FR"
+    }
+  },
+  {
+    "id": "flux-1-dev-nc",
+    "name": "FLUX.1 [dev] Non-Commercial License v1.1.1",
+    "category": "source-available-restricted",
+    "spdx_identifier": null,
+    "version": "1.1.1",
+    "official_source": {
+      "url": "https://github.com/black-forest-labs/flux/blob/main/model_licenses/LICENSE-FLUX1-dev",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "bfl_flux-1-dev-non-commercial-license_2026-04-23.md",
+      "publisher": "Black Forest Labs Inc."
+    },
+    "rights": {
+      "commercial_use": "no",
+      "modification": "yes",
+      "distribution": "conditional",
+      "private_use": "yes",
+      "patent_grant": "no_explicit",
+      "attribution_required": true,
+      "copyleft": "none"
+    },
+    "restrictions": [
+      {
+        "id": "flux-dev-non-commercial",
+        "clause_ref": "Section 2(b)",
+        "quote": "You may only access, use, Distribute, or create Derivatives of the FLUX.1 [dev]",
+        "effect": "Ausschließlich Non-Commercial-Nutzung; kommerziell nur mit Separatlizenz von BFL."
+      },
+      {
+        "id": "flux-dev-content-filter",
+        "clause_ref": "Section 2(e)",
+        "quote": "implement and maintain content filtering measures (\"Content Filters\") for your use of the",
+        "effect": "Content-Filter oder Pre-Distribution-Review verpflichtend; KI-Offenlegung soweit gesetzlich erforderlich."
+      },
+      {
+        "id": "flux-dev-use-restrictions",
+        "clause_ref": "Section 4(a)",
+        "quote": "for any commercial or production purposes, (ii) military purposes, (iii) purposes of surveillance",
+        "effect": "Use-Based Restrictions: kommerziell, militärisch, Surveillance, Biometrie, Rechtsverletzungen verboten."
+      },
+      {
+        "id": "flux-dev-export-controls",
+        "clause_ref": "Section 4(e)",
+        "quote": "violate any applicable U.S. and non-U.S. export control and trade sanctions laws",
+        "effect": "Export-Control- und Sanctions-Compliance ausdrücklich Bestandteil."
+      }
+    ],
+    "notes": "Teil des FLUX-Multi-Tier-Portfolios: schnell (Apache), dev (diese NC-Lizenz), pro (API-only). Für kommerzielle Bild-Generierung muss dev → Commercial-Separatlizenz bei BFL angefragt werden.",
+    "additional_compliance_flags": {
+      "entity_list_status": "none",
+      "training_hardware_origin": "nvidia",
+      "publisher_jurisdiction": "DE"
+    }
+  },
+  {
+    "id": "sd-3-5-community",
+    "name": "Stability AI Community License Agreement",
+    "category": "source-available-restricted",
+    "spdx_identifier": null,
+    "version": "Last Updated: July 5, 2024",
+    "official_source": {
+      "url": "https://huggingface.co/stabilityai/stable-diffusion-3.5-large/raw/main/LICENSE.md",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "stability_sd-3-5-community-license_2026-04-23.md",
+      "publisher": "Stability AI Ltd."
+    },
+    "rights": {
+      "commercial_use": "conditional",
+      "modification": "yes",
+      "distribution": "conditional",
+      "private_use": "yes",
+      "patent_grant": "no_explicit",
+      "attribution_required": true,
+      "copyleft": "none"
+    },
+    "restrictions": [
+      {
+        "id": "sd35-revenue-threshold",
+        "clause_ref": "Section III",
+        "quote": "generate more than USD $1,000,000 in annual revenue (or the equivalent thereof in",
+        "effect": "Ab 1 Mio. USD Jahresumsatz endet die Community-Lizenz; Enterprise-Lizenz bei Stability AI erforderlich."
+      },
+      {
+        "id": "sd35-no-foundation-model-training",
+        "clause_ref": "Section IV(b)",
+        "quote": "You will not use the Stability AI Materials or Derivative Works, or any",
+        "effect": "Ausgaben dürfen nicht zum Training konkurrierender Foundation-Modelle genutzt werden."
+      },
+      {
+        "id": "sd35-attribution",
+        "clause_ref": "Section IV(a)",
+        "quote": "prominently display \"Powered by Stability AI\" on a related website, user interface, blogpost",
+        "effect": "\"Powered by Stability AI\" muss prominent angezeigt werden bei Distribution/Produkt."
+      }
+    ],
+    "notes": "Kombiniert großzügige Kommerz-Erlaubnis für KMU mit Revenue-Gate. Deckt SD 3.5 Large / Medium / Turbo.",
+    "additional_compliance_flags": {
+      "entity_list_status": "none",
+      "training_hardware_origin": "nvidia",
+      "publisher_jurisdiction": "UK"
+    }
+  },
+  {
+    "id": "flux-1-pro-proprietary",
+    "name": "FLUX.1 [pro] Proprietary API Terms",
+    "category": "proprietary-api-only",
+    "spdx_identifier": null,
+    "version": "n/a",
+    "official_source": {
+      "url": "https://bfl.ai/pricing",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "",
+      "publisher": "Black Forest Labs Inc."
+    },
+    "rights": {
+      "commercial_use": "conditional",
+      "modification": "no",
+      "distribution": "no",
+      "private_use": "no",
+      "patent_grant": "none",
+      "attribution_required": true,
+      "copyleft": "none"
+    },
+    "restrictions": [
+      {
+        "id": "flux-pro-api-only",
+        "clause_ref": "n/a — kein öffentlicher Lizenztext",
+        "quote": null,
+        "effect": "Zugang ausschließlich über die BFL-API; keine Gewichte, keine Weitergabe. Nutzung richtet sich nach den BFL-API-Terms."
+      }
+    ],
+    "notes": "Kein Snapshot möglich — FLUX.1 pro ist ein reiner API-Endpunkt. Wird im Tool als proprietary-api-only modelliert, damit die FLUX-Multi-Tier-Struktur vollständig abgebildet ist.",
+    "additional_compliance_flags": {
+      "entity_list_status": "none",
+      "training_hardware_origin": "nvidia",
+      "publisher_jurisdiction": "DE"
+    }
+  },
+  {
+    "id": "kimi-k2-modified-mit",
+    "name": "Kimi K2 Modified MIT License",
+    "category": "multi-tier-licensing",
+    "spdx_identifier": null,
+    "version": "2025",
+    "official_source": {
+      "url": "https://huggingface.co/moonshotai/Kimi-K2-Instruct/raw/main/LICENSE",
+      "snapshot_date": "2026-04-23",
+      "local_snapshot": "moonshot_kimi-k2-modified-mit_2026-04-23.txt",
+      "publisher": "Moonshot AI"
+    },
+    "rights": {
+      "commercial_use": "yes",
+      "modification": "yes",
+      "distribution": "yes",
+      "private_use": "yes",
+      "patent_grant": "no_explicit",
+      "attribution_required": true,
+      "copyleft": "none"
+    },
+    "restrictions": [
+      {
+        "id": "kimi-threshold-branding",
+        "clause_ref": "Modification paragraph",
+        "quote": "you shall prominently display \"Kimi K2\" on the user interface of such product",
+        "effect": "Ab 100 Mio. MAU oder 20 Mio. USD Monatsumsatz ist prominentes \"Kimi K2\"-Branding in der UI Pflicht."
+      },
+      {
+        "id": "kimi-base-mit",
+        "clause_ref": "Paragraph 2",
+        "quote": "The above copyright notice and this permission notice shall be included in all",
+        "effect": "Grund-MIT-Attribution bleibt bestehen."
+      }
+    ],
+    "notes": "Klassisches MIT plus schwellenabhängige Branding-Pflicht. Unterhalb der Schwelle wirkt wie reines MIT; oberhalb entsteht Attribution/Marketing-Pflicht.",
+    "additional_compliance_flags": {
+      "entity_list_status": "none",
+      "training_hardware_origin": "unknown",
+      "publisher_jurisdiction": "CN"
+    }
+  }
+]

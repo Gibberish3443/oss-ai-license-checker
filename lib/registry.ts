@@ -4,7 +4,6 @@ import modelsData from "./models.json";
 import trainingRisksData from "./training-data-risks.json";
 import useCasesData from "./use-cases.json";
 import type {
-  Compatibility,
   CompatibilityMatrix,
   CompatibilityPair,
   Copyleft,
@@ -16,18 +15,13 @@ import type {
   UseCaseId,
   YesNoConditional,
 } from "./types";
+import { isCuratedStatus } from "./types";
 
 const USE_CASE_IDS: readonly UseCaseId[] = [
   "research-only",
   "internal-commercial",
   "saas-external",
   "redistribution",
-];
-
-const COMPATIBILITY_VALUES: readonly Compatibility[] = [
-  "compatible",
-  "conditional",
-  "incompatible",
 ];
 
 const YES_NO_CONDITIONAL: readonly YesNoConditional[] = [
@@ -97,10 +91,6 @@ function isIn<T extends string>(
   return (
     typeof value === "string" && (values as readonly string[]).includes(value)
   );
-}
-
-function isCompatibility(value: unknown): value is Compatibility {
-  return isIn(COMPATIBILITY_VALUES, value);
 }
 
 function deepFreeze<T>(value: T): T {
@@ -257,9 +247,14 @@ export function loadRegistry(data: RegistryInput): Registry {
         `Matrix-Paar doppelt (ungeordnet): ${pair.license_a} <-> ${pair.license_b}`,
       );
     }
+    if (!isCuratedStatus(pair.compatibility)) {
+      throw new RegistryError(
+        `Matrix-Paar ${pair.license_a} <-> ${pair.license_b} hat ungültigen compatibility-Wert: ${JSON.stringify(pair.compatibility)}`,
+      );
+    }
     for (const ucId of USE_CASE_IDS) {
       const value = pair.scenarios?.[ucId];
-      if (!isCompatibility(value)) {
+      if (!isCuratedStatus(value)) {
         throw new RegistryError(
           `Matrix-Paar ${pair.license_a} <-> ${pair.license_b} hat für Use-Case "${ucId}" keinen gültigen Wert: ${JSON.stringify(value)}`,
         );

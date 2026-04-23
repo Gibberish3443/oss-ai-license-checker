@@ -114,7 +114,21 @@ export interface Model {
   notes: string;
 }
 
-export type Compatibility = "compatible" | "conditional" | "incompatible";
+export const CURATED_STATUSES = [
+  "compatible",
+  "conditional",
+  "incompatible",
+] as const;
+
+export type CuratedStatus = (typeof CURATED_STATUSES)[number];
+export type Compatibility = CuratedStatus;
+
+export function isCuratedStatus(x: unknown): x is CuratedStatus {
+  return (
+    typeof x === "string" &&
+    (CURATED_STATUSES as readonly string[]).includes(x)
+  );
+}
 
 export interface CompatibilityPair {
   license_a: string;

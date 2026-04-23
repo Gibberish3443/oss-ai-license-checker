@@ -1,8 +1,9 @@
 import { defaultRegistry, type Registry } from "./registry";
+import { isCuratedStatus } from "./types";
 import type {
   CheckInput,
   CheckResult,
-  Compatibility,
+  CuratedStatus,
   CompatibilityCell,
   Conflict,
   License,
@@ -29,7 +30,7 @@ export class EngineInputError extends Error {
   }
 }
 
-function severityForStatus(status: Compatibility): Conflict["severity"] | null {
+function severityForStatus(status: CuratedStatus): Conflict["severity"] | null {
   if (status === "incompatible") return "high";
   if (status === "conditional") return "medium";
   return null;
@@ -40,7 +41,7 @@ interface RecEntry {
   prio: number;
 }
 
-function priorityForCellStatus(status: Compatibility): number {
+function priorityForCellStatus(status: CuratedStatus): number {
   if (status === "incompatible") return 1;
   if (status === "conditional") return 3;
   return 8;
@@ -337,11 +338,7 @@ export function runCheck(
 
   for (const rowCells of matrix) {
     for (const cell of rowCells) {
-      if (
-        cell.status !== "compatible" &&
-        cell.status !== "conditional" &&
-        cell.status !== "incompatible"
-      ) {
+      if (!isCuratedStatus(cell.status)) {
         continue;
       }
       const prio = priorityForCellStatus(cell.status);

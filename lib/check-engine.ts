@@ -28,6 +28,7 @@ export class EngineInputError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "EngineInputError";
+    Object.setPrototypeOf(this, new.target.prototype);
   }
 }
 

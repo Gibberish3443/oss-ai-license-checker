@@ -439,6 +439,87 @@ const scenarioR7 = expectThrow(
   ],
 );
 
+// R8: ungültiger License.rights-Enum-Wert -> RegistryError.
+const scenarioR8 = expectThrow(
+  "R8: ungültiger License.rights.commercial_use wird erkannt",
+  () => {
+    const input = cloneInput();
+    (input.licenses[0].rights as unknown as Record<string, unknown>)
+      .commercial_use = "maybe";
+    return loadRegistry(input);
+  },
+  (err) => [
+    assert(err instanceof RegistryError, "RegistryError erwartet"),
+    assert(
+      err instanceof RegistryError && err.message.includes("commercial_use"),
+      "Message muss Feld benennen",
+    ),
+  ],
+);
+
+// R9: License.rights.attribution_required ohne boolean -> RegistryError.
+const scenarioR9 = expectThrow(
+  "R9: License.rights.attribution_required ohne boolean wird erkannt",
+  () => {
+    const input = cloneInput();
+    (input.licenses[0].rights as unknown as Record<string, unknown>)
+      .attribution_required = "ja";
+    return loadRegistry(input);
+  },
+  (err) => [
+    assert(err instanceof RegistryError, "RegistryError erwartet"),
+    assert(
+      err instanceof RegistryError &&
+        err.message.includes("attribution_required"),
+      "Message muss Feld benennen",
+    ),
+  ],
+);
+
+// R10: UseCase.license_sensitivity ohne boolean -> RegistryError.
+const scenarioR10 = expectThrow(
+  "R10: ungültiger UseCase.license_sensitivity-Wert wird erkannt",
+  () => {
+    const input = cloneInput();
+    (
+      input.useCases[0].license_sensitivity as Record<string, unknown>
+    ).commercial_use_required = "ja";
+    return loadRegistry(input);
+  },
+  (err) => [
+    assert(err instanceof RegistryError, "RegistryError erwartet"),
+    assert(
+      err instanceof RegistryError &&
+        err.message.includes("commercial_use_required"),
+      "Message muss Schalter benennen",
+    ),
+  ],
+);
+
+// R11: Registry-Entry ist frozen (Mutation wirft in strict mode).
+const scenarioR11: ScenarioResult = (() => {
+  const registry = loadRegistry(cloneInput());
+  const license = registry.getLicense("mit");
+  const assertions: Assertion[] = [];
+  assertions.push(assert(license !== null, "mit-Lizenz muss existieren"));
+  assertions.push(
+    assert(Object.isFrozen(license), "Lizenz-Eintrag muss eingefroren sein"),
+  );
+  if (license) {
+    assertions.push(
+      assert(
+        Object.isFrozen(license.rights),
+        "License.rights muss eingefroren sein (deep)",
+      ),
+    );
+  }
+  return {
+    name: "R11: Registry-Entries sind deep-frozen",
+    info: `frozen=${license ? Object.isFrozen(license) : "n/a"}`,
+    assertions,
+  };
+})();
+
 // ------------------------------------------------------------
 // Lauf
 // ------------------------------------------------------------
@@ -461,6 +542,10 @@ const all: ScenarioResult[] = [
   scenarioR5,
   scenarioR6,
   scenarioR7,
+  scenarioR8,
+  scenarioR9,
+  scenarioR10,
+  scenarioR11,
 ];
 
 let failed = 0;

@@ -13,6 +13,7 @@ import type {
   OverallRisk,
   Source,
   TrainingDataFlag,
+  TrainingDataRisk,
   UseCase,
   UseCaseViolation,
 } from "./types";
@@ -57,6 +58,102 @@ function priorityForRiskLevel(level: "high" | "medium" | "low"): number {
   if (level === "high") return 5;
   if (level === "medium") return 6;
   return 7;
+}
+
+type LicenseSensitivityKey = keyof UseCase["license_sensitivity"];
+
+const LICENSE_SENSITIVITY_EXPLANATIONS: Record<
+  LicenseSensitivityKey,
+  string
+> = {
+  commercial_use_required:
+    "der Einsatz ausdrücklich kommerzielle Nutzung voraussetzt",
+  distribution_required: "Ergebnisse oder Software an Dritte weitergegeben werden",
+  network_use: "das System extern über ein Netzwerk bereitgestellt wird",
+  derivative_works: "das Modell in bearbeitete oder abgeleitete Lösungen einfließt",
+};
+
+const TRAINING_RISK_TRIGGER_ORDER: Record<
+  string,
+  readonly LicenseSensitivityKey[]
+> = {
+  "web-crawl": [
+    "commercial_use_required",
+    "network_use",
+    "distribution_required",
+    "derivative_works",
+  ],
+  "github-code": [
+    "derivative_works",
+    "distribution_required",
+    "commercial_use_required",
+    "network_use",
+  ],
+  "stock-images": [
+    "distribution_required",
+    "network_use",
+    "commercial_use_required",
+    "derivative_works",
+  ],
+  "user-generated-content": [
+    "derivative_works",
+    "distribution_required",
+    "commercial_use_required",
+    "network_use",
+  ],
+  "publisher-texts": [
+    "commercial_use_required",
+    "distribution_required",
+    "network_use",
+    "derivative_works",
+  ],
+  "public-official": [
+    "derivative_works",
+    "commercial_use_required",
+    "distribution_required",
+    "network_use",
+  ],
+};
+
+function joinGermanList(items: readonly string[]): string {
+  if (items.length === 0) return "";
+  if (items.length === 1) return items[0];
+  if (items.length === 2) return `${items[0]} und ${items[1]}`;
+  return `${items.slice(0, -1).join(", ")} und ${items[items.length - 1]}`;
+}
+
+function relevantTrainingSwitches(
+  riskId: string,
+  useCase: UseCase,
+): LicenseSensitivityKey[] {
+  const activeSwitches = (
+    Object.keys(LICENSE_SENSITIVITY_EXPLANATIONS) as LicenseSensitivityKey[]
+  ).filter((key) => useCase.license_sensitivity[key]);
+  const preferredSwitches = (TRAINING_RISK_TRIGGER_ORDER[riskId] ?? []).filter(
+    (key) => useCase.license_sensitivity[key],
+  );
+  return preferredSwitches.length > 0 ? preferredSwitches : activeSwitches;
+}
+
+function buildTrainingFlagReason(
+  risk: TrainingDataRisk,
+  useCase: UseCase,
+): string {
+  const triggeredSwitches = relevantTrainingSwitches(risk.id, useCase);
+  const switchText = joinGermanList(
+    triggeredSwitches.map(
+      (key) => `"${key}" (${LICENSE_SENSITIVITY_EXPLANATIONS[key]})`,
+    ),
+  );
+  const legalIssues = joinGermanList(
+    risk.legal_issues.map((issue) => `"${issue.issue}"`),
+  );
+  const switchLabel =
+    triggeredSwitches.length === 1
+      ? "dem aktiven Use-Case-Schalter"
+      : "den aktiven Use-Case-Schaltern";
+
+  return `Trainingsdaten-Risiko "${risk.id}" (${risk.name}) kollidiert im Use-Case "${useCase.name}" mit ${switchLabel} ${switchText}. Deshalb ist dieses Risikoprofil hier relevant. Konkrete Streitpunkte sind ${legalIssues}.`;
 }
 
 /**
@@ -284,7 +381,7 @@ export function runCheck(
     trainingDataFlags.push({
       risk_id: risk.id,
       risk_level: risk.risk_level,
-      reason: risk.legal_issues.map((issue) => issue.issue).join("; "),
+      reason: buildTrainingFlagReason(risk, useCase),
     });
   }
 

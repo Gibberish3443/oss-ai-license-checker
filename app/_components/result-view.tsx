@@ -89,7 +89,7 @@ export default function ResultView({
         <h3 className="text-base font-semibold">Kompatibilitätsmatrix</h3>
         <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
           Zeilen = Modelle, Spalten = deduplizierte Code-Lizenzen. Status bezieht sich auf
-          den aktuellen Use-Case. Tooltip (Hover) zeigt das Reasoning der kuratierten Paar-Bewertung.
+          den aktuellen Use-Case. Begründung und Auflagen stehen jeweils direkt in der Zelle.
         </p>
         <div className="mt-4">
           <MatrixGrid
@@ -108,8 +108,11 @@ export default function ResultView({
             manuell geprüft werden.
           </p>
           <ul className="mt-3 space-y-1 text-sm">
-            {result.missingPairs.map((p, i) => (
-              <li key={i} className="font-mono">
+            {result.missingPairs.map((p) => (
+              <li
+                key={`${p.license_a}|${p.license_b}|${p.context}`}
+                className="font-mono"
+              >
                 {p.license_a} ↔ {p.license_b}
                 <span className="ml-2 text-xs font-sans text-zinc-500 dark:text-zinc-400">
                   ({p.context})
@@ -125,7 +128,10 @@ export default function ResultView({
           <h3 className="text-base font-semibold">Lizenz-Konflikte</h3>
           <ul className="mt-3 space-y-3 text-sm">
             {result.modelCodeConflicts.map((c, i) => (
-              <li key={i} className="rounded border border-zinc-200 p-3 dark:border-zinc-800">
+              <li
+                key={`${c.license_a}|${c.license_b}|${c.severity}|${i}`}
+                className="rounded border border-zinc-200 p-3 dark:border-zinc-800"
+              >
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-mono text-xs">
                     {c.license_a} ↔ {c.license_b}
@@ -150,11 +156,11 @@ export default function ResultView({
             Scheitern einzelner Lizenzen am gewählten Use-Case, unabhängig von Inter-License-Konflikten.
           </p>
           <ul className="mt-3 space-y-2 text-sm">
-            {result.useCaseViolations.map((v, i) => {
+            {result.useCaseViolations.map((v) => {
               const license = licenseById.get(v.license_id);
               return (
                 <li
-                  key={i}
+                  key={`${v.license_id}|${v.severity}|${v.violation}`}
                   className="flex flex-col gap-1 rounded border border-zinc-200 p-3 dark:border-zinc-800"
                 >
                   <div className="flex flex-wrap items-center gap-2">
@@ -177,11 +183,11 @@ export default function ResultView({
         <section className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950">
           <h3 className="text-base font-semibold">Trainingsdaten-Flags</h3>
           <ul className="mt-3 space-y-3 text-sm">
-            {result.trainingDataFlags.map((f, i) => {
+            {result.trainingDataFlags.map((f) => {
               const risk = riskById.get(f.risk_id);
               return (
                 <li
-                  key={i}
+                  key={f.risk_id}
                   className="rounded border border-zinc-200 p-3 dark:border-zinc-800"
                 >
                   <div className="flex flex-wrap items-center gap-2">
@@ -208,8 +214,8 @@ export default function ResultView({
             Sortiert nach Priorität.
           </p>
           <ol className="mt-3 list-inside list-decimal space-y-1 text-sm text-zinc-800 dark:text-zinc-200">
-            {result.recommendations.map((r, i) => (
-              <li key={i}>{r}</li>
+            {result.recommendations.map((r) => (
+              <li key={r}>{r}</li>
             ))}
           </ol>
         </section>
@@ -223,10 +229,13 @@ export default function ResultView({
             jeweiligen Snapshot.
           </p>
           <ul className="mt-3 space-y-2 text-sm">
-            {result.sources.map((s, i) => {
+            {result.sources.map((s) => {
               const license = licenseById.get(s.license_id);
               return (
-                <li key={i} className="rounded border border-zinc-200 p-3 dark:border-zinc-800">
+                <li
+                  key={s.license_id}
+                  className="rounded border border-zinc-200 p-3 dark:border-zinc-800"
+                >
                   <div className="font-medium">{license?.name ?? s.license_id}</div>
                   <div className="mt-1 font-mono text-xs text-zinc-600 dark:text-zinc-400">
                     licenses/{s.snapshot_path}

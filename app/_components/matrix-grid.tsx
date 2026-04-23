@@ -92,13 +92,15 @@ export default function MatrixGrid({
                   <td
                     key={`${cell.row}:${cell.col}`}
                     className={`border-b border-zinc-200 px-3 py-2 align-top dark:border-zinc-800 ${STATUS_CELL[cell.status]}`}
-                    title={cell.reasoning}
                   >
                     <div className="font-semibold">{STATUS_LABEL[cell.status]}</div>
+                    <p className="mt-1 text-xs leading-snug">
+                      {cell.reasoning}
+                    </p>
                     {cell.caveats.length > 0 && (
                       <ul className="mt-1 list-inside list-disc text-xs">
-                        {cell.caveats.map((c, i) => (
-                          <li key={i}>{c}</li>
+                        {cell.caveats.map((c) => (
+                          <li key={c}>{c}</li>
                         ))}
                       </ul>
                     )}

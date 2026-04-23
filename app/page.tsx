@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { runCheck } from "@/lib/check-engine";
+import { EngineInputError, runCheck } from "@/lib/check-engine";
 import { defaultRegistry } from "@/lib/registry";
 import type { CheckResult, UseCaseId } from "@/lib/types";
 import InputForm from "./_components/input-form";
@@ -67,10 +67,13 @@ export default function Home() {
       );
       return { result, error: null };
     } catch (e) {
-      return {
-        result: null,
-        error: e instanceof Error ? e.message : String(e),
-      };
+      // Nur Eingabe-Fehler der Engine freundlich rendern. Alles andere ist ein
+      // Bug und soll an die React Error Boundary durchschlagen, statt als
+      // anonymer Roh-Stacktrace im UI zu landen.
+      if (e instanceof EngineInputError) {
+        return { result: null, error: e.message };
+      }
+      throw e;
     }
   }, [selectedModels, codeDepCounts, selectedTrainingRisks, useCase]);
 

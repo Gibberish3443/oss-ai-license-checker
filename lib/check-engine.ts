@@ -16,6 +16,19 @@ import type {
   UseCaseViolation,
 } from "./types";
 
+/**
+ * Wird geworfen, wenn `runCheck` Eingaben mit IDs erhält, die in der Registry
+ * nicht aufgelöst werden können. Trennt erwartbare Domain-Fehler (UI darf sie
+ * freundlich anzeigen) von echten Bugs (sollen als unbehandelte Exception
+ * sichtbar werden, statt im Catch zu verpuffen).
+ */
+export class EngineInputError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "EngineInputError";
+  }
+}
+
 function severityForStatus(status: Compatibility): Conflict["severity"] | null {
   if (status === "incompatible") return "high";
   if (status === "conditional") return "medium";
@@ -158,7 +171,7 @@ export function runCheck(
 ): CheckResult {
   const useCase = registry.getUseCase(input.useCase);
   if (!useCase) {
-    throw new Error(`Unbekannter Use-Case: ${input.useCase}`);
+    throw new EngineInputError(`Unbekannter Use-Case: ${input.useCase}`);
   }
 
   // Zeilen: Modelle auflösen und Modell-Lizenz aus der Registry ziehen.
@@ -166,7 +179,7 @@ export function runCheck(
   for (const modelId of input.models) {
     const model = registry.getModel(modelId);
     if (!model) {
-      throw new Error(`Unbekannte Model-ID: ${modelId}`);
+      throw new EngineInputError(`Unbekannte Model-ID: ${modelId}`);
     }
     // Referenz-Integrität der Model→License-Kante wird bereits in loadRegistry
     // geprüft; hier kann nichts mehr durchrutschen.
@@ -177,7 +190,7 @@ export function runCheck(
   const depCounts = new Map<string, number>();
   for (const licenseId of input.codeDependencies) {
     if (!registry.getLicense(licenseId)) {
-      throw new Error(`Unbekannte Code-Lizenz-ID: ${licenseId}`);
+      throw new EngineInputError(`Unbekannte Code-Lizenz-ID: ${licenseId}`);
     }
     depCounts.set(licenseId, (depCounts.get(licenseId) ?? 0) + 1);
   }
@@ -265,7 +278,7 @@ export function runCheck(
   for (const riskId of input.trainingData) {
     const risk = registry.getTrainingRisk(riskId);
     if (!risk) {
-      throw new Error(`Unbekannte Training-Risk-ID: ${riskId}`);
+      throw new EngineInputError(`Unbekannte Training-Risk-ID: ${riskId}`);
     }
     trainingDataFlags.push({
       risk_id: risk.id,

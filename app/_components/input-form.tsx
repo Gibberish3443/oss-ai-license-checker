@@ -124,7 +124,8 @@ export default function InputForm({
         title="Modelle"
         description="Welche Open-Weight-Modelle sollen geprüft werden? Jedes Modell zieht seine Modelllizenz in die Matrix."
       >
-        <div className="grid gap-2 sm:grid-cols-2">
+        <fieldset className="grid gap-2 sm:grid-cols-2">
+          <legend className="sr-only">Modelle</legend>
           {models.map((m) => {
             const license = licenseById.get(m.license_id);
             const checked = selectedModels.includes(m.id);
@@ -155,7 +156,7 @@ export default function InputForm({
               </label>
             );
           })}
-        </div>
+        </fieldset>
       </Section>
 
       <Section
@@ -163,7 +164,8 @@ export default function InputForm({
         title="Code-Abhängigkeiten"
         description="Lizenzen der im Projekt verwendeten Libraries. Mehrere Deps pro Lizenz? Anzahl rechts anpassen."
       >
-        <div className="grid gap-2 sm:grid-cols-2">
+        <fieldset className="grid gap-2 sm:grid-cols-2">
+          <legend className="sr-only">Code-Abhängigkeiten</legend>
           {licenses.map((l) => {
             const count = codeDepCounts[l.id] ?? 0;
             const active = count > 0;
@@ -192,13 +194,14 @@ export default function InputForm({
                       </span>
                     </div>
                     <label className="flex items-center gap-1 text-xs text-zinc-600 dark:text-zinc-400">
-                      Anzahl
+                      <span aria-hidden="true">Anzahl</span>
                       <input
                         type="number"
                         min={0}
                         max={999}
                         value={count}
                         onChange={(e) => updateDepCount(l.id, e.target.value)}
+                        aria-label={`Anzahl Abhängigkeiten mit Lizenz ${l.name}`}
                         className="w-16 rounded border border-zinc-300 px-2 py-1 text-right font-mono text-sm dark:border-zinc-700 dark:bg-zinc-900"
                       />
                     </label>
@@ -207,7 +210,7 @@ export default function InputForm({
               </div>
             );
           })}
-        </div>
+        </fieldset>
       </Section>
 
       <Section
@@ -215,7 +218,8 @@ export default function InputForm({
         title="Trainingsdaten-Risiken"
         description="Bekannte Risiken aus den Trainingskorpora der eingesetzten Modelle. Optional, beeinflusst die Ampel ab Risiko „mittel“."
       >
-        <div className="grid gap-2 sm:grid-cols-2">
+        <fieldset className="grid gap-2 sm:grid-cols-2">
+          <legend className="sr-only">Trainingsdaten-Risiken</legend>
           {trainingRisks.map((r) => {
             const checked = selectedTrainingRisks.includes(r.id);
             return (
@@ -248,7 +252,7 @@ export default function InputForm({
               </label>
             );
           })}
-        </div>
+        </fieldset>
       </Section>
 
       <div className="flex justify-end">

@@ -1,36 +1,159 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# oss-ai-license-checker
 
-## Getting Started
+Ein kleines Next.js-Werkzeug, das Lizenz- und Compliance-Fragen rund um Open-Source-AI-Modelle
+strukturiert beantwortet: welches Modell darf ich in welchem Setup gegen welchen Code-Stack
+einsetzen, welche Risiken entstehen aus der Trainingsdatenlage, welche zusätzlichen Pflichten
+kommen durch Exportkontrolle und Jurisdiktion dazu.
 
-First, run the development server:
+Das Projekt entsteht aus meiner Arbeit als Jurist im Umfeld KI-Lizenzrecht und dient zugleich
+als Portfolio-Referenz für Legal-Engineering-Themen. Fokus liegt auf Transparenz und
+Nachvollziehbarkeit der rechtlichen Einordnung, nicht auf einer „ja/nein"-Automatik.
+
+## Motivation
+
+SPDX deckt klassisches Open-Source gut ab, reicht aber für den AI-Bereich nicht aus. Es fehlen
+insbesondere:
+
+- die Abgrenzung *Source-Available* gegenüber *OSI-approved* (Llama, frühere Gemma-Generationen)
+- der Umgang mit *Responsible-AI*-Klauseln (OpenRAIL, Use-Based Restrictions)
+- Multi-Tier-Lizenzierung, bei der ein Anbieter mehrere Varianten unter verschiedene Regime stellt
+- Dimensionen jenseits des Urheberrechts: Exportkontrolle, Entity-List-Status, Jurisdiktion des
+  Herausgebers
+
+Das Tool ergänzt SPDX um diese Dimensionen und zwingt die Analyse zugleich in eine Form, die
+reproduzierbar und zitierfähig bleibt.
+
+## Was das Tool prüft
+
+Die Compliance-Prüfung läuft entlang von drei Achsen und wird gegen einen gewählten Einsatz-Kontext
+gespiegelt:
+
+1. **Modell-Lizenzen** — welche Bedingungen der Anbieter an die Nutzung seiner Gewichte knüpft
+   (z. B. Llama 4 Community License, Apache-2.0, MIT, modified MIT).
+2. **Code-Abhängigkeiten** — die klassische OSS-Schicht um das Modell herum (MIT, Apache, BSD,
+   MPL, LGPL, GPL, AGPL).
+3. **Trainingsdaten-Risiken** — rechtliche Unsicherheiten aus der Datenbasis: TDM-Schranke und
+   Opt-out (§ 44b UrhG, Art. 4 DSM-RL), Fair Use, DSGVO-Konformität bei personenbezogenen
+   Crawl-Inhalten, Leistungsschutzrecht für Presseerzeugnisse.
+
+Zusätzlich werden *Compliance-Flags* ausgewiesen, die nicht Teil der reinen Lizenzbewertung sind
+(Entity-List-Status, Trainings-Hardware-Herkunft, Publisher-Jurisdiktion).
+
+## Einsatz-Szenarien (Use Cases)
+
+Die Bewertung ist ohne Kontext nicht belastbar. Das Tool unterscheidet vier Szenarien, die
+unterschiedliche Klauseln scharf stellen:
+
+| Szenario | Kurzbeschreibung | Kritische Klauseln |
+|---|---|---|
+| Research only | rein wissenschaftlich, kein Vertrieb | in der Regel unproblematisch, aber MRL-ähnliche Research-Only-Lizenzen bleiben bindend |
+| Internal commercial | Einsatz innerhalb der Organisation | kommerzielle Nutzungserlaubnis nötig, Netzwerkklauseln irrelevant |
+| SaaS external | gehosteter Dienst für externe Nutzer | AGPL-Netzwerkklausel, Llama-/Gemma-MAU-Schwellen, Revenue-Gates |
+| Redistribution | Weitergabe von Modell oder Code | Attribution, NOTICE, Copyleft-Vererbung |
+
+## Aktiver Modell-Scope
+
+Die aktive Registry in [`lib/models.json`](lib/models.json) ist bewusst konservativ gehalten und
+enthält zehn LLMs, die aktuell den Markt prägen:
+
+- **Llama 4 Maverick** — Source-available-Referenz mit MAU-Schwelle und AUP
+- **Gemma 4 31B** — seit April 2026 unter Apache-2.0 (Ablösung der Gemma Terms)
+- **Qwen3-235B-A22B** — Apache-Generalist
+- **Qwen3-Coder-480B-A35B-Instruct** — Apache, Coding- und Agentic-Spezialist
+- **DeepSeek-V3.2** — MIT
+- **Phi-4-reasoning-plus** — MIT
+- **Mistral Small 4** — Apache, praktisches Open-Hybrid-Modell
+- **Mistral Large 3** — Apache, offenes Mistral-Flaggschiff
+- **OLMo 3.1 32B Instruct** — vollständig offene Ai2-Referenz
+- **Kimi-K2-Instruct-0905** — modified MIT mit schwellenabhängiger Branding-Pflicht
+
+Bildmodelle (FLUX.1, Stable Diffusion 3.5) und ältere Regime bleiben als Snapshot-Referenzen im
+Korpus erhalten, sind aber nicht Teil der aktiven Matrix.
+
+## Datenmodell
+
+Zentrale Typen in [`lib/types.ts`](lib/types.ts):
+
+- **`LicenseCategory`** — acht Kategorien von `osi-permissive` über `osi-strong-copyleft`,
+  `source-available-restricted`, `research-only`, `proprietary-api-only` bis
+  `multi-tier-licensing`
+- **`LicenseRights`** — strukturierte Rechte-Matrix (commercial use, modification, distribution,
+  patent grant, copyleft-Stärke)
+- **`LicenseRestriction`** — einzelne Einschränkungsklauseln mit Quellenverweis und Zitat (≤ 15
+  Wörter, siehe [`scripts/check-quotes.ts`](scripts/check-quotes.ts))
+- **`AdditionalComplianceFlags`** — Entity-List-Status, Hardware-Herkunft, Jurisdiktion
+- **`CompatibilityPair`** — paarweise Bewertung zweier Lizenzen, szenarioabhängig
+
+Details zur Taxonomie siehe [`docs/taxonomy.md`](docs/taxonomy.md).
+
+## Offline-Korpus
+
+Alle zitierten Lizenztexte liegen als Snapshot im Repository unter
+[`licenses/raw/`](licenses/raw/). Das hat zwei Gründe:
+
+- **Nachvollziehbarkeit** — die Fassung, gegen die die Einordnung geschrieben ist, ist
+  versionskontrolliert und nicht von späteren Änderungen beim Anbieter abhängig.
+- **Beweislast** — für Modelle ohne eigene `LICENSE`-Datei (z. B. Gemma 4, Mistral Small 4,
+  Mistral Large 3, OLMo 3.1) dient die Hugging-Face-Modellkarte als Vendor-Beleg, weil dort
+  die Lizenz-Deklaration im YAML-Frontmatter steht.
+
+Der Index inklusive Snapshot- und Vendor-Beleg-Zuordnung findet sich in
+[`licenses/raw/INDEX.md`](licenses/raw/INDEX.md).
+
+## Setup
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Die App läuft dann auf [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Validierungsskripte:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npx tsc --noEmit              # Typprüfung
+npx tsx scripts/check-quotes.ts  # Zitatlänge (≤ 15 Wörter) verifizieren
+```
 
-## Learn More
+## Projekt-Struktur
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/                         Next.js App Router (UI)
+docs/
+  taxonomy.md                Taxonomie, Kategorien, Compliance-Flags
+lib/
+  types.ts                   Datenmodell
+  licenses.json              Lizenz-Katalog (aktive + legacy)
+  models.json                aktive LLM-Registry
+  compatibility-matrix.json  paarweise Kompatibilitätsbewertung
+  training-data-risks.json   rechtliche Risiken aus der Trainingsdatenlage
+  use-cases.json             vier Einsatz-Szenarien
+licenses/raw/                Offline-Korpus aller Lizenztexte und Vendor-Belege
+scripts/                     Validierungs-Utilities
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Grenzen
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Das Tool ersetzt keine individuelle Rechtsberatung. Die hinterlegten Einschätzungen sind
+Momentaufnahmen zum im Snapshot dokumentierten Stand und können im Einzelfall durch aktuelle
+Rechtsprechung, Anbieter-Änderungen oder spezielle Vertragsgestaltungen überholt sein.
+Maßgeblich für die Rechtsanwendung bleibt immer die aktuelle Fassung beim Rechteinhaber.
 
-## Deploy on Vercel
+Die Kompatibilitätsbewertungen in [`lib/compatibility-matrix.json`](lib/compatibility-matrix.json)
+tragen ein Flag `reviewed_by_user`, mit dem unterschieden wird, welche Paare bereits manuell
+geprüft und welche auf generischer Einordnung beruhen.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Referenzen
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Taxonomie-Dokumentation](docs/taxonomy.md)
+- [Snapshot-Index](licenses/raw/INDEX.md)
+- [SPDX License List](https://spdx.org/licenses/)
+- [Open Source Initiative — approved licenses](https://opensource.org/licenses)
+
+## Lizenz
+
+Die Projekt-Lizenz für den Quellcode steht noch aus und wird separat festgelegt. Die unter
+[`licenses/raw/`](licenses/raw/) archivierten Lizenztexte Dritter bleiben Eigentum der
+jeweiligen Rechteinhaber und sind ausschließlich zu Dokumentations- und Analysezwecken in
+ihrer Originalfassung mitgeführt.

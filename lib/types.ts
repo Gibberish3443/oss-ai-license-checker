@@ -161,7 +161,7 @@ export interface Conflict {
   license_a: string;
   license_b: string;
   reasoning: string;
-  severity: "high" | "medium" | "low";
+  severity: "high" | "medium";
 }
 
 export interface MissingPair {

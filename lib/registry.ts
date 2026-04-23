@@ -82,6 +82,8 @@ export interface Registry {
   findPair(licenseA: string, licenseB: string): CompatibilityPair | null;
   listLicenses(): License[];
   listModels(): Model[];
+  listUseCases(): UseCase[];
+  listTrainingRisks(): TrainingDataRisk[];
 }
 
 function pairKey(a: string, b: string): string {
@@ -274,6 +276,8 @@ export function loadRegistry(data: RegistryInput): Registry {
     findPair: (a, b) => pairIndex.get(pairKey(a, b)) ?? null,
     listLicenses: () => Array.from(licenseById.values()),
     listModels: () => Array.from(modelById.values()),
+    listUseCases: () => Array.from(useCaseById.values()),
+    listTrainingRisks: () => Array.from(riskById.values()),
   };
 }
 

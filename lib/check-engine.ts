@@ -43,6 +43,11 @@ interface RecEntry {
   prio: number;
 }
 
+interface CanonicalLicensePair {
+  license_a: string;
+  license_b: string;
+}
+
 function priorityForCellStatus(status: CuratedStatus): number {
   if (status === "incompatible") return 1;
   if (status === "conditional") return 3;
@@ -123,6 +128,15 @@ function joinGermanList(items: readonly string[]): string {
   return `${items.slice(0, -1).join(", ")} und ${items[items.length - 1]}`;
 }
 
+function canonicalizeLicensePair(
+  licenseA: string,
+  licenseB: string,
+): CanonicalLicensePair {
+  return licenseA < licenseB
+    ? { license_a: licenseA, license_b: licenseB }
+    : { license_a: licenseB, license_b: licenseA };
+}
+
 function relevantTrainingSwitches(
   riskId: string,
   useCase: UseCase,
@@ -141,20 +155,27 @@ function buildTrainingFlagReason(
   useCase: UseCase,
 ): string {
   const triggeredSwitches = relevantTrainingSwitches(risk.id, useCase);
+  const legalIssues = risk.legal_issues.map((issue) => `"${issue.issue}"`);
+  const legalIssuesText = joinGermanList(legalIssues);
+  const issuesSentence = legalIssuesText
+    ? ` Konkrete Streitpunkte sind ${legalIssuesText}.`
+    : "";
+
+  if (triggeredSwitches.length === 0) {
+    return `Für den Use-Case "${useCase.name}" ist aktuell kein expliziter license_sensitivity-Schalter aktiv. Trainingsdaten-Risiko "${risk.id}" (${risk.name}) bleibt dennoch als eigenständiger Prüfhinweis sichtbar.${issuesSentence}`;
+  }
+
   const switchText = joinGermanList(
     triggeredSwitches.map(
       (key) => `"${key}" (${LICENSE_SENSITIVITY_EXPLANATIONS[key]})`,
     ),
-  );
-  const legalIssues = joinGermanList(
-    risk.legal_issues.map((issue) => `"${issue.issue}"`),
   );
   const switchLabel =
     triggeredSwitches.length === 1
       ? "dem aktiven Use-Case-Schalter"
       : "den aktiven Use-Case-Schaltern";
 
-  return `Trainingsdaten-Risiko "${risk.id}" (${risk.name}) kollidiert im Use-Case "${useCase.name}" mit ${switchLabel} ${switchText}. Deshalb ist dieses Risikoprofil hier relevant. Konkrete Streitpunkte sind ${legalIssues}.`;
+  return `Trainingsdaten-Risiko "${risk.id}" (${risk.name}) kollidiert im Use-Case "${useCase.name}" mit ${switchLabel} ${switchText}. Deshalb ist dieses Risikoprofil hier relevant.${issuesSentence}`;
 }
 
 /**
@@ -319,9 +340,9 @@ export function runCheck(
 
       const pair = registry.findPair(row.license_id, col.license_id);
       if (!pair) {
+        const missingPair = canonicalizeLicensePair(row.license_id, col.license_id);
         missingPairs.push({
-          license_a: row.license_id,
-          license_b: col.license_id,
+          ...missingPair,
           context: `model:${row.model_id} x code-license:${col.license_id}`,
         });
         rowCells.push({

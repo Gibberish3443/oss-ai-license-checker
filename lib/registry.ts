@@ -216,6 +216,11 @@ function validateTrainingRisk(risk: TrainingDataRisk): void {
       `Training-Risk ${risk.id} hat ungültige legal_issues (kein Array): ${JSON.stringify(risk.legal_issues)}`,
     );
   }
+  if (risk.legal_issues.length === 0) {
+    throw new RegistryError(
+      `Training-Risk ${risk.id} hat ungültige legal_issues (leer)`,
+    );
+  }
   risk.legal_issues.forEach((issue, index) =>
     validateLegalIssue(risk.id, issue, index),
   );

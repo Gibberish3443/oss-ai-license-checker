@@ -168,6 +168,149 @@ describe("runCheck", () => {
       expect(result.missingPairs.length).toBeGreaterThanOrEqual(1);
       expect(result.trainingDataFlags).toHaveLength(1);
     });
+
+    it("direkte incompatible-Matrixpaare setzen overallRisk auf rot", () => {
+      const result = runCheck({
+        models: ["qwen3-235b"],
+        codeDependencies: ["gpl-2-0"],
+        trainingData: [],
+        useCase: "internal-commercial",
+      });
+
+      expect(result.overallRisk).toBe("red");
+      expect(
+        result.modelCodeConflicts.some((conflict) => conflict.severity === "high"),
+      ).toBe(true);
+      expect(result.matrix[0]?.[0]?.status).toBe("incompatible");
+    });
+
+    it("AGPL-Netzwerk-Copyleft erzeugt im SaaS-Use-Case eine medium-UCV", () => {
+      const result = runCheck({
+        models: [],
+        codeDependencies: ["agpl-3-0"],
+        trainingData: [],
+        useCase: "saas-external",
+      });
+
+      expect(
+        result.useCaseViolations.some(
+          (violation) =>
+            violation.license_id === "agpl-3-0" &&
+            violation.severity === "medium" &&
+            violation.violation.includes("Network-Copyleft"),
+        ),
+      ).toBe(true);
+      expect(result.overallRisk).toBe("yellow");
+    });
+
+    it("fehlende Paar-Empfehlungen werden spiegelbildlich dedupliziert", () => {
+      const input = cloneInput();
+      input.compatibilityMatrix.pairs = input.compatibilityMatrix.pairs.filter(
+        (pair) =>
+          !(
+            (pair.license_a === "apache-2-0" && pair.license_b === "mit") ||
+            (pair.license_a === "mit" && pair.license_b === "apache-2-0")
+          ),
+      );
+      const registry = loadRegistry(input);
+
+      const result = runCheck(
+        {
+          models: ["deepseek-v3-2", "qwen3-235b"],
+          codeDependencies: ["apache-2-0", "mit"],
+          trainingData: [],
+          useCase: "internal-commercial",
+        },
+        registry,
+      );
+
+      const missingRecommendations = result.recommendations.filter((text) =>
+        text.includes("nicht kuratiert"),
+      );
+
+      expect(result.missingPairs).toHaveLength(2);
+      expect(missingRecommendations).toEqual([
+        "Matrix-Paar apache-2-0 <-> mit ist nicht kuratiert und muss vor Produktiveinsatz manuell bewertet werden.",
+      ]);
+    });
+
+    it("recommendations bleiben nach Priorität und First-Seen sortiert", () => {
+      const result = runCheck({
+        models: ["llama-4-maverick"],
+        codeDependencies: ["apache-2-0"],
+        trainingData: ["web-crawl"],
+        useCase: "saas-external",
+      });
+
+      expect(result.recommendations[0]).toBe(
+        "NOTICE-File + Llama-Agreement bei Distribution beilegen",
+      );
+      expect(result.recommendations[1]).toBe(
+        "Apache-Patent-Retaliation und Llama-Patent-Termination-Klausel wirken getrennt",
+      );
+      expect(
+        result.recommendations.indexOf(
+          "Nur Modelle mit dokumentiertem Crawl-Zeitraum und Opt-out-Respektierung einsetzen",
+        ),
+      ).toBeGreaterThan(1);
+    });
+
+    it("sources folgen der Reihenfolge Modelle zuerst, dann neue Code-Lizenzen", () => {
+      const result = runCheck({
+        models: ["deepseek-v3-2"],
+        codeDependencies: ["apache-2-0", "bsd-3-clause", "mit"],
+        trainingData: [],
+        useCase: "internal-commercial",
+      });
+
+      expect(result.sources.map((source) => source.license_id)).toEqual([
+        "mit",
+        "apache-2-0",
+        "bsd-3-clause",
+      ]);
+      expect(result.sources[0]?.snapshot_path).toBe("osi_mit_2026-04-23.html");
+      expect(result.sources[1]?.snapshot_path).toBe(
+        "apache_license-2-0_2026-04-23.txt",
+      );
+      expect(result.sources[0]?.clause_refs).toContain("Paragraph 2");
+    });
+
+    it("Trainingsdaten-Begründungen bleiben lesbar ohne aktive Sensitivity-Schalter", () => {
+      const input = cloneInput();
+      const researchOnly = input.useCases.find(
+        (useCase) => useCase.id === "research-only",
+      );
+
+      expect(researchOnly).toBeDefined();
+      if (!researchOnly) {
+        throw new Error("research-only fehlt in der Test-Registry");
+      }
+
+      researchOnly.license_sensitivity = {
+        commercial_use_required: false,
+        distribution_required: false,
+        network_use: false,
+        derivative_works: false,
+      };
+
+      const result = runCheck(
+        {
+          models: [],
+          codeDependencies: [],
+          trainingData: ["web-crawl"],
+          useCase: "research-only",
+        },
+        loadRegistry(input),
+      );
+
+      expect(result.trainingDataFlags[0]?.reason).toContain(
+        "kein expliziter license_sensitivity-Schalter aktiv",
+      );
+      expect(result.trainingDataFlags[0]?.reason).not.toContain(
+        "aktiven Use-Case-Schaltern ",
+      );
+      expect(result.trainingDataFlags[0]?.reason).not.toContain("sind .");
+    });
   });
 
   describe("Input-Validierung", () => {
@@ -396,6 +539,14 @@ describe("loadRegistry", () => {
 
       const error = expectThrown(() => loadRegistry(input), RegistryError);
       expect(error.message).toContain("legal_issues[0].issue");
+    });
+
+    it("Training-Risks ohne legal_issues werden erkannt", () => {
+      const input = cloneInput();
+      input.trainingRisks[0].legal_issues = [];
+
+      const error = expectThrown(() => loadRegistry(input), RegistryError);
+      expect(error.message).toContain("legal_issues");
     });
   });
 });

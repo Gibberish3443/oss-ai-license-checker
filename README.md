@@ -111,9 +111,31 @@ Die App läuft dann auf [http://localhost:3000](http://localhost:3000).
 Validierungsskripte:
 
 ```bash
-npx tsc --noEmit              # Typprüfung
+npx tsc --noEmit                 # Typprüfung
+npm run lint                     # ESLint
+npm test                         # Vitest-Suite (Engine-Smokes)
 npx tsx scripts/check-quotes.ts  # Zitatlänge (≤ 15 Wörter) verifizieren
 ```
+
+## Deploy
+
+Die Live-Version liegt als statischer Export auf GitHub Pages:
+**https://gibberish3443.github.io/oss-ai-license-checker/**
+
+Jeder Push auf `master` löst den Workflow in
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) aus. Er
+führt Typecheck, Lint, Tests und `next build` aus und lädt das
+Ergebnis aus `out/` als Pages-Artefakt hoch.
+
+Der statische Export ist in [`next.config.ts`](next.config.ts) über
+`output: "export"` aktiviert. `basePath` ist auf den Repo-Subpfad
+gesetzt und greift nur im Produktions-Build — `npm run dev` bleibt
+unter [http://localhost:3000](http://localhost:3000) erreichbar. Die
+Datei [`public/.nojekyll`](public/.nojekyll) verhindert, dass GitHub
+Pages den `_next/`-Ordner als Jekyll-Pfad wegfiltert.
+
+Einmalige Einrichtung im Repository: unter *Settings → Pages* die
+*Source* auf `GitHub Actions` umstellen.
 
 ## Projekt-Struktur
 

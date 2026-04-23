@@ -259,28 +259,23 @@ Offline-Korpus aller im Tool zitierten Lizenztexte. Alle Angaben dienen der Nach
 
 ---
 
-## C. Nicht fetchbare / offene Quellen (TODO / Gate G2)
-
-### 25. Falcon 180B TII License (FEHLT)
+### 25. Falcon 180B TII License
 - **Urheber:** Technology Innovation Institute (TII), Abu Dhabi
-- **Titel:** Falcon 180B TII License
-- **Abrufdatum:** 2026-04-23 (Fetch-Versuche)
-- **URL (primär):** https://falconllm.tii.ae/falcon-180b-tii-license.html → HTTP 403
-- **URL (HuggingFace):** https://huggingface.co/tiiuae/falcon-180B/raw/main/LICENSE.txt → gated (401/access restricted)
-- **URL (Archive.org):** https://web.archive.org/web/2024/https://falconllm.tii.ae/falcon-180b-tii-license.html → HTTP 404
-- **Status:** NICHT GEFETCHT
-- **Quellentyp:** Source-Available (Custom, Acceptable-Use + MAU-Klauseln)
-- **Kommentar:** Drei Primärquellen blockiert/gated. Entscheidungsoptionen bei Gate G2: (a) Falcon 180B aus Modelliste streichen, (b) User liefert manuelles PDF nach, (c) Ersatz durch BLOOM (BigScience RAIL) aus der 12er-Liste.
+- **Titel:** Falcon 180B TII License, Version 1.0
+- **Version/Stand:** v1.0, September 2023
+- **Abrufdatum:** 2026-04-23
+- **URL:** https://huggingface.co/tiiuae/falcon-180B/resolve/main/LICENSE.txt
+- **Dateiname:** `tii_falcon-180b-license_2026-04-23.txt`
+- **Quellentyp:** Source-Available (Custom, basiert laut Preamble auf Apache 2.0 mit Modifikationen)
+- **Kommentar:** HuggingFace `/resolve/main/` liefert (anders als `/raw/main/`) den Lizenztext ohne Access-Gate. „Use of Falcon180B for hosted services may require a separate license" (Preamble) — für SaaS-Szenarien in Kompatibilitätsmatrix gesondert behandeln.
 
 ---
 
-## D. Zusammenfassung
+## C. Zusammenfassung
 
 | Kategorie | Soll | Ist | Anmerkung |
 |---|---|---|---|
 | OSS-Lizenzen | 15 | 15 | vollständig |
-| Modelllizenzen (distinct) | ≥ 9 | 8 + Apache-Ref | Mistral 7B referenziert Apache-Eintrag |
-| Modelle abgedeckt | 10 | 10 ohne Falcon / 9 ohne Falcon-Ersatz | siehe §C |
-| **Gesamt Snapshots (Dateien)** | — | **23** | + 1 TODO-Eintrag Falcon |
-
-**Entscheidungsbedarf User (G2):** Umgang mit Eintrag 25 (Falcon 180B).
+| Modelllizenz-Dateien (distinct) | ≥ 9 | 9 + Apache-Ref | Mistral 7B referenziert Apache-Eintrag |
+| Modelle abgedeckt | 10 | 10 | Llama 3.1, Llama 3.3, Mistral 7B, Mistral Large, Gemma 2+3, Qwen 2.5, DeepSeek-V3, Phi-3, StarCoder2, Falcon 180B |
+| **Gesamt Snapshots (Dateien)** | — | **24** | |

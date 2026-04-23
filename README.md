@@ -6,11 +6,6 @@
 
 Lizenz- und Compliance-Check für offene AI-Modelle: welches Modell darf wo, gegen welchen Stack, mit welchen Pflichten.
 
-Ein kleines Next.js-Werkzeug, das Lizenz- und Compliance-Fragen rund um Open-Source-AI-Modelle
-strukturiert beantwortet: welches Modell darf ich in welchem Setup gegen welchen Code-Stack
-einsetzen, welche Risiken entstehen aus der Trainingsdatenlage, welche zusätzlichen Pflichten
-kommen durch Exportkontrolle und Jurisdiktion dazu.
-
 Der Fokus liegt auf Transparenz und Nachvollziehbarkeit der rechtlichen Einordnung, nicht
 auf einer automatisierten „ja/nein"-Antwort.
 

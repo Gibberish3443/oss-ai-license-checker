@@ -2,13 +2,7 @@
 
 import { useEffect } from "react";
 
-export default function Error({
-  error,
-  unstable_retry,
-}: {
-  error: Error & { digest?: string };
-  unstable_retry: () => void;
-}) {
+export default function Error({ error }: { error: Error }) {
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -28,17 +22,12 @@ export default function Error({
             werden. Das ist ein Bug im Checker, keine Eingabefehler-Meldung —
             Details stehen in der Browser-Konsole.
           </p>
-          {error.digest ? (
-            <p className="mt-3 font-mono text-xs text-red-900/70 dark:text-red-100/70">
-              digest: {error.digest}
-            </p>
-          ) : null}
           <button
             type="button"
-            onClick={() => unstable_retry()}
+            onClick={() => window.location.reload()}
             className="mt-5 inline-flex items-center rounded-md border border-red-400 bg-white px-3 py-1.5 text-sm font-medium text-red-900 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:border-red-600 dark:bg-zinc-900 dark:text-red-100 dark:hover:bg-zinc-800"
           >
-            Erneut versuchen
+            Seite neu laden
           </button>
         </div>
       </div>

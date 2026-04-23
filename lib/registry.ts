@@ -7,6 +7,7 @@ import type {
   CompatibilityMatrix,
   CompatibilityPair,
   Copyleft,
+  LegalIssue,
   License,
   Model,
   PatentGrant,
@@ -39,6 +40,12 @@ const PATENT_GRANTS: readonly PatentGrant[] = [
   "none",
 ];
 
+const TRAINING_RISK_LEVELS: readonly TrainingDataRisk["risk_level"][] = [
+  "low",
+  "medium",
+  "high",
+];
+
 const COPYLEFT_VALUES: readonly Copyleft[] = [
   "none",
   "weak",
@@ -57,6 +64,7 @@ export class RegistryError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "RegistryError";
+    Object.setPrototypeOf(this, new.target.prototype);
   }
 }
 
@@ -154,6 +162,73 @@ function validateUseCase(useCase: UseCase): void {
   }
 }
 
+function isNullableString(value: unknown): value is string | null {
+  return typeof value === "string" || value === null;
+}
+
+function validateLegalIssue(riskId: string, issue: LegalIssue, index: number): void {
+  const prefix = `Training-Risk ${riskId} hat ungültigen legal_issues[${index}]`;
+  if (typeof issue.issue !== "string") {
+    throw new RegistryError(
+      `${prefix}.issue: ${JSON.stringify(issue.issue)}`,
+    );
+  }
+  if (typeof issue.description !== "string") {
+    throw new RegistryError(
+      `${prefix}.description: ${JSON.stringify(issue.description)}`,
+    );
+  }
+  if (typeof issue.relevant_law !== "string") {
+    throw new RegistryError(
+      `${prefix}.relevant_law: ${JSON.stringify(issue.relevant_law)}`,
+    );
+  }
+  if (!isNullableString(issue.leading_case)) {
+    throw new RegistryError(
+      `${prefix}.leading_case: ${JSON.stringify(issue.leading_case)}`,
+    );
+  }
+  if (!isNullableString(issue.quote)) {
+    throw new RegistryError(
+      `${prefix}.quote: ${JSON.stringify(issue.quote)}`,
+    );
+  }
+  if (!isNullableString(issue.clause_ref)) {
+    throw new RegistryError(
+      `${prefix}.clause_ref: ${JSON.stringify(issue.clause_ref)}`,
+    );
+  }
+}
+
+function validateTrainingRisk(risk: TrainingDataRisk): void {
+  if (typeof risk.name !== "string") {
+    throw new RegistryError(
+      `Training-Risk ${risk.id} hat ungültigen name: ${JSON.stringify(risk.name)}`,
+    );
+  }
+  if (!isIn(TRAINING_RISK_LEVELS, risk.risk_level)) {
+    throw new RegistryError(
+      `Training-Risk ${risk.id} hat ungültigen risk_level: ${JSON.stringify(risk.risk_level)}`,
+    );
+  }
+  if (!Array.isArray(risk.legal_issues)) {
+    throw new RegistryError(
+      `Training-Risk ${risk.id} hat ungültige legal_issues (kein Array): ${JSON.stringify(risk.legal_issues)}`,
+    );
+  }
+  risk.legal_issues.forEach((issue, index) =>
+    validateLegalIssue(risk.id, issue, index),
+  );
+  if (
+    !Array.isArray(risk.mitigation_hints) ||
+    risk.mitigation_hints.some((hint) => typeof hint !== "string")
+  ) {
+    throw new RegistryError(
+      `Training-Risk ${risk.id} hat ungültige mitigation_hints: ${JSON.stringify(risk.mitigation_hints)}`,
+    );
+  }
+}
+
 /**
  * Lädt rohe Katalog-Daten, validiert hart und baut Indizes auf.
  *
@@ -221,6 +296,7 @@ export function loadRegistry(data: RegistryInput): Registry {
     if (riskById.has(risk.id)) {
       throw new RegistryError(`Training-Risk-ID doppelt: ${risk.id}`);
     }
+    validateTrainingRisk(risk);
     riskById.set(risk.id, deepFreeze(risk));
   }
 

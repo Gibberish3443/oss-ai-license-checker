@@ -254,6 +254,13 @@ describe("runCheck", () => {
 
 describe("loadRegistry", () => {
   describe("Negativfälle", () => {
+    it("RegistryError bleibt per instanceof erkennbar", () => {
+      const error = new RegistryError("kaputt");
+
+      expect(error).toBeInstanceOf(RegistryError);
+      expect(error).toBeInstanceOf(Error);
+    });
+
     it("R1: doppelte Paare werden ungeordnet erkannt", () => {
       const input = cloneInput();
       const original = input.compatibilityMatrix.pairs[0];
@@ -369,6 +376,26 @@ describe("loadRegistry", () => {
       expect(license).not.toBeNull();
       expect(Object.isFrozen(license)).toBe(true);
       expect(Object.isFrozen(license?.rights)).toBe(true);
+    });
+
+    it("Training-Risks mit ungültigem risk_level werden erkannt", () => {
+      const input = cloneInput();
+      (
+        input.trainingRisks[0] as unknown as Record<string, unknown>
+      ).risk_level = "kritisch";
+
+      const error = expectThrown(() => loadRegistry(input), RegistryError);
+      expect(error.message).toContain("risk_level");
+    });
+
+    it("Training-Risks mit ungültigen legal_issues werden erkannt", () => {
+      const input = cloneInput();
+      (
+        input.trainingRisks[0].legal_issues[0] as unknown as Record<string, unknown>
+      ).issue = 42;
+
+      const error = expectThrown(() => loadRegistry(input), RegistryError);
+      expect(error.message).toContain("legal_issues[0].issue");
     });
   });
 });

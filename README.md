@@ -1,5 +1,11 @@
 # oss-ai-license-checker
 
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://gibberish3443.github.io/oss-ai-license-checker/)
+[![Deploy](https://github.com/Gibberish3443/oss-ai-license-checker/actions/workflows/deploy.yml/badge.svg)](https://github.com/Gibberish3443/oss-ai-license-checker/actions/workflows/deploy.yml)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+Lizenz- und Compliance-Check für offene AI-Modelle: welches Modell darf wo, gegen welchen Stack, mit welchen Pflichten.
+
 Ein kleines Next.js-Werkzeug, das Lizenz- und Compliance-Fragen rund um Open-Source-AI-Modelle
 strukturiert beantwortet: welches Modell darf ich in welchem Setup gegen welchen Code-Stack
 einsetzen, welche Risiken entstehen aus der Trainingsdatenlage, welche zusätzlichen Pflichten
@@ -98,24 +104,6 @@ Alle zitierten Lizenztexte liegen als Snapshot im Repository unter
 
 Der Index inklusive Snapshot- und Vendor-Beleg-Zuordnung findet sich in
 [`licenses/raw/INDEX.md`](licenses/raw/INDEX.md).
-
-## Setup
-
-```bash
-npm install
-npm run dev
-```
-
-Die App läuft dann auf [http://localhost:3000](http://localhost:3000).
-
-Validierungsskripte:
-
-```bash
-npx tsc --noEmit                 # Typprüfung
-npm run lint                     # ESLint
-npm test                         # Vitest-Suite (Engine-Smokes)
-npx tsx scripts/check-quotes.ts  # Zitatlänge (≤ 15 Wörter) verifizieren
-```
 
 ## Deploy
 

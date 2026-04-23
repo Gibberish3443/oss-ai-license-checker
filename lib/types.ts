@@ -68,6 +68,7 @@ export interface License {
   restrictions: LicenseRestriction[];
   notes: string;
   additional_compliance_flags?: AdditionalComplianceFlags;
+  legacy?: boolean;
 }
 
 export interface LegalIssue {

@@ -1,8 +1,8 @@
 [
   {
     "id": "research-only",
-    "name": "Research only (non-kommerziell)",
-    "description": "Rein wissenschaftliche oder nicht-kommerzielle Nutzung im geschlossenen Kreis. Kein Vertrieb an Dritte, keine kommerzielle Verwertung der Ergebnisse. Deckt Forschungsprototypen, Universitaets-Demos und interne Machbarkeitsstudien ohne Produktisierungsabsicht ab.",
+    "name": "Research only (nicht-kommerziell)",
+    "description": "Rein wissenschaftliche oder nicht-kommerzielle Nutzung im geschlossenen Kreis. Kein Vertrieb an Dritte, keine kommerzielle Verwertung der Ergebnisse. Deckt Forschungsprototypen, Universitäts-Demos und interne Machbarkeitsstudien ohne Produktisierungsabsicht ab.",
     "license_sensitivity": {
       "commercial_use_required": false,
       "distribution_required": false,
@@ -13,7 +13,7 @@
   {
     "id": "internal-commercial",
     "name": "Internal commercial (interne Unternehmensnutzung)",
-    "description": "Kommerzielle Nutzung innerhalb der eigenen Organisation ohne externe Bereitstellung. Typischerweise interne Tools, Back-Office-Automatisierung, Mitarbeiter-Produktivitaet. Keine Weitergabe des Modells oder seiner Outputs an Dritte ueber Netzwerk.",
+    "description": "Kommerzielle Nutzung innerhalb der eigenen Organisation ohne externe Bereitstellung. Typischerweise interne Tools, Back-Office-Automatisierung, Mitarbeiter-Produktivität. Keine Weitergabe des Modells oder seiner Outputs an Dritte über Netzwerk.",
     "license_sensitivity": {
       "commercial_use_required": true,
       "distribution_required": false,
@@ -23,8 +23,8 @@
   },
   {
     "id": "saas-external",
-    "name": "SaaS external (Hosted Service fuer externe Kunden)",
-    "description": "Bereitstellung einer Anwendung mit KI-Komponente an externe Nutzer ueber das Internet, ohne Weitergabe des Modells selbst. Relevanz: AGPL-Netzwerkklausel, Llama/Gemma MAU-Schwellen, Falcon 180B Hosting-Restriktion. Umfasst API-Produkte, Web-Apps, Chatbot-Dienste.",
+    "name": "SaaS external (Hosted Service für externe Kunden)",
+    "description": "Bereitstellung einer Anwendung mit KI-Komponente an externe Nutzer über das Internet, ohne Weitergabe des Modells selbst. Relevanz: AGPL-Netzwerkklausel, Llama/Gemma-MAU-Schwellen, Stable-Diffusion-Revenue-Gate. Umfasst API-Produkte, Web-Apps, Chatbot-Dienste.",
     "license_sensitivity": {
       "commercial_use_required": true,
       "distribution_required": false,
@@ -35,7 +35,7 @@
   {
     "id": "redistribution",
     "name": "Redistribution (Weitergabe des Modells/der Software)",
-    "description": "Aktive Weitergabe der Modellgewichte, der Software oder abgeleiteter Werke an Dritte. Umfasst Open-Source-Releases, OEM-Bundles, kommerzielle Lizenzierung an Wiederverkaeufer. Loest Attribution-, NOTICE- und Copyleft-Verpflichtungen maximal aus.",
+    "description": "Aktive Weitergabe der Modellgewichte, der Software oder abgeleiteter Werke an Dritte. Umfasst Open-Source-Releases, OEM-Bundles, kommerzielle Lizenzierung an Wiederverkäufer. Löst Attribution-, NOTICE- und Copyleft-Verpflichtungen maximal aus.",
     "license_sensitivity": {
       "commercial_use_required": true,
       "distribution_required": true,

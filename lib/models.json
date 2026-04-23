@@ -1,100 +1,72 @@
 [
   {
-    "id": "llama-4-scout",
-    "name": "Llama 4 Scout",
-    "vendor": "Meta Platforms, Inc.",
-    "license_id": "llama-4-community",
-    "notes": "109B-Parameter-MoE. Source-Available mit 700-Mio.-MAU-Schwelle. AUP und Brand-Guidelines verbindlich einbezogen."
-  },
-  {
     "id": "llama-4-maverick",
     "name": "Llama 4 Maverick",
     "vendor": "Meta Platforms, Inc.",
     "license_id": "llama-4-community",
-    "notes": "400B-Parameter-MoE. Gleiche Lizenzstruktur wie Scout."
+    "notes": "Aktuelles Meta-Flaggschiff der offenen Llama-4-Familie. Source-available mit MAU-Schwelle, AUP und Branding-Pflichten."
   },
   {
-    "id": "mistral-large-3",
-    "name": "Mistral Large 3",
-    "vendor": "Mistral AI SAS",
-    "license_id": "mistral-mrl-0-1",
-    "notes": "Flaggschiff-Modell unter Research License — kommerzieller Einsatz ausgeschlossen, Separatlizenz bei Mistral AI erforderlich."
-  },
-  {
-    "id": "mistral-7b",
-    "name": "Mistral 7B (und 8x7B / Small 3.1)",
-    "vendor": "Mistral AI SAS",
-    "license_id": "apache-2-0",
-    "notes": "Ältere bzw. kleinere Mistral-Modelle unter Apache-2.0. Beispiel für den Multi-Tier-Charakter des Mistral-Portfolios."
-  },
-  {
-    "id": "gemma-3",
-    "name": "Gemma 3",
+    "id": "gemma-4-31b",
+    "name": "Gemma 4 31B",
     "vendor": "Google LLC",
-    "license_id": "gemma-terms",
-    "notes": "Source-Available. Gemma Terms plus Prohibited Use Policy (separate Snapshot-Datei). Redistribution erfordert ToS-Durchreichung."
+    "license_id": "apache-2-0",
+    "notes": "Aktuelles Google-Open-Modell seit 2. April 2026. Für die Kernliste sinnvoller als Gemma 3, weil nun Apache-2.0 statt Gemma Terms."
   },
   {
     "id": "qwen3-235b",
     "name": "Qwen3-235B-A22B",
     "vendor": "Alibaba Cloud / Qwen Team",
     "license_id": "apache-2-0",
-    "notes": "Qwen3 ist der Wechsel zurück zu Apache-2.0 (nach Qwen 2.5 unter Custom-Lizenz). Für europäische/US-Unternehmen zusätzlich publisher_jurisdiction=CN beachten."
+    "notes": "Aktuelle große Qwen-Generalisten-Referenz. Apache-2.0 und für 2026 weiterhin ein zentraler Open-Weights-Benchmark."
+  },
+  {
+    "id": "qwen3-coder-480b",
+    "name": "Qwen3-Coder-480B-A35B-Instruct",
+    "vendor": "Alibaba Cloud / Qwen Team",
+    "license_id": "apache-2-0",
+    "notes": "Wichtiger Coding- und Agentic-Spezialist. Separat vom Generalisten geführt, weil er einen anderen realen Einsatzfall abdeckt."
   },
   {
     "id": "deepseek-v3-2",
-    "name": "DeepSeek V3.2-Exp",
+    "name": "DeepSeek-V3.2",
     "vendor": "DeepSeek AI",
     "license_id": "mit",
-    "notes": "Standard-MIT für Code und Gewichte. Gegenüber DeepSeek V3 ein Lizenz-Downgrade von Custom zu MIT. publisher_jurisdiction=CN."
+    "notes": "Offizieller Nachfolger von V3.2-Exp seit 1. Dezember 2025. Relevanter MIT-Fall für große Open-Weight-Reasoning- und Agent-Modelle."
   },
   {
-    "id": "phi-4",
-    "name": "Phi-4",
+    "id": "phi-4-reasoning-plus",
+    "name": "Phi-4-reasoning-plus",
     "vendor": "Microsoft Corporation",
     "license_id": "mit",
-    "notes": "Standard-MIT. Microsoft hält an der MIT-Linie aus Phi-3 fest — eine Ausnahme unter den großen Modellanbietern."
+    "notes": "Sinnvoller als nacktes Phi-4, weil es den realen 2025/2026-Einsatzfall besser repräsentiert. MIT bleibt als klare Ausnahme im Markt wichtig."
   },
   {
-    "id": "glm-4-6",
-    "name": "GLM-4.6",
-    "vendor": "Z.ai (ehem. Zhipu AI)",
+    "id": "mistral-small-4",
+    "name": "Mistral Small 4",
+    "vendor": "Mistral AI SAS",
     "license_id": "apache-2-0",
-    "notes": "Lizenzrechtlich Apache-2.0, exportkontrollrechtlich aber heikel: Z.ai steht seit Januar 2025 auf der US Entity List. Für US-basierte Nutzer ist neben der Lizenz die EAR-Compliance zu prüfen."
+    "notes": "Aktuelles praktisches Open-Hybrid-Modell von Mistral seit 16. März 2026. Ersetzt Mistral 7B als zeitgemäße Apache-Mistral-Referenz."
   },
   {
-    "id": "flux-1-dev",
-    "name": "FLUX.1 [dev]",
-    "vendor": "Black Forest Labs Inc.",
-    "license_id": "flux-1-dev-nc",
-    "notes": "Non-Commercial License v1.1.1. Mittlere Tier des FLUX-Portfolios. Kommerziell nur mit Separatlizenz."
-  },
-  {
-    "id": "flux-1-schnell",
-    "name": "FLUX.1 [schnell]",
-    "vendor": "Black Forest Labs Inc.",
+    "id": "mistral-large-3",
+    "name": "Mistral Large 3",
+    "vendor": "Mistral AI SAS",
     "license_id": "apache-2-0",
-    "notes": "Untere Tier des FLUX-Portfolios, unter Apache-2.0. Kommerziell ohne Einschränkung nutzbar."
+    "notes": "Aktuelles offenes Flaggschiff von Mistral. Nicht mehr research-only; im Projekt bewusst auf Apache-2.0 korrigiert."
   },
   {
-    "id": "flux-1-pro",
-    "name": "FLUX.1 [pro]",
-    "vendor": "Black Forest Labs Inc.",
-    "license_id": "flux-1-pro-proprietary",
-    "notes": "Obere Tier des FLUX-Portfolios, reiner API-Zugang. Keine Gewichte, keine Weitergabe."
+    "id": "olmo-3-1-32b-instruct",
+    "name": "OLMo 3.1 32B Instruct",
+    "vendor": "Allen Institute for AI",
+    "license_id": "apache-2-0",
+    "notes": "Wichtige vollständig offene Referenz außerhalb der großen kommerziellen Labs. Stark für Transparenz-, Daten- und Reproduzierbarkeitsfälle."
   },
   {
-    "id": "sd-3-5-large",
-    "name": "Stable Diffusion 3.5 Large",
-    "vendor": "Stability AI Ltd.",
-    "license_id": "sd-3-5-community",
-    "notes": "Community License mit 1-Mio.-USD-Revenue-Threshold. Deckt auch SD 3.5 Medium und Turbo."
-  },
-  {
-    "id": "kimi-k2",
-    "name": "Kimi K2-Instruct",
+    "id": "kimi-k2-instruct-0905",
+    "name": "Kimi-K2-Instruct-0905",
     "vendor": "Moonshot AI",
     "license_id": "kimi-k2-modified-mit",
-    "notes": "Vom Recherche-Agenten ergänzt (G3-Vorbehalt). Modified MIT mit schwellenabhängiger Branding-Pflicht; publisher_jurisdiction=CN."
+    "notes": "Aktuellere Kimi-K2-Variante. Relevanter modified-MIT-Fall mit schwellenabhängiger Branding-Pflicht."
   }
 ]

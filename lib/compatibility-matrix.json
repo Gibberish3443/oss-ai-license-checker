@@ -1,0 +1,579 @@
+{
+  "pairs": [
+    {
+      "license_a": "llama-4-community",
+      "license_b": "mit",
+      "compatibility": "conditional",
+      "reasoning": "Llama-Lizenz reguliert Modell und Outputs, MIT reguliert Code-Attribution. Kein Textkonflikt. Conditional wegen MAU-Schwelle (700 Mio.), vertraglich einbezogener AUP und Built-with-Llama-Branding bei Redistribution.",
+      "caveats": [
+        "AUP durchsetzen und in ToS der eigenen App durchreichen",
+        "Bei ≥ 700 Mio. MAU Separatlizenz bei Meta erforderlich",
+        "Abgeleitete Modelle müssen mit 'Llama' im Namen beginnen"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "conditional",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "llama-4-community",
+      "license_b": "apache-2-0",
+      "compatibility": "conditional",
+      "reasoning": "Apache-2.0-Patent-Grant für Code bleibt wirksam; Llama hat keinen expliziten Patent-Grant für Modell und verdrängt Apache nicht. NOTICE-File und Llama-Attribution laufen nebeneinander.",
+      "caveats": [
+        "NOTICE-File + Llama-Agreement bei Distribution beilegen",
+        "Apache-Patent-Retaliation und Llama-Patent-Termination-Klausel wirken getrennt"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "conditional",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "llama-4-community",
+      "license_b": "bsd-3-clause",
+      "compatibility": "conditional",
+      "reasoning": "BSD-3-Non-Endorsement-Klausel berührt das Llama-Branding nicht, weil sie sich auf Code-Urheber bezieht. Llama-spezifische Pflichten (AUP, MAU, Naming) wirken eigenständig.",
+      "caveats": [
+        "Copyright-Notice + Non-Endorsement-Hinweis für BSD-Code beibehalten"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "conditional",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "llama-4-community",
+      "license_b": "gpl-3-0",
+      "compatibility": "conditional",
+      "reasoning": "GPL-3-Code zwingt die gesamte Code-Auslieferung unter GPL-3. Die Modellgewichte bleiben unter Llama und werden von GPL nicht erfasst, solange Gewichte nicht als Werkteil des GPL-Projekts qualifiziert werden. Beide Regime parallel.",
+      "caveats": [
+        "Gesamte Code-App muss GPL-3 lizenziert werden",
+        "GPL-3 Section 7: Keine zusätzlichen Restriktionen auf Code-Teil — Llama-Pflichten gelten für Modell, nicht Code"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "conditional",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "llama-4-community",
+      "license_b": "lgpl-3-0",
+      "compatibility": "conditional",
+      "reasoning": "LGPL-3-Bibliothek als Library-Link: eigener Code kann proprietär bleiben, LGPL-Teile unter LGPL. Keine Wechselwirkung mit Llama-Terms.",
+      "caveats": [
+        "LGPL-Library bei Änderung offenlegen",
+        "Llama-Pflichten (AUP, MAU, Attribution) greifen unabhängig"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "conditional",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "llama-4-community",
+      "license_b": "agpl-3-0",
+      "compatibility": "conditional",
+      "reasoning": "AGPL-Netzwerkklausel (§ 13) und Llama-MAU-Schwelle triggern unabhängig voneinander bei SaaS. AGPL erzwingt Source-Offenlegung deiner App gegenüber Endnutzern; Llama erzwingt Separatlizenz ab 700 Mio. MAU.",
+      "caveats": [
+        "AGPL-Offenlegung und Llama-Branding parallel erfüllen",
+        "Bei SaaS: Quellcode-Angebot an Endnutzer + Llama-AUP-Durchreichung"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "conditional",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "llama-4-community",
+      "license_b": "mpl-2-0",
+      "compatibility": "conditional",
+      "reasoning": "MPL-2 File-Level-Copyleft bindet nur geänderte MPL-Dateien. Umgebender Code und Modellgewichte unberührt. Llama-Pflichten laufen parallel.",
+      "caveats": [
+        "Geänderte MPL-Dateien weiterhin unter MPL",
+        "Llama-Agreement und MPL-Notice bei Distribution"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "conditional",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "llama-4-community",
+      "license_b": "epl-2-0",
+      "compatibility": "conditional",
+      "reasoning": "EPL-2 Weak-Copyleft auf Modul-Ebene mit expliziter Secondary-License-Option für GPL-Kombination. Berührt Llama nicht.",
+      "caveats": [
+        "EPL-Retaliation-Klausel gegen Patentklagen beachten",
+        "Llama-AUP und Branding bleiben maßgeblich"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "conditional",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "kimi-k2-modified-mit",
+      "license_b": "mit",
+      "compatibility": "compatible",
+      "reasoning": "Modified-MIT-Grundgerüst ist kompatibel zu reinem MIT. Unterhalb der Schwelle (100 Mio. MAU oder 20 Mio. USD Monatsumsatz) verhält sich Kimi K2 wie reines MIT. Oberhalb tritt Branding-Pflicht hinzu.",
+      "caveats": [
+        "Bei Überschreiten der Schwelle 'Kimi K2' prominent in der UI anzeigen",
+        "Schwellenwerte periodisch prüfen"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "kimi-k2-modified-mit",
+      "license_b": "apache-2-0",
+      "compatibility": "compatible",
+      "reasoning": "Apache-Code + Kimi-Modified-MIT funktionieren wie Apache + MIT. Kimi-Branding greift nur bei Schwellenüberschreitung.",
+      "caveats": [
+        "Apache-NOTICE beibehalten",
+        "Branding-Pflicht bei Schwellenüberschreitung"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "kimi-k2-modified-mit",
+      "license_b": "bsd-3-clause",
+      "compatibility": "compatible",
+      "reasoning": "BSD-3 + Modified-MIT unproblematisch; BSD-Non-Endorsement und Kimi-Branding-Klausel regeln unterschiedliche Dinge.",
+      "caveats": [],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "kimi-k2-modified-mit",
+      "license_b": "gpl-3-0",
+      "compatibility": "conditional",
+      "reasoning": "MIT-Code ist GPL-3-kompatibel. Die Kimi-Schwellen-Branding-Klausel ist eine zusätzliche Vertragspflicht auf Modell-Ebene und verletzt GPL-3 Section 7 nur dann, wenn sie als Einschränkung auf den GPL-Code ausgelegt würde — sie greift aber auf Modell-UI, nicht auf Code.",
+      "caveats": [
+        "Abgrenzung 'Code-Werk' vs. 'Modell-UI-Pflicht' juristisch dokumentieren"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "conditional",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "kimi-k2-modified-mit",
+      "license_b": "lgpl-3-0",
+      "compatibility": "conditional",
+      "reasoning": "LGPL-3-Library + Kimi-Modified-MIT: Library-Copyleft berührt Kimi-Branding nicht.",
+      "caveats": [],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "conditional",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "kimi-k2-modified-mit",
+      "license_b": "agpl-3-0",
+      "compatibility": "conditional",
+      "reasoning": "AGPL-SaaS-Offenlegung + Kimi-Schwellen-Branding greifen beide im SaaS. Doppelt conditional, aber vereinbar.",
+      "caveats": [
+        "Bei SaaS: AGPL-Quellcode-Angebot + Kimi-UI-Branding parallel"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "conditional",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "kimi-k2-modified-mit",
+      "license_b": "mpl-2-0",
+      "compatibility": "compatible",
+      "reasoning": "MPL-Dateiebenen-Copyleft + Modified-MIT — unterschiedliche Ebenen, keine Kollision.",
+      "caveats": [],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "kimi-k2-modified-mit",
+      "license_b": "epl-2-0",
+      "compatibility": "compatible",
+      "reasoning": "EPL-2-Modul-Copyleft + Modified-MIT — keine Kollision, Schwellen-Branding betrifft Modell-UI.",
+      "caveats": [],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "apache-2-0",
+      "license_b": "mit",
+      "compatibility": "compatible",
+      "reasoning": "Beide permissiv. Apache fügt expliziten Patent-Grant und NOTICE-Pflicht hinzu. Kombiniertes Werk: beide Copyright-Notices, Apache-NOTICE-File beilegen.",
+      "caveats": [
+        "NOTICE-File mitliefern",
+        "Apache-Patent-Retaliation wirkt für Apache-Teil weiter"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "compatible",
+        "redistribution": "compatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "gpl-3-0",
+      "license_b": "mit",
+      "compatibility": "conditional",
+      "reasoning": "Einbahnstraße: MIT-Code ist nach GPL-3 integrierbar (Ergebnis: GPL-3). Umgekehrt kann GPL-3-Code nicht in reines MIT-Projekt übernommen werden. FSF dokumentiert MIT als GPL-kompatibel.",
+      "caveats": [
+        "Ergebnis der Kombination unter GPL-3 lizenzieren",
+        "MIT-Copyright-Notice bleibt erhalten"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "compatible",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "agpl-3-0",
+      "license_b": "mit",
+      "compatibility": "conditional",
+      "reasoning": "Wie GPL-3: MIT integrierbar, Ergebnis AGPL-3. Zusätzlich greift § 13 AGPL bei SaaS: Quellcode-Angebot an Netzwerknutzer.",
+      "caveats": [
+        "AGPL-§-13-Source-Offering bei Hosted-Service",
+        "MIT-Notice behalten"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "apache-2-0",
+      "license_b": "gpl-2-0",
+      "compatibility": "incompatible",
+      "reasoning": "FSF-dokumentierte Inkompatibilität: Apache-2.0 Section 3 (Patent-Retaliation) ist eine Zusatzbedingung, die GPL-2 nicht zulässt ('no further restrictions'). Praktische Lösung: auf GPL-3 migrieren oder Apache-Code durch permissive Alternative ersetzen.",
+      "caveats": [
+        "Lösung: GPL-2 → GPL-3 'or later' upgraden",
+        "Legacy-Projekte sorgfältig prüfen"
+      ],
+      "scenarios": {
+        "research-only": "incompatible",
+        "internal-commercial": "incompatible",
+        "saas-external": "incompatible",
+        "redistribution": "incompatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "apache-2-0",
+      "license_b": "gpl-3-0",
+      "compatibility": "compatible",
+      "reasoning": "GPL-3 wurde bewusst so formuliert, dass Apache-2.0 kompatibel ist (insbesondere Patent-Retaliation-Klauseln harmonisiert). Kombiniertes Werk unter GPL-3 releasen.",
+      "caveats": [
+        "Apache-NOTICE-File bei Redistribution beibehalten"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "compatible",
+        "redistribution": "compatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "agpl-3-0",
+      "license_b": "apache-2-0",
+      "compatibility": "compatible",
+      "reasoning": "AGPL-3 funktioniert wie GPL-3 plus Netzwerkklausel; Apache-2.0-Kompatibilität wurde mit GPL-3/AGPL-3 hergestellt.",
+      "caveats": [
+        "Apache-NOTICE + AGPL-§-13-Source-Offering bei SaaS"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "conditional",
+        "redistribution": "compatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "gpl-2-0",
+      "license_b": "gpl-3-0",
+      "compatibility": "conditional",
+      "reasoning": "Nur kompatibel, wenn der GPL-2-Code als 'GPL-2.0 or any later version' lizenziert ist — dann kann auf GPL-3 hochgestuft und kombiniert werden. Reine GPL-2.0-only-Projekte (z.B. Linux-Kernel) sind inkompatibel mit GPL-3.",
+      "caveats": [
+        "Version-Upgrade-Klausel im Originalprojekt prüfen",
+        "Linux-Kernel ist GPL-2.0-only — nicht GPL-3-kompatibel"
+      ],
+      "scenarios": {
+        "research-only": "conditional",
+        "internal-commercial": "conditional",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "agpl-3-0",
+      "license_b": "gpl-3-0",
+      "compatibility": "compatible",
+      "reasoning": "AGPL-3 und GPL-3 erklären sich gegenseitig für kompatibel (AGPL-3 § 13 und GPL-3 § 13 spiegeln sich). Kombinierte Werke können unter einheitlicher AGPL-3 oder getrennt unter beiden Lizenzen ausgeliefert werden.",
+      "caveats": [
+        "Bei Netzwerknutzung greift automatisch AGPL-§-13-Offenlegung"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "compatible",
+        "redistribution": "compatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "gpl-3-0",
+      "license_b": "lgpl-3-0",
+      "compatibility": "compatible",
+      "reasoning": "LGPL-3 ist als Delta zu GPL-3 formuliert und explizit dafür konzipiert, kombinierbar zu sein. LGPL-Library bleibt LGPL; GPL-Werk bleibt GPL.",
+      "caveats": [],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "compatible",
+        "redistribution": "compatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "gpl-3-0",
+      "license_b": "mpl-2-0",
+      "compatibility": "compatible",
+      "reasoning": "MPL-2 Exhibit B erlaubt 'Secondary License' (GPL/LGPL/AGPL). Kombination kompatibel, wenn die MPL-Dateien mit Secondary-License-Kennzeichnung versehen sind.",
+      "caveats": [
+        "Secondary-License-Deklaration in MPL-Dateien erforderlich",
+        "Ohne Kennzeichnung: MPL-Dateien bleiben MPL-only und sind GPL-inkompatibel"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "compatible",
+        "redistribution": "compatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "mit",
+      "license_b": "bsd-3-clause",
+      "compatibility": "compatible",
+      "reasoning": "Beide permissiv und funktional fast identisch. Attribution-Notices stehen nebeneinander; BSD-3-Non-Endorsement betrifft nur den BSD-Teil.",
+      "caveats": [
+        "MIT- und BSD-Copyright-Notices separat mitliefern",
+        "Non-Endorsement-Klausel im Marketing für BSD-Code beachten"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "compatible",
+        "redistribution": "compatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "mit",
+      "license_b": "gpl-2-0",
+      "compatibility": "conditional",
+      "reasoning": "MIT ist GPL-2-kompatibel (FSF-Liste). MIT-Code darf in GPL-2-Projekt eingebunden werden; das Gesamtwerk steht dann unter GPL-2.",
+      "caveats": [
+        "Kombinierte Distribution als Ganzes unter GPL-2 lizenzieren",
+        "MIT-Copyright-Notice für MIT-Teil erhalten"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "conditional",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "mit",
+      "license_b": "lgpl-3-0",
+      "compatibility": "compatible",
+      "reasoning": "LGPL-3 regelt nur die Library selbst. MIT-Anwendungscode kann LGPL-Library linken; MIT-Teil bleibt MIT.",
+      "caveats": [
+        "LGPL-Library bei Modifikation offenlegen",
+        "Re-Linking-Möglichkeit bei statischem Linken dokumentieren"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "compatible",
+        "redistribution": "compatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "mit",
+      "license_b": "mpl-2-0",
+      "compatibility": "compatible",
+      "reasoning": "MPL-2 hat File-Level-Copyleft: geänderte MPL-Dateien bleiben unter MPL, MIT-Teil bleibt MIT. Dateitrennung reicht aus.",
+      "caveats": [
+        "Geänderte MPL-Dateien unter MPL-2 lassen",
+        "Secondary-License-Option dokumentieren, falls GPL-Kompatibilität gewünscht"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "compatible",
+        "redistribution": "compatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "mit",
+      "license_b": "epl-2-0",
+      "compatibility": "compatible",
+      "reasoning": "EPL-2 ist weak copyleft auf EPL-Dateien; MIT-Code bleibt getrennt. Patent-Retaliation der EPL wirkt nur auf EPL-Teil.",
+      "caveats": [
+        "EPL-Dateien bei Modifikation offenlegen",
+        "Secondary-License-Option nach EPL 3.2 beachten"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "compatible",
+        "redistribution": "compatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "apache-2-0",
+      "license_b": "bsd-3-clause",
+      "compatibility": "compatible",
+      "reasoning": "Beide permissiv. Apache-Patent-Grant bleibt voll wirksam, BSD-Non-Endorsement läuft auf Code-Ebene parallel.",
+      "caveats": [
+        "NOTICE-File nach Apache 4(d) und BSD-Copyright separat mitliefern",
+        "Non-Endorsement-Klausel im Marketing für BSD-Code beachten"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "compatible",
+        "redistribution": "compatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "apache-2-0",
+      "license_b": "lgpl-3-0",
+      "compatibility": "compatible",
+      "reasoning": "LGPL-3 als Library erlaubt Linken aus Apache-Code. Apache-Patent-Grant und LGPL-Patent-Grant laufen parallel ohne Widerspruch.",
+      "caveats": [
+        "LGPL-Library bei Modifikation offenlegen",
+        "NOTICE-File nach Apache 4(d) mitliefern"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "compatible",
+        "redistribution": "compatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "apache-2-0",
+      "license_b": "mpl-2-0",
+      "compatibility": "compatible",
+      "reasoning": "MPL-2 File-Level-Copyleft separat von Apache-Code. Beide haben expliziten Patent-Grant und defensive Termination.",
+      "caveats": [
+        "Geänderte MPL-Dateien unter MPL-2 lassen",
+        "NOTICE-File nach Apache 4(d) mitliefern"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "compatible",
+        "redistribution": "compatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "apache-2-0",
+      "license_b": "epl-2-0",
+      "compatibility": "compatible",
+      "reasoning": "EPL-2 weak-Copyleft nur für EPL-Dateien, Apache-Teil bleibt Apache. Beide Patent-Klauseln und Termination-Regeln greifen unabhängig voneinander.",
+      "caveats": [
+        "EPL-Dateien bei Modifikation offenlegen",
+        "NOTICE-File nach Apache 4(d) mitliefern"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "compatible",
+        "redistribution": "compatible"
+      },
+      "reviewed_by_user": false
+    }
+  ]
+}

@@ -6,7 +6,7 @@
     "legal_issues": [
       {
         "issue": "TDM-Schranke und Opt-out",
-        "description": "Fuer kommerzielles Text-Data-Mining ist ein Opt-out des Rechteinhabers nach Art. 4 DSM-RL / § 44b UrhG zu beachten. Ob maschinenlesbare Opt-outs (robots.txt, ai.txt, TDM-Reservation-Protokoll) durchgaengig ausreichend dokumentiert sind, ist streitig.",
+        "description": "Für kommerzielles Text-Data-Mining ist ein Opt-out des Rechteinhabers nach Art. 4 DSM-RL / § 44b UrhG zu beachten. Ob maschinenlesbare Opt-outs (robots.txt, ai.txt, TDM-Reservation-Protokoll) durchgängig ausreichend dokumentiert sind, ist streitig.",
         "relevant_law": "§ 44b UrhG; Art. 4 DSM-RL (EU) 2019/790",
         "leading_case": "LG Hamburg, Urt. v. 27.09.2024 - 310 O 227/23 (LAION)",
         "quote": null,
@@ -14,35 +14,35 @@
       },
       {
         "issue": "Fair Use im US-Recht",
-        "description": "Fair-Use-Wuerdigung nach Vierfaktorentest ist hoechst einzelfallabhaengig. Kommerzielle Nutzung und woertliche Reproduktionen geschuetzter Werke in Ausgaben senken die Fair-Use-Wahrscheinlichkeit deutlich.",
+        "description": "Fair-Use-Würdigung nach Vierfaktorentest ist höchst einzelfallabhängig. Kommerzielle Nutzung und wörtliche Reproduktionen geschützter Werke in Ausgaben senken die Fair-Use-Wahrscheinlichkeit deutlich.",
         "relevant_law": "17 U.S.C. § 107",
-        "leading_case": "New York Times Co. v. Microsoft/OpenAI (S.D.N.Y. 2023, anhaengig)",
+        "leading_case": "New York Times Co. v. Microsoft/OpenAI (S.D.N.Y. 2023, anhängig)",
         "quote": null,
         "clause_ref": null
       },
       {
         "issue": "Datenschutz bei personenbezogenen Inhalten",
-        "description": "Web-Crawls enthalten regelmaessig personenbezogene Daten. DSGVO-Rechtsgrundlage, Zweckbindung und Betroffenenrechte (Loeschung, Auskunft) sind regelmaessig ungeklaert.",
+        "description": "Web-Crawls enthalten regelmäßig personenbezogene Daten. DSGVO-Rechtsgrundlage, Zweckbindung und Betroffenenrechte (Löschung, Auskunft) sind regelmäßig ungeklärt.",
         "relevant_law": "Art. 6, 17 DSGVO",
-        "leading_case": "Garante (IT), ChatGPT-Sperre 2023 (Bussgeld 2024)",
+        "leading_case": "Garante (IT), ChatGPT-Sperre 2023 (Bußgeld 2024)",
         "quote": null,
         "clause_ref": null
       }
     ],
     "mitigation_hints": [
       "Nur Modelle mit dokumentiertem Crawl-Zeitraum und Opt-out-Respektierung einsetzen",
-      "Output-Filter gegen woertliche Reproduktion langer Passagen",
+      "Output-Filter gegen wörtliche Reproduktion langer Passagen",
       "Dokumentation der Datenquellen im Einsatz-Register"
     ]
   },
   {
     "id": "github-code",
-    "name": "GitHub-Code / oeffentliche Code-Repositories",
+    "name": "GitHub-Code / öffentliche Code-Repositories",
     "risk_level": "high",
     "legal_issues": [
       {
         "issue": "Copyleft-Durchschlag auf generierten Code",
-        "description": "Ob Outputs, die auf GPL-/AGPL-lizenziertem Trainingscode basieren, selbst copyleft-gebunden sind, ist juristisch offen. Unternehmen mit restriktiver Inbound-Policy sollten dies fuer Copilot-aehnliche Tools bewerten.",
+        "description": "Ob Outputs, die auf GPL-/AGPL-lizenziertem Trainingscode basieren, selbst copyleft-gebunden sind, ist juristisch offen. Unternehmen mit restriktiver Inbound-Policy sollten dies für Copilot-ähnliche Tools bewerten.",
         "relevant_law": "GPL-2.0/3.0 Section 5; AGPL-3.0 Section 13",
         "leading_case": "Doe v. GitHub, Inc. (N.D. Cal. 2022, teilw. abgewiesen 2024)",
         "quote": null,
@@ -69,8 +69,8 @@
     "risk_level": "high",
     "legal_issues": [
       {
-        "issue": "Urheberrechtliche Reproduktion geschuetzter Bilder",
-        "description": "Trainingsdaten-Datenbanken wie LAION enthalten urheberrechtlich geschuetzte Bilder. Bild-Generatoren reproduzieren in bestimmten Faellen wiedererkennbare Elemente (Wasserzeichen, Stil, Komposition).",
+        "issue": "Urheberrechtliche Reproduktion geschützter Bilder",
+        "description": "Trainingsdaten-Datenbanken wie LAION enthalten urheberrechtlich geschützte Bilder. Bild-Generatoren reproduzieren in bestimmten Fällen wiedererkennbare Elemente (Wasserzeichen, Stil, Komposition).",
         "relevant_law": "§§ 15, 16 UrhG; 17 U.S.C. § 106",
         "leading_case": "Getty Images v. Stability AI (UK High Court; D. Del.)",
         "quote": null,
@@ -78,7 +78,7 @@
       },
       {
         "issue": "Leistungsschutzrecht Lichtbilder",
-        "description": "Auch nicht-schoepferische Lichtbilder sind als einfache Lichtbilder geschuetzt und duerfen ohne Lizenz nicht vervielfaeltigt werden. Umfasst viele Produktfotos und Pressebilder.",
+        "description": "Auch nicht-schöpferische Lichtbilder sind als einfache Lichtbilder geschützt und dürfen ohne Lizenz nicht vervielfältigt werden. Umfasst viele Produktfotos und Pressebilder.",
         "relevant_law": "§ 72 UrhG",
         "leading_case": null,
         "quote": null,
@@ -86,9 +86,9 @@
       }
     ],
     "mitigation_hints": [
-      "Nur Modelle mit verifiziert lizenzierten Trainingsdaten (z.B. Adobe Firefly-Claims) fuer Publikumsausgaben einsetzen",
-      "Style-Transfer auf benannte Kuenstler technisch blockieren",
-      "Output-Nutzung fuer kommerzielle Zwecke mit Bildrechte-Freigabe abgleichen"
+      "Nur Modelle mit verifiziert lizenzierten Trainingsdaten (z.B. Adobe Firefly-Claims) für Publikumsausgaben einsetzen",
+      "Style-Transfer auf benannte Künstler technisch blockieren",
+      "Output-Nutzung für kommerzielle Zwecke mit Bildrechte-Freigabe abgleichen"
     ]
   },
   {
@@ -98,7 +98,7 @@
     "legal_issues": [
       {
         "issue": "Plattform-Terms vs. Nutzer-Rechteinhaberschaft",
-        "description": "Plattform-ToS raeumen der Plattform typischerweise eine Lizenz ein, nicht aber Dritten. Die Nutzerinhalte selbst bleiben beim Verfasser. Ein Freibrief zum KI-Training ist daraus in der Regel nicht ableitbar.",
+        "description": "Plattform-ToS räumen der Plattform typischerweise eine Lizenz ein, nicht aber Dritten. Die Nutzerinhalte selbst bleiben beim Verfasser. Ein Freibrief zum KI-Training ist daraus in der Regel nicht ableitbar.",
         "relevant_law": "§§ 31 ff. UrhG (Lizenzkette); Art. 3 DSM-RL",
         "leading_case": null,
         "quote": null,
@@ -106,7 +106,7 @@
       },
       {
         "issue": "Wikipedia-Inhalte unter CC BY-SA",
-        "description": "CC BY-SA verpflichtet zu Attribution und Share-Alike bei Bearbeitungen. Inwieweit Modellausgaben abgeleitete Werke i.S.d. CC-Lizenz sind, ist juristisch nicht abschliessend geklaert.",
+        "description": "CC BY-SA verpflichtet zu Attribution und Share-Alike bei Bearbeitungen. Inwieweit Modellausgaben abgeleitete Werke i.S.d. CC-Lizenz sind, ist juristisch nicht abschließend geklärt.",
         "relevant_law": "Creative Commons BY-SA 3.0/4.0 Section 3(a)",
         "leading_case": null,
         "quote": null,
@@ -114,7 +114,7 @@
       }
     ],
     "mitigation_hints": [
-      "Plattform-spezifische Scraping-Verbote vor Einsatz pruefen",
+      "Plattform-spezifische Scraping-Verbote vor Einsatz prüfen",
       "CC-BY-SA-basierte Ausgaben mit Hinweis auf Quelle und Share-Alike versehen, sofern erkennbar",
       "Reddit/X-API-Lizenzen in Vertragskette dokumentieren"
     ]
@@ -126,7 +126,7 @@
     "legal_issues": [
       {
         "issue": "Kommerzielles TDM nur mit Rechteinhaber-Zustimmung bei Opt-out",
-        "description": "Verlage haben fluchaeckendes TDM-Opt-out implementiert (Presseverlage-Opt-out, branchenweite Klagen). Nutzung ohne Lizenzkette droht als Urheberrechtsverletzung.",
+        "description": "Verlage haben flächendeckendes TDM-Opt-out implementiert (Presseverlage-Opt-out, branchenweite Klagen). Nutzung ohne Lizenzkette droht als Urheberrechtsverletzung.",
         "relevant_law": "§ 44b Abs. 3 UrhG; Art. 4 Abs. 3 DSM-RL",
         "leading_case": "Authors Guild v. OpenAI (S.D.N.Y. 2023, konsolidiert 2024)",
         "quote": null,
@@ -134,7 +134,7 @@
       },
       {
         "issue": "Leistungsschutzrecht Presseverleger",
-        "description": "Presseverleger-LSR schuetzt journalistische Veroeffentlichungen gegen Online-Nutzung durch Dienste der Informationsgesellschaft fuer zwei Jahre. Erfasst auch ausschnittweise Uebernahme.",
+        "description": "Presseverleger-LSR schützt journalistische Veröffentlichungen gegen Online-Nutzung durch Dienste der Informationsgesellschaft für zwei Jahre. Erfasst auch ausschnittweise Übernahme.",
         "relevant_law": "§ 87g UrhG",
         "leading_case": null,
         "quote": null,
@@ -142,19 +142,19 @@
       }
     ],
     "mitigation_hints": [
-      "Modellausgaben mit Verbots-Regelwerk fuer woertliche Presseschnipsel filtern",
-      "Lizenzvertraege der Modellanbieter mit Presseverlagen pruefen (z.B. OpenAI-Axel-Springer-Deal)",
+      "Modellausgaben mit Verbots-Regelwerk für wörtliche Presseschnipsel filtern",
+      "Lizenzverträge der Modellanbieter mit Presseverlagen prüfen (z.B. OpenAI-Axel-Springer-Deal)",
       "Bei kommerziellem Einsatz rechtliche Due-Diligence pro Modell"
     ]
   },
   {
     "id": "public-official",
-    "name": "Amtliche / oeffentliche Daten",
+    "name": "Amtliche / öffentliche Daten",
     "risk_level": "low",
     "legal_issues": [
       {
         "issue": "Grundsatz der Gemeinfreiheit amtlicher Werke",
-        "description": "Amtliche Werke (Gesetze, Urteile, Verwaltungsvorschriften) sind nach § 5 UrhG gemeinfrei. Verwendung fuer Training ist urheberrechtlich unproblematisch.",
+        "description": "Amtliche Werke (Gesetze, Urteile, Verwaltungsvorschriften) sind nach § 5 UrhG gemeinfrei. Verwendung für Training ist urheberrechtlich unproblematisch.",
         "relevant_law": "§ 5 UrhG",
         "leading_case": null,
         "quote": null,
@@ -162,7 +162,7 @@
       },
       {
         "issue": "Datenschutzrechtliche Restpflichten",
-        "description": "Auch in amtlichen Entscheidungsdatenbanken koennen pseudonymisierte oder ungenuegend anonymisierte personenbezogene Daten enthalten sein, die DSGVO-Pflichten ausloesen.",
+        "description": "Auch in amtlichen Entscheidungsdatenbanken können pseudonymisierte oder ungenügend anonymisierte personenbezogene Daten enthalten sein, die DSGVO-Pflichten auslösen.",
         "relevant_law": "Art. 6, 17 DSGVO",
         "leading_case": null,
         "quote": null,
@@ -171,7 +171,7 @@
     ],
     "mitigation_hints": [
       "Amtliche Korpora bevorzugen (EUR-Lex, Rechtsprechung im Internet)",
-      "Anonymisierung vor Training pruefen",
+      "Anonymisierung vor Training prüfen",
       "PSI-Richtlinie-konforme Open-Data-Portale als Quelle nutzen"
     ]
   }

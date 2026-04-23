@@ -71,7 +71,7 @@
         "effect": "Patent-Grant endet automatisch, wenn Lizenznehmer Patentklage gegen andere Nutzer einleitet."
       }
     ],
-    "notes": "Expliziter Patent-Grant (Section 3) mit Defensive-Termination-Klausel. Wird von Qwen3, FLUX.1-schnell, GLM-4.6 und Mistral 7B als Modelllizenz verwendet."
+    "notes": "Expliziter Patent-Grant (Section 3) mit Defensive-Termination-Klausel. Wird in der aktiven Registry von Gemma 4, Qwen3, OLMo 3.1, Mistral Small 4 und Mistral Large 3 als Modelllizenz verwendet."
   },
   {
     "id": "bsd-2-clause",
@@ -566,23 +566,24 @@
     "restrictions": [
       {
         "id": "gemma-prohibited-use",
-        "clause_ref": "Section 3.2 (via PUP)",
-        "quote": null,
-        "effect": "Prohibited Use Policy ist einbezogen; konkrete Verbotstatbestände werden dort aufgelistet (separater Snapshot)."
+        "clause_ref": "Section 3.2",
+        "quote": "for the restricted uses set forth in the Gemma Prohibited Use Policy at",
+        "effect": "Prohibited Use Policy ist per Verweis einbezogen; konkrete Verbotstatbestände stehen in der PUP (separater Snapshot)."
       },
       {
         "id": "gemma-redistribution-notice",
-        "clause_ref": "Section 4",
-        "quote": null,
-        "effect": "Bei Weitergabe der Gewichte/abgeleiteter Modelle muss der Empfänger den gleichen Terms zustimmen und sie mitliefern."
+        "clause_ref": "Section 3.1",
+        "quote": "You must provide all third party recipients of Gemma or Model Derivatives",
+        "effect": "Bei Redistribution: Lizenztext mitliefern, Use-Restrictions durchreichen, Notice-File mit Gemma-Hinweis beilegen."
       }
     ],
-    "notes": "HTML-Snapshot via Wayback Machine (Live-Abruf hatte Redirect-Loop). Verbindlicher Text steht im HTML, Quote-Extraktion noch nicht 1:1 verifiziert — deshalb `quote: \"unverified\"` mit geschärftem Effect.",
+    "notes": "Legacy-Regime für Gemma 1–3. Seit Gemma 4 (April 2026) stellt Google auf Apache-2.0 um; Gemma Terms gelten weiter für Altbestände. HTML-Snapshot via Wayback Machine (Live-Abruf hatte Redirect-Loop). Zitate 1:1 aus Section 3.1 und 3.2 des Snapshots extrahiert.",
     "additional_compliance_flags": {
       "entity_list_status": "none",
       "training_hardware_origin": "google-tpu",
       "publisher_jurisdiction": "US"
-    }
+    },
+    "legacy": true
   },
   {
     "id": "mistral-mrl-0-1",
@@ -625,12 +626,13 @@
         "effect": "Lizenz endet automatisch bei Patentklage des Lizenznehmers gegen Mistral."
       }
     ],
-    "notes": "Gilt für Mistral-Flaggschiffe (Large 3 etc.). Research Purposes explizit ohne Revenue-Aktivität und ohne SaaS (siehe §9 Definition).",
+    "notes": "Legacy-Regime; galt bis Herbst 2025 für Mistral-Flaggschiffe. Mistral Large 3 (Dezember 2025) und Small 4 sind Apache-2.0, MRL-0.1 hat im aktiven Katalog keine Modellzuordnung mehr. Research Purposes explizit ohne Revenue-Aktivität und ohne SaaS (siehe §9 Definition).",
     "additional_compliance_flags": {
       "entity_list_status": "none",
       "training_hardware_origin": "nvidia",
       "publisher_jurisdiction": "FR"
-    }
+    },
+    "legacy": true
   },
   {
     "id": "flux-1-dev-nc",

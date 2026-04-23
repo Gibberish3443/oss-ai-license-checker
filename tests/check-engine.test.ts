@@ -5,6 +5,7 @@ import compatibilityMatrixData from "@/lib/compatibility-matrix.json";
 import licensesData from "@/lib/licenses.json";
 import modelsData from "@/lib/models.json";
 import {
+  defaultRegistry,
   loadRegistry,
   RegistryError,
   type RegistryInput,
@@ -242,17 +243,37 @@ describe("runCheck", () => {
         useCase: "saas-external",
       });
 
-      expect(result.recommendations[0]).toBe(
-        "NOTICE-File + Llama-Agreement bei Distribution beilegen",
-      );
-      expect(result.recommendations[1]).toBe(
-        "Apache-Patent-Retaliation und Llama-Patent-Termination-Klausel wirken getrennt",
-      );
-      expect(
-        result.recommendations.indexOf(
-          "Nur Modelle mit dokumentiertem Crawl-Zeitraum und Opt-out-Respektierung einsetzen",
-        ),
-      ).toBeGreaterThan(1);
+      const pair = defaultRegistry.findPair("llama-4-community", "apache-2-0");
+      const webCrawl = defaultRegistry.getTrainingRisk("web-crawl");
+
+      // Vorbedingung: conditional-Caveats (prio 3) müssen vor
+      // high-Risk-Mitigation-Hints (prio 5) sortiert werden. Andernfalls
+      // testen wir den falschen Pfad.
+      expect(pair?.scenarios["saas-external"]).toBe("conditional");
+      expect(webCrawl?.risk_level).toBe("high");
+
+      const conditionalCaveats = pair?.caveats ?? [];
+      const webCrawlHints = webCrawl?.mitigation_hints ?? [];
+      expect(conditionalCaveats.length).toBeGreaterThan(0);
+      expect(webCrawlHints.length).toBeGreaterThan(0);
+
+      for (const caveat of conditionalCaveats) {
+        const caveatIdx = result.recommendations.indexOf(caveat);
+        expect(caveatIdx).toBeGreaterThanOrEqual(0);
+        for (const hint of webCrawlHints) {
+          const hintIdx = result.recommendations.indexOf(hint);
+          expect(hintIdx).toBeGreaterThanOrEqual(0);
+          expect(caveatIdx).toBeLessThan(hintIdx);
+        }
+      }
+
+      // First-Seen-Tiebreak: bei gleicher Priorität behalten Einträge ihre
+      // Einspeise-Reihenfolge.
+      if (conditionalCaveats.length >= 2) {
+        const firstIdx = result.recommendations.indexOf(conditionalCaveats[0]);
+        const secondIdx = result.recommendations.indexOf(conditionalCaveats[1]);
+        expect(firstIdx).toBeLessThan(secondIdx);
+      }
     });
 
     it("sources folgen der Reihenfolge Modelle zuerst, dann neue Code-Lizenzen", () => {

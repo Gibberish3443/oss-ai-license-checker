@@ -269,6 +269,12 @@ function evaluateUseCaseFit(
  *  - `recommendations` ist stabil nach Priorität sortiert, bei Gleichstand
  *    nach First-Seen-Index. Für logisch identische Eingaben in anderer
  *    Reihenfolge ist die Ausgabe nicht kanonisch gleich.
+ *  - `missingPairs` enthält einen Eintrag pro betroffener Zellbelegung und
+ *    kann dasselbe `(license_a, license_b)`-Paar mehrfach führen, wenn es in
+ *    unterschiedlichen Zellen auftaucht (unterschiedlicher `context`). Die
+ *    Lizenz-IDs werden kanonisiert abgelegt (lexikographisch, analog
+ *    `registry.findPair`), damit spiegelbildliche Kombinationen beim
+ *    Empfehlungs-Dedup als derselbe Hinweis greifen.
  *
  * Self-Pair (Zeile und Spalte haben dieselbe Lizenz) wird nicht aus der
  * kuratierten Matrix gelesen, sondern synthetisch als "self" markiert: kein

@@ -137,18 +137,42 @@ export interface CheckInput {
   useCase: UseCaseId;
 }
 
+export type CellStatus = Compatibility | "missing" | "self";
+
 export interface CompatibilityCell {
   row: string;
   col: string;
-  status: Compatibility;
+  status: CellStatus;
   reasoning: string;
   caveats: string[];
+}
+
+export interface MatrixRow {
+  model_id: string;
+  license_id: string;
+}
+
+export interface MatrixColumn {
+  license_id: string;
+  dep_count: number;
 }
 
 export interface Conflict {
   license_a: string;
   license_b: string;
   reasoning: string;
+  severity: "high" | "medium" | "low";
+}
+
+export interface MissingPair {
+  license_a: string;
+  license_b: string;
+  context: string;
+}
+
+export interface UseCaseViolation {
+  license_id: string;
+  violation: string;
   severity: "high" | "medium" | "low";
 }
 
@@ -164,10 +188,17 @@ export interface Source {
   clause_refs: string[];
 }
 
+export type OverallRisk = "green" | "yellow" | "red" | "missing";
+
 export interface CheckResult {
-  overallRisk: "green" | "yellow" | "red";
+  overallRisk: OverallRisk;
+  complete: boolean;
+  rows: MatrixRow[];
+  cols: MatrixColumn[];
   matrix: CompatibilityCell[][];
+  missingPairs: MissingPair[];
   modelCodeConflicts: Conflict[];
+  useCaseViolations: UseCaseViolation[];
   trainingDataFlags: TrainingDataFlag[];
   recommendations: string[];
   sources: Source[];

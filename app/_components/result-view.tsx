@@ -105,6 +105,21 @@ export default function ResultView({
 
   return (
     <section className="space-y-5">
+      <aside
+        role="note"
+        aria-label="Rechtlicher Hinweis"
+        className="rounded-md border border-stone-400 bg-stone-50 p-3 text-xs leading-relaxed text-stone-800 dark:border-stone-600 dark:bg-stone-900 dark:text-stone-200"
+      >
+        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400">
+          Rechtlicher Hinweis
+        </p>
+        <p className="mt-1">
+          Keine Rechtsdienstleistung i.S.d. § 2 RDG. Kein Mandatsverhältnis. Die
+          Ausgabe ist eine schematische Zuordnung dokumentierter Lizenzklauseln
+          zu Katalog-Einordnungen und ersetzt keine anwaltliche Beratung im
+          Einzelfall.
+        </p>
+      </aside>
       <header
         role="status"
         aria-live="polite"
@@ -113,7 +128,7 @@ export default function ResultView({
         <div className="grid gap-4 lg:grid-cols-[minmax(220px,1fr)_auto] lg:items-end">
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] opacity-70">
-              Verdikt
+              Katalog-Ergebnis
             </p>
             <h2 className="mt-1 text-2xl font-semibold leading-tight">
               {VERDICT_LABEL[result.overallRisk]}
@@ -187,7 +202,7 @@ export default function ResultView({
       )}
 
       <p className="border-t border-stone-300 pt-3 font-mono text-[10px] uppercase leading-relaxed tracking-[0.16em] text-stone-500 dark:border-stone-700 dark:text-stone-500">
-        Kein Rechtsrat. Der Report zeigt nur kuratierte Katalogregeln und lokale
+        Der Report zeigt nur kuratierte Katalogregeln und lokale
         Lizenz-Snapshots; keine KI-generierte Rechtseinschätzung.
       </p>
     </section>
@@ -251,11 +266,21 @@ function PairFindingItem({ finding }: { finding: PairFinding }) {
             {finding.model_license_name} x {finding.dependency_license_name}
           </h4>
         </div>
-        <span
-          className={`font-mono text-[10px] uppercase tracking-[0.18em] ${FINDING_INK[finding.severity]}`}
-        >
-          {FINDING_LABEL[finding.severity]}
-        </span>
+        <div className="flex flex-col items-end gap-1">
+          <span
+            className={`font-mono text-[10px] uppercase tracking-[0.18em] ${FINDING_INK[finding.severity]}`}
+          >
+            {FINDING_LABEL[finding.severity]}
+          </span>
+          {finding.matrix_reviewed !== true && (
+            <span
+              title="Paar noch nicht manuell reviewt"
+              className="font-mono text-[9px] uppercase tracking-[0.16em] text-stone-500 dark:text-stone-400"
+            >
+              ungeprüft
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="mt-3">
@@ -265,6 +290,9 @@ function PairFindingItem({ finding }: { finding: PairFinding }) {
         <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-stone-500 dark:text-stone-500">
           {finding.clause.source_label}
         </div>
+        <p className="mt-1 text-[11px] italic leading-relaxed text-stone-500 dark:text-stone-400">
+          Katalog-Einordnung (keine Vertragsauslegung).
+        </p>
       </div>
 
       <p className="mt-3 text-xs leading-relaxed text-stone-700 dark:text-stone-300">
@@ -328,6 +356,9 @@ function CompliancePanel({ findings }: { findings: ComplianceFlagFinding[] }) {
             </h4>
             <p className="mt-1 text-xs text-stone-600 dark:text-stone-400">
               {finding.license_name}
+            </p>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-stone-500 dark:text-stone-500">
+              Stand Snapshot: {finding.license_snapshot_date}
             </p>
             <dl className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3 xl:grid-cols-1">
               {finding.flags.map((flag) => (

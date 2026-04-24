@@ -126,10 +126,14 @@ scripts/                     Validierungs-Utilities
 
 ## Grenzen
 
-Das Tool ersetzt keine individuelle Rechtsberatung. Die hinterlegten Einschätzungen sind
-Momentaufnahmen zum im Snapshot dokumentierten Stand und können im Einzelfall durch aktuelle
-Rechtsprechung, Anbieter-Änderungen oder spezielle Vertragsgestaltungen überholt sein.
-Maßgeblich für die Rechtsanwendung bleibt immer die aktuelle Fassung beim Rechteinhaber.
+Keine Rechtsdienstleistung i.S.d. § 2 RDG. Kein Mandatsverhältnis. Die Ausgabe ist eine
+schematische Zuordnung dokumentierter Lizenzklauseln zu Katalog-Einordnungen und ersetzt
+keine anwaltliche Beratung im Einzelfall.
+
+Die hinterlegten Einschätzungen sind Momentaufnahmen zum im Snapshot dokumentierten Stand und
+können im Einzelfall durch aktuelle Rechtsprechung, Anbieter-Änderungen oder spezielle
+Vertragsgestaltungen überholt sein. Maßgeblich für die Rechtsanwendung bleibt immer die
+aktuelle Fassung beim Rechteinhaber.
 
 Die Kompatibilitätsbewertungen in [`lib/compatibility-matrix.json`](lib/compatibility-matrix.json)
 tragen ein Flag `reviewed_by_user`, mit dem unterschieden wird, welche Paare bereits manuell

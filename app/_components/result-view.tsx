@@ -1,6 +1,7 @@
 "use client";
 
 import type {
+  CellStatus,
   CheckResult,
   ComplianceFlagFinding,
   FindingSeverity,
@@ -51,6 +52,32 @@ const FINDING_LABEL: Record<FindingSeverity, string> = {
   conflict: "Konflikt",
   notice: "Hinweis",
 };
+
+const STATUS_LEGEND: Array<{ status: CellStatus; label: string }> = [
+  { status: "compatible", label: "Kompatibel" },
+  { status: "conditional", label: "Auflagen" },
+  { status: "incompatible", label: "Blocker" },
+  { status: "missing", label: "Ungeprüft" },
+  { status: "self", label: "Identisch" },
+];
+
+const STATUS_LEGEND_DOT: Record<CellStatus, string> = {
+  compatible: "bg-emerald-600 dark:bg-emerald-400",
+  conditional: "bg-amber-600 dark:bg-amber-400",
+  incompatible: "bg-red-600 dark:bg-red-400",
+  missing: "bg-stone-500 dark:bg-stone-400",
+  self: "bg-sky-600 dark:bg-sky-400",
+};
+
+function countStatus(result: CheckResult, status: CellStatus): number {
+  let count = 0;
+  for (const row of result.matrix) {
+    for (const cell of row) {
+      if (cell.status === status) count++;
+    }
+  }
+  return count;
+}
 
 export default function ResultView({
   result,
@@ -105,47 +132,89 @@ export default function ResultView({
         </div>
       </header>
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.8fr)]">
-        <div className="space-y-5">
-          {conflictFindings.length > 0 && (
-            <FindingGroup title="Konflikte" findings={conflictFindings} />
-          )}
-          {noticeFindings.length > 0 && (
-            <FindingGroup title="Hinweise" findings={noticeFindings} />
-          )}
+      <section
+        aria-labelledby="matrix-heading"
+        className="rounded-md border border-stone-300 bg-white/70 p-4 dark:border-stone-800 dark:bg-stone-950/60"
+      >
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-stone-500 dark:text-stone-500">
+              Kompatibilitätsmatrix
+            </p>
+            <h3
+              id="matrix-heading"
+              className="mt-1 text-xl font-semibold leading-tight"
+            >
+              Modell × Code-Dependency
+            </h3>
+          </div>
+          <StatusLegend result={result} />
         </div>
+        <MatrixGrid
+          result={result}
+          modelById={modelById}
+          licenseById={licenseById}
+        />
+      </section>
 
-        <aside className="space-y-5">
-          {trainingFindings.length > 0 && (
-            <TrainingPanel findings={trainingFindings} />
-          )}
-          {complianceFindings.length > 0 && (
-            <CompliancePanel findings={complianceFindings} />
-          )}
-          {result.recommendations.length > 0 && (
-            <Recommendations recommendations={result.recommendations.slice(0, 5)} />
-          )}
-        </aside>
-      </div>
+      {(conflictFindings.length > 0 ||
+        noticeFindings.length > 0 ||
+        trainingFindings.length > 0 ||
+        complianceFindings.length > 0 ||
+        result.recommendations.length > 0) && (
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.8fr)]">
+          <div className="space-y-5">
+            {conflictFindings.length > 0 && (
+              <FindingGroup title="Konflikte" findings={conflictFindings} />
+            )}
+            {noticeFindings.length > 0 && (
+              <FindingGroup title="Hinweise" findings={noticeFindings} />
+            )}
+          </div>
+
+          <aside className="space-y-5">
+            {trainingFindings.length > 0 && (
+              <TrainingPanel findings={trainingFindings} />
+            )}
+            {complianceFindings.length > 0 && (
+              <CompliancePanel findings={complianceFindings} />
+            )}
+            {result.recommendations.length > 0 && (
+              <Recommendations recommendations={result.recommendations.slice(0, 5)} />
+            )}
+          </aside>
+        </div>
+      )}
 
       <p className="border-t border-stone-300 pt-3 font-mono text-[10px] uppercase leading-relaxed tracking-[0.16em] text-stone-500 dark:border-stone-700 dark:text-stone-500">
         Kein Rechtsrat. Der Report zeigt nur kuratierte Katalogregeln und lokale
         Lizenz-Snapshots; keine KI-generierte Rechtseinschätzung.
       </p>
-
-      <details className="rounded-md border border-stone-300 bg-white/70 p-4 dark:border-stone-800 dark:bg-stone-950/60">
-        <summary className="cursor-pointer font-mono text-[11px] uppercase tracking-[0.18em] text-stone-600 dark:text-stone-400">
-          Matrixdetails anzeigen
-        </summary>
-        <div className="mt-5">
-          <MatrixGrid
-            result={result}
-            modelById={modelById}
-            licenseById={licenseById}
-          />
-        </div>
-      </details>
     </section>
+  );
+}
+
+function StatusLegend({ result }: { result: CheckResult }) {
+  return (
+    <ul className="flex flex-wrap items-center gap-x-4 gap-y-2">
+      {STATUS_LEGEND.map(({ status, label }) => {
+        const count = countStatus(result, status);
+        if (count === 0) return null;
+        return (
+          <li
+            key={status}
+            className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-stone-600 dark:text-stone-400"
+          >
+            <span
+              aria-hidden="true"
+              className={`h-2 w-2 rounded-full ${STATUS_LEGEND_DOT[status]}`}
+            />
+            <span>{label}</span>
+            <span className="text-stone-500 dark:text-stone-500">{count}</span>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 

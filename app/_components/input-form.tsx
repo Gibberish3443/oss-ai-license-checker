@@ -117,7 +117,8 @@ export default function InputForm({
   onReset,
 }: Props) {
   const [modelCategory, setModelCategory] = useState<CategoryFilter>("all");
-  const [depCategory, setDepCategory] = useState<CategoryFilter>("all");
+  const [modelSearch, setModelSearch] = useState("");
+  const [depSearch, setDepSearch] = useState("");
 
   const selectedUseCase = useCase
     ? (useCases.find((candidate) => candidate.id === useCase) ?? null)
@@ -133,14 +134,6 @@ export default function InputForm({
     return counts;
   }, [models, licenseById]);
 
-  const depCategoryCounts = useMemo(() => {
-    const counts = new Map<LicenseCategory, number>();
-    for (const license of licenses) {
-      counts.set(license.category, (counts.get(license.category) ?? 0) + 1);
-    }
-    return counts;
-  }, [licenses]);
-
   const modelCategories = uniqueCategories([
     "all",
     ...models
@@ -148,19 +141,25 @@ export default function InputForm({
       .filter((category): category is LicenseCategory => Boolean(category)),
   ]);
 
-  const depCategories = uniqueCategories([
-    "all",
-    ...licenses.map((license) => license.category),
-  ]);
-
+  const normalizedModelSearch = modelSearch.trim().toLowerCase();
   const filteredModels = models.filter((model) => {
-    if (modelCategory === "all") return true;
-    return licenseById.get(model.license_id)?.category === modelCategory;
+    const license = licenseById.get(model.license_id);
+    const matchesCategory =
+      modelCategory === "all" || license?.category === modelCategory;
+    if (!matchesCategory) return false;
+    if (!normalizedModelSearch) return true;
+    const haystack = [model.name, model.vendor, license?.name ?? ""]
+      .join(" ")
+      .toLowerCase();
+    return haystack.includes(normalizedModelSearch);
   });
 
+  const normalizedDepSearch = depSearch.trim().toLowerCase();
   const filteredLicenses = licenses.filter((license) => {
-    if (depCategory === "all") return true;
-    return license.category === depCategory;
+    if (!normalizedDepSearch) return true;
+    return `${license.name} ${license.id}`
+      .toLowerCase()
+      .includes(normalizedDepSearch);
   });
 
   const selectedDepEntries = Object.entries(codeDepCounts)
@@ -255,18 +254,28 @@ export default function InputForm({
         <StepFrame
           kicker="Schritt 02"
           title="Lizenzprofil und Modelle"
-          description="Erst die Lizenzkategorie, dann die konkreten Modelle. So bleibt die Auswahl lesbar, auch wenn der Katalog wächst."
+          description="Erst die Lizenzkategorie filtern oder direkt nach Modellname suchen, dann konkrete Modelle auswählen."
           onBack={() => onFlowStepChange(previousFlowStep(flowStep))}
           onNext={continueFlow}
           nextLabel="Weiter zu Code-Deps"
           nextDisabled={!canAdvance}
         >
-          <CategoryChooser
-            categories={modelCategories}
-            counts={modelCategoryCounts}
-            value={modelCategory}
-            onChange={setModelCategory}
-          />
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+            <div className="min-w-0 flex-1">
+              <CategoryChooser
+                categories={modelCategories}
+                counts={modelCategoryCounts}
+                value={modelCategory}
+                onChange={setModelCategory}
+              />
+            </div>
+            <SearchInput
+              value={modelSearch}
+              onChange={setModelSearch}
+              placeholder="Modell oder Hersteller suchen"
+              ariaLabel="Modelle durchsuchen"
+            />
+          </div>
 
           <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {filteredModels.map((model) => {
@@ -339,17 +348,22 @@ export default function InputForm({
         <StepFrame
           kicker="Schritt 03"
           title="Code Dependencies"
-          description="Keine lange Checkboxwand: Lizenzchips wählen, Anzahl per Stepper setzen, Auswahl unten kontrollieren."
+          description="Direkt nach der Lizenz suchen und die Anzahl per Stepper setzen. Die gewählten Pakete erscheinen unten als Überblick."
           onBack={() => onFlowStepChange(previousFlowStep(flowStep))}
           onNext={continueFlow}
           nextLabel="Weiter zu Trainingsdaten"
         >
-          <CategoryChooser
-            categories={depCategories}
-            counts={depCategoryCounts}
-            value={depCategory}
-            onChange={setDepCategory}
-          />
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-stone-500 dark:text-stone-500">
+              {filteredLicenses.length} Lizenzen · {selectedDepEntries.length} ausgewählt
+            </p>
+            <SearchInput
+              value={depSearch}
+              onChange={setDepSearch}
+              placeholder="Lizenz suchen (Name oder SPDX-ID)"
+              ariaLabel="Code-Lizenzen durchsuchen"
+            />
+          </div>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredLicenses.map((license) => {
@@ -498,27 +512,15 @@ function UseCaseMatrix({
                   : "border-stone-300 bg-white/75 hover:border-stone-950 hover:bg-white dark:border-stone-800 dark:bg-stone-950/50 dark:hover:border-stone-100 dark:hover:bg-stone-950"
               }`}
             >
-              <div className="flex items-start justify-between gap-4">
-                <span
-                  className={`font-mono text-[11px] uppercase tracking-[0.2em] ${
-                    active
-                      ? "text-stone-300 dark:text-stone-700"
-                      : "text-stone-500 dark:text-stone-500"
-                  }`}
-                >
-                  0{index + 1}
-                </span>
-                <span
-                  className={`inline-flex h-7 w-7 items-center justify-center rounded-md border text-sm transition-transform group-hover:translate-x-0.5 ${
-                    active
-                      ? "border-stone-50 dark:border-stone-950"
-                      : "border-stone-400 dark:border-stone-600"
-                  }`}
-                  aria-hidden="true"
-                >
-                  →
-                </span>
-              </div>
+              <span
+                className={`font-mono text-[11px] uppercase tracking-[0.2em] ${
+                  active
+                    ? "text-stone-300 dark:text-stone-700"
+                    : "text-stone-500 dark:text-stone-500"
+                }`}
+              >
+                0{index + 1}
+              </span>
               <h3 className="mt-6 text-lg font-semibold leading-tight">
                 {shortUseCaseName(candidate.name)}
               </h3>
@@ -794,5 +796,46 @@ function SummaryPill({ label, value }: { label: string; value: string }) {
       </span>
       <span className="truncate text-stone-800 dark:text-stone-200">{value}</span>
     </span>
+  );
+}
+
+function SearchInput({
+  value,
+  onChange,
+  placeholder,
+  ariaLabel,
+}: {
+  value: string;
+  onChange: (next: string) => void;
+  placeholder: string;
+  ariaLabel: string;
+}) {
+  return (
+    <label className="relative flex w-full items-center lg:w-72">
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute left-3 font-mono text-[12px] text-stone-500"
+      >
+        /
+      </span>
+      <input
+        type="search"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder}
+        aria-label={ariaLabel}
+        className="h-9 w-full rounded-md border border-stone-300 bg-white/70 pl-7 pr-8 text-sm text-stone-900 placeholder:text-stone-500 focus:border-stone-950 focus:outline-none dark:border-stone-700 dark:bg-stone-950/50 dark:text-stone-100 dark:placeholder:text-stone-500 dark:focus:border-stone-100"
+      />
+      {value && (
+        <button
+          type="button"
+          onClick={() => onChange("")}
+          aria-label="Suche leeren"
+          className="absolute right-2 h-6 w-6 rounded text-stone-500 transition-colors hover:bg-stone-200 hover:text-stone-900 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+        >
+          ×
+        </button>
+      )}
+    </label>
   );
 }

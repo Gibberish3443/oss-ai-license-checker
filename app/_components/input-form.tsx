@@ -1,14 +1,20 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import type {
   License,
+  LicenseCategory,
   Model,
   TrainingDataRisk,
   UseCase,
   UseCaseId,
 } from "@/lib/types";
 
+export type FlowStep = "use-case" | "license" | "code" | "training" | "result";
+
 interface Props {
+  flowStep: FlowStep;
+  onFlowStepChange: (next: FlowStep) => void;
   models: Model[];
   licenses: License[];
   trainingRisks: TrainingDataRisk[];
@@ -20,10 +26,43 @@ interface Props {
   onCodeDepCountsChange: (next: Record<string, number>) => void;
   selectedTrainingRisks: string[];
   onTrainingRisksChange: (next: string[]) => void;
-  useCase: UseCaseId;
+  useCase: UseCaseId | null;
   onUseCaseChange: (next: UseCaseId) => void;
   onReset: () => void;
 }
+
+type CategoryFilter = LicenseCategory | "all";
+
+const FLOW_STEPS: Array<{ id: FlowStep; label: string; caption: string }> = [
+  { id: "use-case", label: "Use Case", caption: "Kontext" },
+  { id: "license", label: "Lizenzprofil", caption: "Modelle" },
+  { id: "code", label: "Code-Deps", caption: "Code" },
+  { id: "training", label: "Trainingsdaten", caption: "Risiko" },
+  { id: "result", label: "Ergebnis", caption: "Report" },
+];
+
+const CATEGORY_LABEL: Record<LicenseCategory, string> = {
+  "osi-permissive": "OSI permissive",
+  "osi-weak-copyleft": "Weak copyleft",
+  "osi-strong-copyleft": "Strong copyleft",
+  "public-domain": "Public domain",
+  "source-available-restricted": "Source-available",
+  "research-only": "Research-only",
+  "proprietary-api-only": "Proprietary/API",
+  "multi-tier-licensing": "Multi-tier",
+};
+
+const CATEGORY_HELP: Record<LicenseCategory, string> = {
+  "osi-permissive": "MIT, Apache, BSD und ähnliche Low-Friction-Lizenzen.",
+  "osi-weak-copyleft": "Copyleft mit engerem Trigger, etwa LGPL, MPL oder EPL.",
+  "osi-strong-copyleft": "GPL-/AGPL-nahe Pflichten mit höherer Integrationswirkung.",
+  "public-domain": "CC0, Unlicense und public-domain-nahe Freigaben.",
+  "source-available-restricted":
+    "Open weights mit Anbieterbedingungen, Schwellen oder AUP.",
+  "research-only": "Nicht-kommerzielle oder forschungsgebundene Regime.",
+  "proprietary-api-only": "Nur API-/Plattformnutzung, keine offene Gewichtslizenz.",
+  "multi-tier-licensing": "Mehrere Lizenzstufen je nach Nutzungsschwelle.",
+};
 
 const RISK_LABEL: Record<TrainingDataRisk["risk_level"], string> = {
   low: "niedrig",
@@ -32,16 +71,36 @@ const RISK_LABEL: Record<TrainingDataRisk["risk_level"], string> = {
 };
 
 const RISK_DOT: Record<TrainingDataRisk["risk_level"], string> = {
-  low: "bg-emerald-700 dark:bg-emerald-400",
-  medium: "bg-amber-700 dark:bg-amber-400",
-  high: "bg-red-700 dark:bg-red-400",
+  low: "bg-emerald-600 dark:bg-emerald-400",
+  medium: "bg-amber-600 dark:bg-amber-400",
+  high: "bg-red-600 dark:bg-red-400",
 };
 
 function toggleInArray(list: string[], value: string): string[] {
   return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
 }
 
+function uniqueCategories(categories: CategoryFilter[]): CategoryFilter[] {
+  return Array.from(new Set(categories));
+}
+
+function nextFlowStep(step: FlowStep): FlowStep {
+  const index = FLOW_STEPS.findIndex((s) => s.id === step);
+  return FLOW_STEPS[Math.min(index + 1, FLOW_STEPS.length - 1)].id;
+}
+
+function previousFlowStep(step: FlowStep): FlowStep {
+  const index = FLOW_STEPS.findIndex((s) => s.id === step);
+  return FLOW_STEPS[Math.max(index - 1, 0)].id;
+}
+
+function shortUseCaseName(name: string): string {
+  return name.replace(/\s*\(.*?\)\s*/g, "").trim();
+}
+
 export default function InputForm({
+  flowStep,
+  onFlowStepChange,
   models,
   licenses,
   trainingRisks,
@@ -57,250 +116,683 @@ export default function InputForm({
   onUseCaseChange,
   onReset,
 }: Props) {
-  function updateDepCount(licenseId: string, rawValue: string) {
+  const [modelCategory, setModelCategory] = useState<CategoryFilter>("all");
+  const [depCategory, setDepCategory] = useState<CategoryFilter>("all");
+
+  const selectedUseCase = useCase
+    ? (useCases.find((candidate) => candidate.id === useCase) ?? null)
+    : null;
+
+  const modelCategoryCounts = useMemo(() => {
+    const counts = new Map<LicenseCategory, number>();
+    for (const model of models) {
+      const category = licenseById.get(model.license_id)?.category;
+      if (!category) continue;
+      counts.set(category, (counts.get(category) ?? 0) + 1);
+    }
+    return counts;
+  }, [models, licenseById]);
+
+  const depCategoryCounts = useMemo(() => {
+    const counts = new Map<LicenseCategory, number>();
+    for (const license of licenses) {
+      counts.set(license.category, (counts.get(license.category) ?? 0) + 1);
+    }
+    return counts;
+  }, [licenses]);
+
+  const modelCategories = uniqueCategories([
+    "all",
+    ...models
+      .map((model) => licenseById.get(model.license_id)?.category)
+      .filter((category): category is LicenseCategory => Boolean(category)),
+  ]);
+
+  const depCategories = uniqueCategories([
+    "all",
+    ...licenses.map((license) => license.category),
+  ]);
+
+  const filteredModels = models.filter((model) => {
+    if (modelCategory === "all") return true;
+    return licenseById.get(model.license_id)?.category === modelCategory;
+  });
+
+  const filteredLicenses = licenses.filter((license) => {
+    if (depCategory === "all") return true;
+    return license.category === depCategory;
+  });
+
+  const selectedDepEntries = Object.entries(codeDepCounts)
+    .map(([licenseId, count]) => ({
+      licenseId,
+      count,
+      license: licenseById.get(licenseId),
+    }))
+    .filter((entry) => entry.count > 0);
+
+  const canAdvance =
+    (flowStep === "use-case" && Boolean(useCase)) ||
+    (flowStep === "license" && selectedModels.length > 0) ||
+    flowStep === "code" ||
+    flowStep === "training";
+
+  function selectUseCase(next: UseCaseId) {
+    onUseCaseChange(next);
+    onFlowStepChange("license");
+  }
+
+  function setDepCount(licenseId: string, nextCount: number) {
     const next = { ...codeDepCounts };
-    const parsed = Math.max(0, Math.min(999, Math.floor(Number(rawValue) || 0)));
-    if (parsed <= 0) {
+    const count = Math.max(0, Math.min(999, Math.floor(nextCount)));
+    if (count <= 0) {
       delete next[licenseId];
     } else {
-      next[licenseId] = parsed;
+      next[licenseId] = count;
     }
     onCodeDepCountsChange(next);
   }
 
-  function toggleDep(licenseId: string) {
-    if (codeDepCounts[licenseId]) {
-      const next = { ...codeDepCounts };
-      delete next[licenseId];
-      onCodeDepCountsChange(next);
-    } else {
-      onCodeDepCountsChange({ ...codeDepCounts, [licenseId]: 1 });
-    }
+  function continueFlow() {
+    if (!canAdvance) return;
+    onFlowStepChange(nextFlowStep(flowStep));
+  }
+
+  if (flowStep === "result") {
+    return (
+      <section className="flow-panel rounded-md border border-stone-300 bg-white/75 p-4 dark:border-stone-800 dark:bg-stone-950/60">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-stone-500 dark:text-stone-500">
+              Eingaben
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2 text-sm">
+              <SummaryPill label="Use Case" value={selectedUseCase?.name ?? "offen"} />
+              <SummaryPill label="Modelle" value={String(selectedModels.length)} />
+              <SummaryPill label="Code-Deps" value={String(selectedDepEntries.length)} />
+              <SummaryPill label="Risiken" value={String(selectedTrainingRisks.length)} />
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => onFlowStepChange("training")}
+              className="inline-flex h-9 items-center rounded-md border border-stone-300 px-3 text-sm transition-colors hover:border-stone-900 hover:bg-stone-100 dark:border-stone-700 dark:hover:border-stone-100 dark:hover:bg-stone-900"
+            >
+              Eingaben anpassen
+            </button>
+            <button
+              type="button"
+              onClick={onReset}
+              className="inline-flex h-9 items-center rounded-md border border-transparent px-3 text-sm text-stone-600 transition-colors hover:text-stone-950 dark:text-stone-400 dark:hover:text-stone-50"
+            >
+              Neu starten
+            </button>
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (
-    <form
-      className="flex flex-col gap-10"
-      onSubmit={(e) => e.preventDefault()}
-      aria-label="Eingabemaske"
-    >
-      <Section
-        rubric="Schritt 01 / Use-Case"
-        title="Use-Case"
-        description="Wofür soll die Kombination eingesetzt werden? Steuert, welche Szenario-Spalte der Matrix ausgewertet wird."
-      >
-        <fieldset className="divide-y divide-stone-200 dark:divide-stone-800">
-          <legend className="sr-only">Use-Case</legend>
-          {useCases.map((uc) => {
-            const active = useCase === uc.id;
-            return (
-              <label
-                key={uc.id}
-                className={`flex cursor-pointer gap-3 py-2.5 text-sm transition-colors ${
-                  active
-                    ? "border-l-2 border-[var(--accent-ink)] bg-stone-100 pl-3 dark:bg-stone-900"
-                    : "border-l-2 border-transparent pl-3 hover:bg-stone-50 dark:hover:bg-stone-900/60"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="useCase"
-                  value={uc.id}
-                  checked={active}
-                  onChange={() => onUseCaseChange(uc.id)}
-                  className="mt-1 accent-stone-800 dark:accent-stone-200"
-                />
-                <span className="flex-1">
-                  <span className="block font-medium">{uc.name}</span>
-                  <span className="mt-1 block text-xs text-stone-600 dark:text-stone-400">
-                    {uc.description}
-                  </span>
-                </span>
-              </label>
-            );
-          })}
-        </fieldset>
-      </Section>
+    <section className="flow-panel" aria-label="Geführter Lizenzcheck">
+      {flowStep !== "use-case" && (
+        <StepRail
+          flowStep={flowStep}
+          selectedUseCase={selectedUseCase}
+          selectedModels={selectedModels.length}
+          selectedDeps={selectedDepEntries.length}
+          selectedTrainingRisks={selectedTrainingRisks.length}
+          onStepClick={onFlowStepChange}
+        />
+      )}
 
-      <Section
-        rubric="Schritt 02 / Modelle"
-        title="Modelle"
-        description="Welche Open-Weight-Modelle sollen geprüft werden? Jedes Modell zieht seine Modelllizenz in die Matrix."
-      >
-        <fieldset className="divide-y divide-stone-200 dark:divide-stone-800">
-          <legend className="sr-only">Modelle</legend>
-          {models.map((m) => {
-            const license = licenseById.get(m.license_id);
-            const checked = selectedModels.includes(m.id);
-            return (
-              <label
-                key={m.id}
-                className={`flex cursor-pointer gap-3 py-2.5 text-sm transition-colors ${
-                  checked
-                    ? "border-l-2 border-[var(--accent-ink)] bg-stone-100 pl-3 dark:bg-stone-900"
-                    : "border-l-2 border-transparent pl-3 hover:bg-stone-50 dark:hover:bg-stone-900/60"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={checked}
-                  onChange={() => onModelsChange(toggleInArray(selectedModels, m.id))}
-                  className="mt-1 accent-stone-800 dark:accent-stone-200"
-                />
-                <span className="flex-1">
-                  <span className="block font-medium">{m.name}</span>
-                  <span className="mt-0.5 block text-xs text-stone-600 dark:text-stone-400">
-                    {m.vendor}
-                  </span>
-                  <span className="mt-1 inline-block font-mono text-[11px] uppercase tracking-[0.12em] text-stone-500 dark:text-stone-400">
-                    {license?.name ?? m.license_id}
-                  </span>
-                </span>
-              </label>
-            );
-          })}
-        </fieldset>
-      </Section>
+      {flowStep === "use-case" && (
+        <UseCaseMatrix useCases={useCases} useCase={useCase} onSelect={selectUseCase} />
+      )}
 
-      <Section
-        rubric="Schritt 03 / Code-Deps"
-        title="Code-Abhängigkeiten"
-        description="Lizenzen der im Projekt verwendeten Libraries. Mehrere Deps pro Lizenz? Anzahl rechts anpassen."
-      >
-        <fieldset className="divide-y divide-stone-200 dark:divide-stone-800">
-          <legend className="sr-only">Code-Abhängigkeiten</legend>
-          {licenses.map((l) => {
-            const count = codeDepCounts[l.id] ?? 0;
-            const active = count > 0;
-            return (
-              <div
-                key={l.id}
-                className={`flex items-start gap-3 py-2.5 text-sm transition-colors ${
-                  active
-                    ? "border-l-2 border-[var(--accent-ink)] bg-stone-100 pl-3 dark:bg-stone-900"
-                    : "border-l-2 border-transparent pl-3"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={active}
-                  onChange={() => toggleDep(l.id)}
-                  className="mt-1 accent-stone-800 dark:accent-stone-200"
-                  aria-label={`${l.name} als Abhängigkeit aufnehmen`}
-                />
-                <div className="flex-1">
-                  <div className="flex items-start justify-between gap-2">
+      {flowStep === "license" && (
+        <StepFrame
+          kicker="Schritt 02"
+          title="Lizenzprofil und Modelle"
+          description="Erst die Lizenzkategorie, dann die konkreten Modelle. So bleibt die Auswahl lesbar, auch wenn der Katalog wächst."
+          onBack={() => onFlowStepChange(previousFlowStep(flowStep))}
+          onNext={continueFlow}
+          nextLabel="Weiter zu Code-Deps"
+          nextDisabled={!canAdvance}
+        >
+          <CategoryChooser
+            categories={modelCategories}
+            counts={modelCategoryCounts}
+            value={modelCategory}
+            onChange={setModelCategory}
+          />
+
+          <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {filteredModels.map((model) => {
+              const license = licenseById.get(model.license_id);
+              const checked = selectedModels.includes(model.id);
+              return (
+                <button
+                  key={model.id}
+                  type="button"
+                  onClick={() => onModelsChange(toggleInArray(selectedModels, model.id))}
+                  className={`group min-h-[112px] rounded-md border p-3 text-left transition-colors ${
+                    checked
+                      ? "border-stone-950 bg-stone-950 text-stone-50 shadow-sm dark:border-stone-50 dark:bg-stone-50 dark:text-stone-950"
+                      : "border-stone-300 bg-white/70 hover:border-stone-900 hover:bg-white dark:border-stone-800 dark:bg-stone-950/50 dark:hover:border-stone-100 dark:hover:bg-stone-950"
+                  }`}
+                  aria-pressed={checked}
+                >
+                  <div className="flex items-start justify-between gap-4">
                     <div>
-                      <span className="block font-medium">{l.name}</span>
-                      <span className="mt-0.5 block text-xs text-stone-600 dark:text-stone-400">
-                        {l.category}
-                      </span>
+                      <div className="text-[15px] font-semibold leading-tight">
+                        {model.name}
+                      </div>
+                      <div
+                        className={`mt-1 text-xs ${
+                          checked
+                            ? "text-stone-300 dark:text-stone-700"
+                            : "text-stone-600 dark:text-stone-400"
+                        }`}
+                      >
+                        {model.vendor}
+                      </div>
                     </div>
-                    <label className="flex items-baseline gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-stone-500 dark:text-stone-400">
-                      <span aria-hidden="true">Anzahl</span>
-                      <input
-                        type="number"
-                        min={0}
-                        max={999}
-                        value={count}
-                        onChange={(e) => updateDepCount(l.id, e.target.value)}
-                        aria-label={`Anzahl Abhängigkeiten mit Lizenz ${l.name}`}
-                        className="w-14 border-0 border-b border-stone-400 bg-transparent px-0 py-0.5 text-right font-mono text-sm text-stone-900 focus:border-[var(--accent-ink)] focus:outline-none focus:ring-0 dark:border-stone-600 dark:text-stone-100"
-                      />
-                    </label>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </fieldset>
-      </Section>
-
-      <Section
-        rubric="Schritt 04 / Trainingsdaten"
-        title="Trainingsdaten-Risiken"
-        description="Bekannte Risiken aus den Trainingskorpora der eingesetzten Modelle. Optional, beeinflusst die Ampel ab Risiko „mittel“."
-      >
-        <fieldset className="divide-y divide-stone-200 dark:divide-stone-800">
-          <legend className="sr-only">Trainingsdaten-Risiken</legend>
-          {trainingRisks.map((r) => {
-            const checked = selectedTrainingRisks.includes(r.id);
-            return (
-              <label
-                key={r.id}
-                className={`flex cursor-pointer gap-3 py-2.5 text-sm transition-colors ${
-                  checked
-                    ? "border-l-2 border-[var(--accent-ink)] bg-stone-100 pl-3 dark:bg-stone-900"
-                    : "border-l-2 border-transparent pl-3 hover:bg-stone-50 dark:hover:bg-stone-900/60"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={checked}
-                  onChange={() =>
-                    onTrainingRisksChange(toggleInArray(selectedTrainingRisks, r.id))
-                  }
-                  className="mt-1 accent-stone-800 dark:accent-stone-200"
-                />
-                <span className="flex-1">
-                  <span className="flex items-center gap-2">
-                    <span className="font-medium">{r.name}</span>
                     <span
-                      className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-stone-500 dark:text-stone-400"
-                      aria-label={`Risiko ${RISK_LABEL[r.risk_level]}`}
+                      className={`h-5 min-w-5 border text-center font-mono text-[11px] leading-5 ${
+                        checked
+                          ? "border-stone-50 dark:border-stone-950"
+                          : "border-stone-400 dark:border-stone-600"
+                      }`}
+                      aria-hidden="true"
+                    >
+                      {checked ? "✓" : "+"}
+                    </span>
+                  </div>
+                  <div
+                    className={`mt-4 font-mono text-[10px] uppercase tracking-[0.15em] ${
+                      checked
+                        ? "text-stone-300 dark:text-stone-700"
+                        : "text-stone-500 dark:text-stone-500"
+                    }`}
+                  >
+                    {license ? CATEGORY_LABEL[license.category] : model.license_id}
+                  </div>
+                  <p
+                    className={`mt-2 line-clamp-2 text-xs leading-relaxed ${
+                      checked
+                        ? "text-stone-200 dark:text-stone-700"
+                        : "text-stone-600 dark:text-stone-400"
+                    }`}
+                  >
+                    {license?.name ?? model.license_id}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+        </StepFrame>
+      )}
+
+      {flowStep === "code" && (
+        <StepFrame
+          kicker="Schritt 03"
+          title="Code Dependencies"
+          description="Keine lange Checkboxwand: Lizenzchips wählen, Anzahl per Stepper setzen, Auswahl unten kontrollieren."
+          onBack={() => onFlowStepChange(previousFlowStep(flowStep))}
+          onNext={continueFlow}
+          nextLabel="Weiter zu Trainingsdaten"
+        >
+          <CategoryChooser
+            categories={depCategories}
+            counts={depCategoryCounts}
+            value={depCategory}
+            onChange={setDepCategory}
+          />
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {filteredLicenses.map((license) => {
+              const count = codeDepCounts[license.id] ?? 0;
+              return (
+                <div
+                  key={license.id}
+                  className={`rounded-md border p-3 transition-colors ${
+                    count > 0
+                      ? "border-stone-950 bg-stone-950 text-stone-50 dark:border-stone-50 dark:bg-stone-50 dark:text-stone-950"
+                      : "border-stone-300 bg-white/60 dark:border-stone-800 dark:bg-stone-950/50"
+                  }`}
+                >
+                  <div className="flex min-h-[58px] flex-col">
+                    <span className="font-medium leading-tight">{license.name}</span>
+                    <span
+                      className={`mt-2 font-mono text-[10px] uppercase tracking-[0.16em] ${
+                        count > 0
+                          ? "text-stone-300 dark:text-stone-700"
+                          : "text-stone-500 dark:text-stone-500"
+                      }`}
+                    >
+                      {CATEGORY_LABEL[license.category]}
+                    </span>
+                  </div>
+                  <Stepper
+                    value={count}
+                    onDecrease={() => setDepCount(license.id, count - 1)}
+                    onIncrease={() => setDepCount(license.id, count + 1)}
+                    onClear={() => setDepCount(license.id, 0)}
+                    active={count > 0}
+                    label={license.name}
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          <SelectionTray
+            entries={selectedDepEntries}
+            onRemove={(licenseId) => setDepCount(licenseId, 0)}
+          />
+        </StepFrame>
+      )}
+
+      {flowStep === "training" && (
+        <StepFrame
+          kicker="Schritt 04"
+          title="Trainingsdaten-Risiken"
+          description="Optionaler Kontext für die Ampel. Die Auswahl bleibt kompakt und wird später im Ergebnis getrennt ausgewiesen."
+          onBack={() => onFlowStepChange(previousFlowStep(flowStep))}
+          onNext={continueFlow}
+          nextLabel="Ergebnis anzeigen"
+        >
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {trainingRisks.map((risk) => {
+              const checked = selectedTrainingRisks.includes(risk.id);
+              return (
+                <button
+                  key={risk.id}
+                  type="button"
+                  onClick={() =>
+                    onTrainingRisksChange(
+                      toggleInArray(selectedTrainingRisks, risk.id),
+                    )
+                  }
+                  className={`min-h-[104px] rounded-md border p-3 text-left transition-colors ${
+                    checked
+                      ? "border-stone-950 bg-stone-950 text-stone-50 shadow-sm dark:border-stone-50 dark:bg-stone-50 dark:text-stone-950"
+                      : "border-stone-300 bg-white/70 hover:border-stone-900 hover:bg-white dark:border-stone-800 dark:bg-stone-950/50 dark:hover:border-stone-100 dark:hover:bg-stone-950"
+                  }`}
+                  aria-pressed={checked}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <span className="text-[15px] font-semibold leading-tight">
+                      {risk.name}
+                    </span>
+                    <span
+                      className={`inline-flex items-center gap-2 whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.16em] ${
+                        checked
+                          ? "text-stone-300 dark:text-stone-700"
+                          : "text-stone-500 dark:text-stone-500"
+                      }`}
                     >
                       <span
                         aria-hidden="true"
-                        className={`inline-block h-1.5 w-1.5 rounded-full ${RISK_DOT[r.risk_level]}`}
+                        className={`h-2 w-2 rounded-full ${RISK_DOT[risk.risk_level]}`}
                       />
-                      {RISK_LABEL[r.risk_level]}
+                      {RISK_LABEL[risk.risk_level]}
                     </span>
-                  </span>
-                </span>
-              </label>
-            );
-          })}
-        </fieldset>
-      </Section>
-
-      <div className="flex justify-end">
-        <button
-          type="button"
-          onClick={onReset}
-          className="font-serif text-[14px] italic text-stone-600 transition-colors hover:text-[var(--accent-gold)] dark:text-stone-400 dark:hover:text-[var(--accent-gold)]"
-        >
-          Eingaben zurücksetzen
-        </button>
-      </div>
-    </form>
+                  </div>
+                  <p
+                    className={`mt-4 text-xs leading-relaxed ${
+                      checked
+                        ? "text-stone-200 dark:text-stone-700"
+                        : "text-stone-600 dark:text-stone-400"
+                    }`}
+                  >
+                    {risk.legal_issues[0]?.issue ?? "Prüfhinweis"}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+        </StepFrame>
+      )}
+    </section>
   );
 }
 
-function Section({
-  rubric,
+function UseCaseMatrix({
+  useCases,
+  useCase,
+  onSelect,
+}: {
+  useCases: UseCase[];
+  useCase: UseCaseId | null;
+  onSelect: (next: UseCaseId) => void;
+}) {
+  return (
+    <div className="flow-panel rounded-md border border-stone-300 bg-white/75 p-4 dark:border-stone-800 dark:bg-stone-950/60 sm:p-6">
+      <div className="mb-5 max-w-2xl">
+        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-stone-500 dark:text-stone-500">
+          Startpunkt
+        </p>
+        <h2 className="mt-2 text-2xl font-semibold leading-tight sm:text-3xl">
+          Wofür wird die KI-Komposition eingesetzt?
+        </h2>
+        <p className="mt-3 max-w-[62ch] text-sm leading-relaxed text-stone-600 dark:text-stone-400">
+          Erst der Kontext, dann die Details. Die vier Use Cases bestimmen, welche
+          Lizenzpflichten in der Matrix scharf gestellt werden.
+        </p>
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-2">
+        {useCases.map((candidate, index) => {
+          const active = useCase === candidate.id;
+          return (
+            <button
+              key={candidate.id}
+              type="button"
+              onClick={() => onSelect(candidate.id)}
+              className={`group min-h-[150px] rounded-md border p-4 text-left transition-colors duration-200 ${
+                active
+                  ? "border-stone-950 bg-stone-950 text-stone-50 dark:border-stone-50 dark:bg-stone-50 dark:text-stone-950"
+                  : "border-stone-300 bg-white/75 hover:border-stone-950 hover:bg-white dark:border-stone-800 dark:bg-stone-950/50 dark:hover:border-stone-100 dark:hover:bg-stone-950"
+              }`}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <span
+                  className={`font-mono text-[11px] uppercase tracking-[0.2em] ${
+                    active
+                      ? "text-stone-300 dark:text-stone-700"
+                      : "text-stone-500 dark:text-stone-500"
+                  }`}
+                >
+                  0{index + 1}
+                </span>
+                <span
+                  className={`inline-flex h-7 w-7 items-center justify-center rounded-md border text-sm transition-transform group-hover:translate-x-0.5 ${
+                    active
+                      ? "border-stone-50 dark:border-stone-950"
+                      : "border-stone-400 dark:border-stone-600"
+                  }`}
+                  aria-hidden="true"
+                >
+                  →
+                </span>
+              </div>
+              <h3 className="mt-6 text-lg font-semibold leading-tight">
+                {shortUseCaseName(candidate.name)}
+              </h3>
+              <p
+                className={`mt-2 line-clamp-2 text-sm leading-relaxed ${
+                  active
+                    ? "text-stone-200 dark:text-stone-700"
+                    : "text-stone-600 dark:text-stone-400"
+                }`}
+              >
+                {candidate.description}
+              </p>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function StepRail({
+  flowStep,
+  selectedUseCase,
+  selectedModels,
+  selectedDeps,
+  selectedTrainingRisks,
+  onStepClick,
+}: {
+  flowStep: FlowStep;
+  selectedUseCase: UseCase | null;
+  selectedModels: number;
+  selectedDeps: number;
+  selectedTrainingRisks: number;
+  onStepClick: (next: FlowStep) => void;
+}) {
+  const currentIndex = FLOW_STEPS.findIndex((step) => step.id === flowStep);
+
+  return (
+    <div className="mb-5">
+      <div className="grid grid-cols-2 gap-1 rounded-md border border-stone-300 bg-stone-100 p-1 dark:border-stone-800 dark:bg-stone-900 sm:grid-cols-4">
+        {FLOW_STEPS.slice(0, -1).map((step, index) => {
+          const active = step.id === flowStep;
+          const done = index < currentIndex;
+          return (
+            <button
+              key={step.id}
+              type="button"
+              onClick={() => onStepClick(step.id)}
+              className={`rounded px-3 py-2 text-left transition-colors ${
+                active
+                  ? "bg-stone-950 text-stone-50 shadow-sm dark:bg-stone-50 dark:text-stone-950"
+                  : done
+                    ? "bg-white text-stone-800 dark:bg-stone-950 dark:text-stone-200"
+                    : "text-stone-500 hover:bg-white/70 dark:text-stone-500 dark:hover:bg-stone-950/70"
+              }`}
+            >
+              <span className="block font-mono text-[10px] uppercase tracking-[0.18em]">
+                {step.caption}
+              </span>
+              <span className="mt-1 block text-sm font-medium">{step.label}</span>
+            </button>
+          );
+        })}
+      </div>
+      <div className="mt-3 hidden flex-wrap gap-2 md:flex">
+        <SummaryPill label="Use Case" value={selectedUseCase?.name ?? "offen"} />
+        <SummaryPill label="Modelle" value={String(selectedModels)} />
+        <SummaryPill label="Code-Deps" value={String(selectedDeps)} />
+        <SummaryPill label="Risiken" value={String(selectedTrainingRisks)} />
+      </div>
+    </div>
+  );
+}
+
+function StepFrame({
+  kicker,
   title,
   description,
   children,
+  onBack,
+  onNext,
+  nextLabel,
+  nextDisabled = false,
 }: {
-  rubric: string;
+  kicker: string;
   title: string;
   description: string;
   children: React.ReactNode;
+  onBack: () => void;
+  onNext: () => void;
+  nextLabel: string;
+  nextDisabled?: boolean;
 }) {
   return (
-    <section className="border-t border-stone-300 pt-8 first:border-t-0 first:pt-0 dark:border-stone-700">
+    <div className="flow-panel rounded-md border border-stone-300 bg-white/75 p-4 dark:border-stone-800 dark:bg-stone-950/60 sm:p-6">
       <header className="mb-5">
         <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-stone-500 dark:text-stone-500">
-          {rubric}
+          {kicker}
         </p>
-        <h2 className="mt-2 font-serif text-[28px] leading-[1.05] tracking-tight">
+        <h2 className="mt-2 text-2xl font-semibold leading-tight">
           {title}
         </h2>
-        <p className="mt-3 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
+        <p className="mt-2 max-w-[62ch] text-sm leading-relaxed text-stone-600 dark:text-stone-400">
           {description}
         </p>
       </header>
+
       {children}
-    </section>
+
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-stone-300 pt-4 dark:border-stone-700">
+        <button
+          type="button"
+          onClick={onBack}
+          className="inline-flex h-10 items-center rounded-md border border-stone-300 px-4 text-sm transition-colors hover:border-stone-950 hover:bg-stone-100 dark:border-stone-700 dark:hover:border-stone-50 dark:hover:bg-stone-900"
+        >
+          Zurück
+        </button>
+        <button
+          type="button"
+          onClick={onNext}
+          disabled={nextDisabled}
+          className="inline-flex h-10 items-center rounded-md bg-stone-950 px-5 text-sm font-medium text-stone-50 transition-colors hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-300 disabled:text-stone-500 dark:bg-stone-50 dark:text-stone-950 dark:hover:bg-stone-200 dark:disabled:bg-stone-800 dark:disabled:text-stone-500"
+        >
+          {nextLabel}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function CategoryChooser({
+  categories,
+  counts,
+  value,
+  onChange,
+}: {
+  categories: CategoryFilter[];
+  counts: Map<LicenseCategory, number>;
+  value: CategoryFilter;
+  onChange: (next: CategoryFilter) => void;
+}) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {categories.map((category) => {
+        const active = value === category;
+        const label = category === "all" ? "Alle Kategorien" : CATEGORY_LABEL[category];
+        const count =
+          category === "all"
+            ? Array.from(counts.values()).reduce((sum, item) => sum + item, 0)
+            : counts.get(category) ?? 0;
+        return (
+          <button
+            key={category}
+            type="button"
+            onClick={() => onChange(category)}
+            title={category === "all" ? "Gesamten Katalog zeigen." : CATEGORY_HELP[category]}
+            className={`inline-flex h-9 items-center gap-2 rounded-md border px-3 text-sm transition-colors ${
+              active
+                ? "border-stone-950 bg-stone-950 text-stone-50 dark:border-stone-50 dark:bg-stone-50 dark:text-stone-950"
+                : "border-stone-300 bg-white/70 hover:border-stone-900 hover:bg-white dark:border-stone-800 dark:bg-stone-950/50 dark:hover:border-stone-100"
+            }`}
+          >
+            <span>{label}</span>
+            <span
+              className={`font-mono text-[10px] uppercase tracking-[0.14em] ${
+                active
+                  ? "text-stone-200 dark:text-stone-700"
+                  : "text-stone-500 dark:text-stone-500"
+              }`}
+            >
+              {count}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function Stepper({
+  value,
+  onDecrease,
+  onIncrease,
+  onClear,
+  active,
+  label,
+}: {
+  value: number;
+  onDecrease: () => void;
+  onIncrease: () => void;
+  onClear: () => void;
+  active: boolean;
+  label: string;
+}) {
+  return (
+    <div className="mt-4 flex items-center justify-between gap-2">
+      <div className="inline-grid grid-cols-[34px_42px_34px] overflow-hidden rounded-md border border-current/30">
+        <button
+          type="button"
+          onClick={onDecrease}
+          className="h-8 border-r border-current/30 text-lg leading-none transition-colors hover:bg-current/10"
+          aria-label={`${label} reduzieren`}
+        >
+          -
+        </button>
+        <output className="grid h-8 place-items-center font-mono text-sm">{value}</output>
+        <button
+          type="button"
+          onClick={onIncrease}
+          className="h-8 border-l border-current/30 text-lg leading-none transition-colors hover:bg-current/10"
+          aria-label={`${label} erhöhen`}
+        >
+          +
+        </button>
+      </div>
+      {active && (
+        <button
+          type="button"
+          onClick={onClear}
+          className="font-mono text-[10px] uppercase tracking-[0.16em] opacity-70 transition-opacity hover:opacity-100"
+        >
+          Entfernen
+        </button>
+      )}
+    </div>
+  );
+}
+
+function SelectionTray({
+  entries,
+  onRemove,
+}: {
+  entries: Array<{ licenseId: string; count: number; license?: License }>;
+  onRemove: (licenseId: string) => void;
+}) {
+  if (entries.length === 0) {
+    return (
+      <div className="mt-5 rounded-md border border-dashed border-stone-300 p-4 text-sm text-stone-500 dark:border-stone-800 dark:text-stone-500">
+        Noch keine Code-Lizenzen ausgewählt. Du kannst den Check auch ohne
+        Code-Schicht fortsetzen.
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-5 rounded-md border border-stone-300 bg-stone-100/70 p-4 dark:border-stone-800 dark:bg-stone-900/60">
+      <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-stone-500 dark:text-stone-500">
+        Ausgewählte Code-Schicht
+      </p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {entries.map((entry) => (
+          <button
+            key={entry.licenseId}
+            type="button"
+            onClick={() => onRemove(entry.licenseId)}
+            className="inline-flex items-center gap-2 rounded-md border border-stone-300 bg-white px-3 py-2 text-sm transition-colors hover:border-red-700 hover:text-red-700 dark:border-stone-700 dark:bg-stone-950 dark:hover:border-red-400 dark:hover:text-red-300"
+          >
+            <span>{entry.license?.name ?? entry.licenseId}</span>
+            <span className="font-mono text-xs text-stone-500">x{entry.count}</span>
+            <span aria-hidden="true">×</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SummaryPill({ label, value }: { label: string; value: string }) {
+  return (
+    <span className="inline-flex max-w-full items-center gap-2 rounded border border-stone-300 px-2.5 py-1 text-xs dark:border-stone-700">
+      <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-stone-500 dark:text-stone-500">
+        {label}
+      </span>
+      <span className="truncate text-stone-800 dark:text-stone-200">{value}</span>
+    </span>
   );
 }

@@ -2,10 +2,12 @@
 
 import type {
   CheckResult,
+  ComplianceFlagFinding,
+  FindingSeverity,
   License,
   Model,
-  OverallRisk,
-  TrainingDataRisk,
+  PairFinding,
+  TrainingRiskFinding,
   UseCase,
 } from "@/lib/types";
 import MatrixGrid from "./matrix-grid";
@@ -15,64 +17,39 @@ interface Props {
   useCase: UseCase;
   modelById: Map<string, Model>;
   licenseById: Map<string, License>;
-  riskById: Map<string, TrainingDataRisk>;
 }
 
-const RISK_HEADLINE: Record<OverallRisk, string> = {
-  green: "Grün — tragfähig",
-  yellow: "Gelb — mit Auflagen tragfähig",
-  red: "Rot — nicht tragfähig",
-  missing: "Ungeprüft — Matrix unvollständig",
+const VERDICT_LABEL: Record<CheckResult["overallRisk"], string> = {
+  green: "Grün",
+  yellow: "Gelb",
+  red: "Rot",
+  missing: "Ungeprüft",
 };
 
-const RISK_DESCRIPTION: Record<OverallRisk, string> = {
+const VERDICT_FRAME: Record<CheckResult["overallRisk"], string> = {
   green:
-    "Alle geprüften Lizenzpaare sind im gewählten Use-Case kompatibel. Keine Auflagen, keine Trainingsdaten-Flags mit relevantem Risikolevel.",
+    "border-emerald-200 bg-emerald-50 text-emerald-950 dark:border-emerald-900 dark:bg-emerald-950/35 dark:text-emerald-50",
   yellow:
-    "Einsatz grundsätzlich möglich, aber es gibt Bedingungen (z. B. NOTICE-Pflicht, Network-Copyleft, mittelschwerer Trainingsdaten-Hinweis). Auflagen vor Produktiveinsatz umsetzen.",
+    "border-amber-200 bg-amber-50 text-amber-950 dark:border-amber-900 dark:bg-amber-950/35 dark:text-amber-50",
   red:
-    "Mindestens ein Paar ist im gewählten Use-Case inkompatibel oder eine Lizenz scheitert hart am Use-Case. Kombination so nicht tragfähig.",
+    "border-red-200 bg-red-50 text-red-950 dark:border-red-900 dark:bg-red-950/35 dark:text-red-50",
   missing:
-    "Mindestens ein Lizenzpaar fehlt in der kuratierten Matrix. Ergebnis ist ungeprüft — Paare müssen manuell bewertet werden, bevor eine Ampel vergeben werden kann.",
+    "border-stone-300 bg-stone-100 text-stone-950 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-50",
 };
 
-const RISK_HERO_BG: Record<OverallRisk, string> = {
-  green: "bg-emerald-50 dark:bg-emerald-950/30",
-  yellow: "bg-amber-50 dark:bg-amber-950/30",
-  red: "bg-red-50 dark:bg-red-950/30",
-  missing: "bg-stone-100 dark:bg-stone-900/60",
+const FINDING_LINE: Record<FindingSeverity, string> = {
+  conflict: "border-red-700 dark:border-red-400",
+  notice: "border-amber-700 dark:border-amber-400",
 };
 
-const RISK_INK: Record<OverallRisk, string> = {
-  green: "text-emerald-900 dark:text-emerald-100",
-  yellow: "text-amber-900 dark:text-amber-100",
-  red: "text-red-900 dark:text-red-100",
-  missing: "text-stone-900 dark:text-stone-100",
+const FINDING_INK: Record<FindingSeverity, string> = {
+  conflict: "text-red-800 dark:text-red-300",
+  notice: "text-amber-800 dark:text-amber-300",
 };
 
-const RISK_RUBRIC_INK: Record<OverallRisk, string> = {
-  green: "text-emerald-800 dark:text-emerald-300",
-  yellow: "text-amber-800 dark:text-amber-300",
-  red: "text-red-800 dark:text-red-300",
-  missing: "text-stone-700 dark:text-stone-300",
-};
-
-const SEVERITY_LINE: Record<"high" | "medium" | "low", string> = {
-  high: "border-red-700 dark:border-red-400",
-  medium: "border-amber-700 dark:border-amber-400",
-  low: "border-emerald-700 dark:border-emerald-400",
-};
-
-const SEVERITY_INK: Record<"high" | "medium" | "low", string> = {
-  high: "text-red-800 dark:text-red-300",
-  medium: "text-amber-800 dark:text-amber-300",
-  low: "text-emerald-800 dark:text-emerald-300",
-};
-
-const SEVERITY_LABEL: Record<"high" | "medium" | "low", string> = {
-  high: "hoch",
-  medium: "mittel",
-  low: "niedrig",
+const FINDING_LABEL: Record<FindingSeverity, string> = {
+  conflict: "Konflikt",
+  notice: "Hinweis",
 };
 
 export default function ResultView({
@@ -80,250 +57,255 @@ export default function ResultView({
   useCase,
   modelById,
   licenseById,
-  riskById,
 }: Props) {
-  const risk = result.overallRisk;
-  const unreviewedMatrixCells = result.matrix
-    .flat()
-    .filter((cell) => cell.reviewed_by_user === false).length;
+  const pairFindings = result.findings.filter(
+    (finding): finding is PairFinding => finding.kind === "pair",
+  );
+  const trainingFindings = result.findings.filter(
+    (finding): finding is TrainingRiskFinding =>
+      finding.kind === "training-data",
+  );
+  const complianceFindings = result.findings.filter(
+    (finding): finding is ComplianceFlagFinding =>
+      finding.kind === "compliance",
+  );
+  const conflictFindings = pairFindings.filter(
+    (finding) => finding.severity === "conflict",
+  );
+  const noticeFindings = pairFindings.filter(
+    (finding) => finding.severity === "notice",
+  );
 
   return (
-    <div>
-      <div
+    <section className="space-y-5">
+      <header
         role="status"
         aria-live="polite"
-        className={`border-b border-stone-300 dark:border-stone-700 ${RISK_HERO_BG[risk]} -mx-4 px-4 py-10 sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10`}
+        className={`rounded-md border p-4 ${VERDICT_FRAME[result.overallRisk]}`}
       >
-        <p
-          className={`font-mono text-[11px] uppercase tracking-[0.22em] ${RISK_RUBRIC_INK[risk]}`}
-        >
-          Verdikt
-        </p>
-        <h2
-          className={`mt-3 font-serif text-[48px] leading-[1.02] tracking-tight ${RISK_INK[risk]}`}
-        >
-          {RISK_HEADLINE[risk]}
-        </h2>
-        <p
-          className={`mt-5 max-w-[60ch] text-[17px] leading-[1.55] ${RISK_INK[risk]}`}
-        >
-          {RISK_DESCRIPTION[risk]}
-        </p>
-        <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.18em] text-stone-600 dark:text-stone-400">
-          Use-Case: {useCase.name} · Modelle: {result.rows.length} · Code-Lizenzen:{" "}
-          {result.cols.length} · Matrix: {result.complete ? "vollständig" : "unvollständig"}
-        </p>
-        {unreviewedMatrixCells > 0 && (
-          <p className="mt-3 max-w-[60ch] text-sm leading-relaxed text-stone-700 dark:text-stone-300">
-            {unreviewedMatrixCells} Matrixzellen basieren auf generischer
-            Einordnung und sind noch nicht als manuell reviewed markiert.
-          </p>
-        )}
+        <div className="grid gap-4 lg:grid-cols-[minmax(220px,1fr)_auto] lg:items-end">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] opacity-70">
+              Verdikt
+            </p>
+            <h2 className="mt-1 text-2xl font-semibold leading-tight">
+              {VERDICT_LABEL[result.overallRisk]}
+            </h2>
+            <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] opacity-70">
+              Use Case
+            </p>
+            <p className="mt-1 text-sm font-medium leading-snug">{useCase.name}</p>
+          </div>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:w-[380px]">
+            <Metric label="Modelle" value={String(result.rows.length)} />
+            <Metric label="Code-Deps" value={String(result.cols.length)} />
+            <Metric label="Konflikte" value={String(conflictFindings.length)} />
+            <Metric label="Hinweise" value={String(noticeFindings.length)} />
+          </div>
+        </div>
+      </header>
+
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.8fr)]">
+        <div className="space-y-5">
+          {conflictFindings.length > 0 && (
+            <FindingGroup title="Konflikte" findings={conflictFindings} />
+          )}
+          {noticeFindings.length > 0 && (
+            <FindingGroup title="Hinweise" findings={noticeFindings} />
+          )}
+        </div>
+
+        <aside className="space-y-5">
+          {trainingFindings.length > 0 && (
+            <TrainingPanel findings={trainingFindings} />
+          )}
+          {complianceFindings.length > 0 && (
+            <CompliancePanel findings={complianceFindings} />
+          )}
+          {result.recommendations.length > 0 && (
+            <Recommendations recommendations={result.recommendations.slice(0, 5)} />
+          )}
+        </aside>
       </div>
 
-      <ReportSection rubric="Matrix" title="Kompatibilitätsmatrix">
-        <p className="mb-6 text-sm text-stone-600 dark:text-stone-400">
-          Zeilen = Modelle, Spalten = deduplizierte Code-Lizenzen. Status bezieht sich
-          auf den aktuellen Use-Case. Begründung und Auflagen stehen jeweils direkt in
-          der Zelle.
-        </p>
-        <MatrixGrid
-          result={result}
-          modelById={modelById}
-          licenseById={licenseById}
-        />
-      </ReportSection>
+      <p className="border-t border-stone-300 pt-3 font-mono text-[10px] uppercase leading-relaxed tracking-[0.16em] text-stone-500 dark:border-stone-700 dark:text-stone-500">
+        Kein Rechtsrat. Der Report zeigt nur kuratierte Katalogregeln und lokale
+        Lizenz-Snapshots; keine KI-generierte Rechtseinschätzung.
+      </p>
 
-      {result.missingPairs.length > 0 && (
-        <ReportSection
-          rubric="Fehlende Paare"
-          title="Fehlende Matrix-Paare"
-        >
-          <p className="mb-4 text-sm text-stone-600 dark:text-stone-400">
-            Diese Paare sind in der kuratierten Matrix nicht bewertet und müssen vor
-            Produktiveinsatz manuell geprüft werden.
-          </p>
-          <ul className="space-y-2">
-            {result.missingPairs.map((p) => (
-              <li
-                key={`${p.license_a}|${p.license_b}|${p.context}`}
-                className="border-l-2 border-stone-400 pl-4 py-1 font-mono text-sm dark:border-stone-600"
-              >
-                {p.license_a} ↔ {p.license_b}
-                <span className="ml-2 text-xs text-stone-500 dark:text-stone-400">
-                  ({p.context})
-                </span>
-              </li>
-            ))}
-          </ul>
-        </ReportSection>
-      )}
-
-      {result.modelCodeConflicts.length > 0 && (
-        <ReportSection rubric="Konflikte" title="Lizenz-Konflikte">
-          <ul className="space-y-4">
-            {result.modelCodeConflicts.map((c, i) => (
-              <li
-                key={`${c.license_a}|${c.license_b}|${c.severity}|${i}`}
-                className={`border-l-2 pl-4 py-2 ${SEVERITY_LINE[c.severity]}`}
-              >
-                <div className="flex flex-wrap items-baseline gap-3">
-                  <span className="font-mono text-[13px]">
-                    {c.license_a} ↔ {c.license_b}
-                  </span>
-                  <span
-                    className={`font-mono text-[10px] uppercase tracking-[0.18em] ${SEVERITY_INK[c.severity]}`}
-                  >
-                    {SEVERITY_LABEL[c.severity]}
-                  </span>
-                </div>
-                <p className="mt-2 text-sm leading-relaxed text-stone-700 dark:text-stone-300">
-                  {c.reasoning}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </ReportSection>
-      )}
-
-      {result.useCaseViolations.length > 0 && (
-        <ReportSection rubric="Use-Case" title="Use-Case-Verstöße">
-          <p className="mb-4 text-sm text-stone-600 dark:text-stone-400">
-            Scheitern einzelner Lizenzen am gewählten Use-Case, unabhängig von
-            Inter-License-Konflikten.
-          </p>
-          <ul className="space-y-4">
-            {result.useCaseViolations.map((v) => {
-              const license = licenseById.get(v.license_id);
-              return (
-                <li
-                  key={`${v.license_id}|${v.severity}|${v.violation}`}
-                  className={`border-l-2 pl-4 py-2 ${SEVERITY_LINE[v.severity]}`}
-                >
-                  <div className="flex flex-wrap items-baseline gap-3">
-                    <span className="font-serif text-[17px] italic">
-                      {license?.name ?? v.license_id}
-                    </span>
-                    <span
-                      className={`font-mono text-[10px] uppercase tracking-[0.18em] ${SEVERITY_INK[v.severity]}`}
-                    >
-                      {SEVERITY_LABEL[v.severity]}
-                    </span>
-                  </div>
-                  <p className="mt-2 text-sm leading-relaxed text-stone-700 dark:text-stone-300">
-                    {v.violation}
-                  </p>
-                </li>
-              );
-            })}
-          </ul>
-        </ReportSection>
-      )}
-
-      {result.trainingDataFlags.length > 0 && (
-        <ReportSection
-          rubric="Trainingsdaten"
-          title="Trainingsdaten-Flags"
-        >
-          <ul className="space-y-4">
-            {result.trainingDataFlags.map((f) => {
-              const risk = riskById.get(f.risk_id);
-              return (
-                <li
-                  key={f.risk_id}
-                  className={`border-l-2 pl-4 py-2 ${SEVERITY_LINE[f.risk_level]}`}
-                >
-                  <div className="flex flex-wrap items-baseline gap-3">
-                    <span className="font-serif text-[17px] italic">
-                      {risk?.name ?? f.risk_id}
-                    </span>
-                    <span
-                      className={`font-mono text-[10px] uppercase tracking-[0.18em] ${SEVERITY_INK[f.risk_level]}`}
-                    >
-                      {SEVERITY_LABEL[f.risk_level]}
-                    </span>
-                  </div>
-                  <p className="mt-2 text-sm leading-relaxed text-stone-700 dark:text-stone-300">
-                    {f.reason}
-                  </p>
-                </li>
-              );
-            })}
-          </ul>
-        </ReportSection>
-      )}
-
-      {result.recommendations.length > 0 && (
-        <ReportSection rubric="Empfehlungen" title="Empfehlungen">
-          <p className="mb-4 text-sm text-stone-600 dark:text-stone-400">
-            Aggregiert aus Matrix-Caveats, Use-Case-Violations und
-            Trainingsdaten-Mitigationen. Sortiert nach Priorität.
-          </p>
-          <ol className="space-y-3">
-            {result.recommendations.map((r, i) => (
-              <li key={r} className="flex gap-4 text-sm leading-relaxed">
-                <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-stone-500 dark:text-stone-500 pt-0.5">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span className="flex-1 text-stone-800 dark:text-stone-200">{r}</span>
-              </li>
-            ))}
-          </ol>
-        </ReportSection>
-      )}
-
-      {result.sources.length > 0 && (
-        <ReportSection rubric="Quellen" title="Quellen">
-          <p className="mb-4 text-sm text-stone-600 dark:text-stone-400">
-            Lokale Lizenz-Snapshots der beteiligten Lizenzen. Klauselreferenzen beziehen
-            sich auf den jeweiligen Snapshot.
-          </p>
-          <ul className="divide-y divide-stone-200 dark:divide-stone-800">
-            {result.sources.map((s) => {
-              const license = licenseById.get(s.license_id);
-              return (
-                <li key={s.license_id} className="py-3">
-                  <div className="font-serif text-[17px] italic">
-                    {license?.name ?? s.license_id}
-                  </div>
-                  <div className="mt-1 font-mono text-[12px] text-stone-600 dark:text-stone-400">
-                    licenses/{s.snapshot_path}
-                  </div>
-                  {s.clause_refs.length > 0 && (
-                    <div className="mt-1 font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500 dark:text-stone-500">
-                      Klauseln · {s.clause_refs.join(", ")}
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </ReportSection>
-      )}
-    </div>
+      <details className="rounded-md border border-stone-300 bg-white/70 p-4 dark:border-stone-800 dark:bg-stone-950/60">
+        <summary className="cursor-pointer font-mono text-[11px] uppercase tracking-[0.18em] text-stone-600 dark:text-stone-400">
+          Matrixdetails anzeigen
+        </summary>
+        <div className="mt-5">
+          <MatrixGrid
+            result={result}
+            modelById={modelById}
+            licenseById={licenseById}
+          />
+        </div>
+      </details>
+    </section>
   );
 }
 
-function ReportSection({
-  rubric,
+function FindingGroup({
   title,
-  children,
+  findings,
 }: {
-  rubric: string;
   title: string;
-  children: React.ReactNode;
+  findings: PairFinding[];
 }) {
   return (
-    <section className="border-t border-stone-300 pt-10 mt-10 dark:border-stone-700">
-      <header className="mb-6">
-        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-stone-500 dark:text-stone-500">
-          {rubric}
-        </p>
-        <h3 className="mt-2 font-serif text-[32px] leading-[1.05] tracking-tight">
-          {title}
-        </h3>
-      </header>
-      {children}
+    <section>
+      <h3 className="text-xl font-semibold leading-tight">{title}</h3>
+      <ul className="mt-3 grid gap-3 lg:grid-cols-2">
+        {findings.map((finding) => (
+          <PairFindingItem key={finding.id} finding={finding} />
+        ))}
+      </ul>
     </section>
+  );
+}
+
+function PairFindingItem({ finding }: { finding: PairFinding }) {
+  return (
+    <li
+      className={`rounded-md border border-stone-300 border-l-2 bg-white/70 p-3 dark:border-stone-800 dark:bg-stone-950/50 ${FINDING_LINE[finding.severity]}`}
+    >
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-500 dark:text-stone-500">
+            {finding.model_names.join(", ")}
+          </p>
+          <h4 className="mt-1 text-sm font-semibold leading-tight">
+            {finding.model_license_name} x {finding.dependency_license_name}
+          </h4>
+        </div>
+        <span
+          className={`font-mono text-[10px] uppercase tracking-[0.18em] ${FINDING_INK[finding.severity]}`}
+        >
+          {FINDING_LABEL[finding.severity]}
+        </span>
+      </div>
+
+      <div className="mt-3">
+        <mark className="box-decoration-clone bg-yellow-200 px-1 py-0.5 text-xs leading-relaxed text-stone-950 dark:bg-yellow-300">
+          {finding.clause.quote}
+        </mark>
+        <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-stone-500 dark:text-stone-500">
+          {finding.clause.source_label}
+        </div>
+      </div>
+
+      <p className="mt-3 text-xs leading-relaxed text-stone-700 dark:text-stone-300">
+        {finding.explanation}
+      </p>
+      <p className="mt-2 border-t border-stone-200 pt-2 text-xs leading-relaxed text-stone-900 dark:border-stone-800 dark:text-stone-100">
+        {finding.recommendation}
+      </p>
+    </li>
+  );
+}
+
+function TrainingPanel({ findings }: { findings: TrainingRiskFinding[] }) {
+  return (
+    <section>
+      <h3 className="text-xl font-semibold leading-tight">Trainingsdaten</h3>
+      <ul className="mt-3 space-y-3">
+        {findings.map((finding) => (
+          <li
+            key={finding.id}
+            className={`rounded-md border border-stone-300 border-l-2 bg-white/70 p-3 dark:border-stone-800 dark:bg-stone-950/50 ${FINDING_LINE[finding.severity]}`}
+          >
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h4 className="text-sm font-semibold leading-tight">
+                {finding.risk_name}
+              </h4>
+              <span
+                className={`font-mono text-[10px] uppercase tracking-[0.16em] ${FINDING_INK[finding.severity]}`}
+              >
+                {FINDING_LABEL[finding.severity]}
+              </span>
+            </div>
+            <p className="mt-2 font-mono text-[10px] uppercase leading-relaxed tracking-[0.14em] text-stone-500 dark:text-stone-500">
+              {finding.legal_basis}
+            </p>
+            <p className="mt-2 text-xs leading-relaxed text-stone-700 dark:text-stone-300">
+              {finding.risk}
+            </p>
+            <p className="mt-2 text-xs leading-relaxed text-stone-900 dark:text-stone-100">
+              {finding.use_case_impact}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function CompliancePanel({ findings }: { findings: ComplianceFlagFinding[] }) {
+  return (
+    <section>
+      <h3 className="text-xl font-semibold leading-tight">Compliance</h3>
+      <ul className="mt-3 space-y-3">
+        {findings.map((finding) => (
+          <li
+            key={finding.id}
+            className="rounded-md border border-stone-300 bg-white/70 p-3 dark:border-stone-800 dark:bg-stone-950/50"
+          >
+            <h4 className="text-sm font-semibold leading-tight">
+              {finding.model_name}
+            </h4>
+            <p className="mt-1 text-xs text-stone-600 dark:text-stone-400">
+              {finding.license_name}
+            </p>
+            <dl className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3 xl:grid-cols-1">
+              {finding.flags.map((flag) => (
+                <div key={`${finding.id}:${flag.label}`}>
+                  <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-stone-500 dark:text-stone-500">
+                    {flag.label}
+                  </dt>
+                  <dd className="mt-0.5 text-xs text-stone-900 dark:text-stone-100">
+                    {flag.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function Recommendations({ recommendations }: { recommendations: string[] }) {
+  return (
+    <section className="rounded-md border border-stone-300 bg-stone-100/70 p-3 dark:border-stone-800 dark:bg-stone-900/60">
+      <h3 className="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-500 dark:text-stone-500">
+        Nächste Schritte
+      </h3>
+      <ol className="mt-2 space-y-2">
+        {recommendations.map((recommendation, index) => (
+          <li key={recommendation} className="flex gap-2 text-xs leading-relaxed">
+            <span className="font-mono text-[10px] text-stone-500">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span>{recommendation}</span>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+function Metric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-current/20 p-2">
+      <div className="font-mono text-[9px] uppercase tracking-[0.14em] opacity-65">
+        {label}
+      </div>
+      <div className="mt-1 truncate text-xs font-medium">{value}</div>
+    </div>
   );
 }

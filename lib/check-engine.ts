@@ -1,3 +1,4 @@
+import { evaluateCompatibility } from "./evaluate";
 import { defaultRegistry, type Registry } from "./registry";
 import { isCuratedStatus } from "./types";
 import type {
@@ -10,6 +11,7 @@ import type {
   MatrixColumn,
   MatrixRow,
   MissingPair,
+  Model,
   OverallRisk,
   Source,
   TrainingDataFlag,
@@ -243,8 +245,8 @@ function evaluateUseCaseFit(
   if (sens.network_use && rights.copyleft === "network") {
     violations.push({
       license_id: license.id,
-      violation: `Network-Copyleft (AGPL-artig) greift im Use-Case "${useCase.name}" (Bereitstellung über Netzwerk). Quelltext-Offenlegung auf Nutzerseite einplanen.`,
-      severity: "medium",
+      violation: `Network-Copyleft (AGPL-artig) greift im Use-Case "${useCase.name}" (Bereitstellung über Netzwerk). Geschlossene SaaS-Nutzung ist ohne Source-Angebot nicht tragfaehig.`,
+      severity: "high",
     });
   }
 
@@ -302,6 +304,7 @@ export function runCheck(
 
   // Zeilen: Modelle auflösen und Modell-Lizenz aus der Registry ziehen.
   const rows: MatrixRow[] = [];
+  const selectedModels: Model[] = [];
   for (const modelId of input.models) {
     const model = registry.getModel(modelId);
     if (!model) {
@@ -309,6 +312,7 @@ export function runCheck(
     }
     // Referenz-Integrität der Model→License-Kante wird bereits in loadRegistry
     // geprüft; hier kann nichts mehr durchrutschen.
+    selectedModels.push(model);
     rows.push({ model_id: model.id, license_id: model.license_id });
   }
 
@@ -323,6 +327,9 @@ export function runCheck(
   const cols: MatrixColumn[] = Array.from(depCounts.entries()).map(
     ([license_id, dep_count]) => ({ license_id, dep_count }),
   );
+  const selectedDependencyLicenses = cols
+    .map((col) => registry.getLicense(col.license_id))
+    .filter((license): license is License => Boolean(license));
 
   // Matrix befüllen, Konflikte sammeln, fehlende Paare separat tracken.
   const matrix: CompatibilityCell[][] = [];
@@ -402,17 +409,27 @@ export function runCheck(
 
   // Trainingsdaten-Risiken auflösen.
   const trainingDataFlags: TrainingDataFlag[] = [];
+  const selectedTrainingRisks: TrainingDataRisk[] = [];
   for (const riskId of input.trainingData) {
     const risk = registry.getTrainingRisk(riskId);
     if (!risk) {
       throw new EngineInputError(`Unbekannte Training-Risk-ID: ${riskId}`);
     }
+    selectedTrainingRisks.push(risk);
     trainingDataFlags.push({
       risk_id: risk.id,
       risk_level: risk.risk_level,
       reason: buildTrainingFlagReason(risk, useCase),
     });
   }
+
+  const findings = evaluateCompatibility(
+    selectedModels,
+    selectedDependencyLicenses,
+    selectedTrainingRisks,
+    useCase,
+    registry,
+  );
 
   // Overall Risk.
   //   - missing: fehlt mindestens ein Matrix-Paar, keine Ampel
@@ -433,12 +450,23 @@ export function runCheck(
     );
     const hasHighUcv = useCaseViolations.some((v) => v.severity === "high");
     const hasMediumUcv = useCaseViolations.some((v) => v.severity === "medium");
+    const hasFindingConflict = findings.some(
+      (finding) => finding.severity === "conflict",
+    );
+    const hasFindingNotice = findings.some(
+      (finding) => finding.severity === "notice",
+    );
     const hasMedHighTraining = trainingDataFlags.some(
       (t) => t.risk_level === "high" || t.risk_level === "medium",
     );
-    if (hasIncompatible || hasHighUcv) {
+    if (hasIncompatible || hasHighUcv || hasFindingConflict) {
       overallRisk = "red";
-    } else if (hasConditional || hasMediumUcv || hasMedHighTraining) {
+    } else if (
+      hasConditional ||
+      hasMediumUcv ||
+      hasFindingNotice ||
+      hasMedHighTraining
+    ) {
       overallRisk = "yellow";
     } else {
       overallRisk = "green";
@@ -459,6 +487,22 @@ export function runCheck(
     recEntries.push({
       text: ucv.violation,
       prio: priorityForSeverity(ucv.severity),
+    });
+  }
+
+  for (const finding of findings) {
+    if (finding.kind === "compliance") continue;
+    const prio =
+      finding.kind === "training-data"
+        ? priorityForRiskLevel(
+            registry.getTrainingRisk(finding.risk_id)?.risk_level ?? "low",
+          )
+        : finding.severity === "conflict"
+          ? 1
+          : 3;
+    recEntries.push({
+      text: finding.recommendation,
+      prio,
     });
   }
 
@@ -528,6 +572,7 @@ export function runCheck(
     modelCodeConflicts,
     useCaseViolations,
     trainingDataFlags,
+    findings,
     recommendations,
     sources,
   };

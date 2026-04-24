@@ -212,7 +212,7 @@ describe("runCheck", () => {
       expect(result.matrix[0]?.[0]?.status).toBe("incompatible");
     });
 
-    it("AGPL-Netzwerk-Copyleft erzeugt im SaaS-Use-Case eine medium-UCV", () => {
+    it("AGPL-Netzwerk-Copyleft erzeugt im SaaS-Use-Case eine high-UCV", () => {
       const result = runCheck({
         models: [],
         codeDependencies: ["agpl-3-0"],
@@ -224,11 +224,11 @@ describe("runCheck", () => {
         result.useCaseViolations.some(
           (violation) =>
             violation.license_id === "agpl-3-0" &&
-            violation.severity === "medium" &&
+            violation.severity === "high" &&
             violation.violation.includes("Network-Copyleft"),
         ),
       ).toBe(true);
-      expect(result.overallRisk).toBe("yellow");
+      expect(result.overallRisk).toBe("red");
     });
 
     it("fehlende Paar-Empfehlungen werden spiegelbildlich dedupliziert", () => {

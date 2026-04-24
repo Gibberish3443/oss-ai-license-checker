@@ -197,6 +197,65 @@ export interface TrainingDataFlag {
   reason: string;
 }
 
+export type FindingSeverity = "conflict" | "notice";
+
+export interface ClauseEvidence {
+  license_id: string;
+  license_name: string;
+  restriction_id: string;
+  clause_ref: string;
+  quote: string;
+  source_path: string;
+  source_label: string;
+}
+
+export interface PairFinding {
+  kind: "pair";
+  id: string;
+  severity: FindingSeverity;
+  use_case: UseCaseId;
+  model_license_id: string;
+  model_license_name: string;
+  model_names: string[];
+  dependency_license_id: string;
+  dependency_license_name: string;
+  matrix_status: Compatibility | "self";
+  clause: ClauseEvidence;
+  explanation: string;
+  recommendation: string;
+}
+
+export interface TrainingRiskFinding {
+  kind: "training-data";
+  id: string;
+  severity: FindingSeverity;
+  use_case: UseCaseId;
+  risk_id: string;
+  risk_name: string;
+  legal_basis: string;
+  risk: string;
+  use_case_impact: string;
+  recommendation: string;
+}
+
+export interface ComplianceFlag {
+  label: string;
+  value: string;
+}
+
+export interface ComplianceFlagFinding {
+  kind: "compliance";
+  id: string;
+  severity: "notice";
+  model_id: string;
+  model_name: string;
+  license_id: string;
+  license_name: string;
+  flags: ComplianceFlag[];
+}
+
+export type Finding = PairFinding | TrainingRiskFinding | ComplianceFlagFinding;
+
 export interface Source {
   license_id: string;
   snapshot_path: string;
@@ -215,6 +274,7 @@ export interface CheckResult {
   modelCodeConflicts: Conflict[];
   useCaseViolations: UseCaseViolation[];
   trainingDataFlags: TrainingDataFlag[];
+  findings: Finding[];
   recommendations: string[];
   sources: Source[];
 }

@@ -38,3 +38,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
 }
+
+.flow-panel {
+  opacity: 1;
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import type {
   CellStatus,
@@ -13,6 +13,7 @@ import type {
   TrainingRiskFinding,
   UseCase,
 } from "@/lib/types";
+import { buildVerdictSummary, type VerdictTone } from "@/lib/verdict-summary";
 import MatrixGrid from "./matrix-grid";
 
 interface Props {
@@ -38,6 +39,13 @@ const VERDICT_FRAME: Record<CheckResult["overallRisk"], string> = {
     "border-red-200 bg-red-50 text-red-950 dark:border-red-900 dark:bg-red-950/35 dark:text-red-50",
   missing:
     "border-stone-300 bg-stone-100 text-stone-950 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-50",
+};
+
+const VERDICT_ACCENT: Record<VerdictTone, string> = {
+  green: "border-l-emerald-600 dark:border-l-emerald-400",
+  yellow: "border-l-amber-600 dark:border-l-amber-400",
+  red: "border-l-red-600 dark:border-l-red-400",
+  missing: "border-l-stone-500 dark:border-l-stone-400",
 };
 
 const FINDING_LINE: Record<FindingSeverity, string> = {
@@ -122,6 +130,11 @@ export default function ResultView({
     (finding) => finding.severity === "notice",
   );
 
+  const verdict = useMemo(
+    () => buildVerdictSummary(result, useCase),
+    [result, useCase],
+  );
+
   return (
     <section className="space-y-5">
       <aside
@@ -190,6 +203,13 @@ export default function ResultView({
           licenseById={licenseById}
         />
       </section>
+
+      <VerdictCard
+        headline={verdict.headline}
+        tone={verdict.tone}
+        rationale={verdict.rationale}
+        nextStep={verdict.nextStep}
+      />
 
       {(conflictFindings.length > 0 ||
         noticeFindings.length > 0 ||
@@ -291,6 +311,56 @@ function StatusLegend({ result }: { result: CheckResult }) {
         );
       })}
     </ul>
+  );
+}
+
+function VerdictCard({
+  headline,
+  tone,
+  rationale,
+  nextStep,
+}: {
+  headline: string;
+  tone: VerdictTone;
+  rationale: string[];
+  nextStep: string | null;
+}) {
+  return (
+    <section
+      aria-label="Fazit"
+      className={`rounded-md border border-stone-300 border-l-4 bg-white/70 p-4 dark:border-stone-800 dark:bg-stone-950/60 ${VERDICT_ACCENT[tone]}`}
+    >
+      <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-stone-500 dark:text-stone-500">
+        Fazit (regelbasiert)
+      </p>
+      <h3 className="mt-1 text-lg font-semibold leading-snug">{headline}</h3>
+      {rationale.length > 0 && (
+        <ul className="mt-3 space-y-1.5">
+          {rationale.map((line, index) => (
+            <li
+              key={`${index}-${line.slice(0, 16)}`}
+              className="flex gap-2 text-xs leading-relaxed text-stone-700 dark:text-stone-300"
+            >
+              <span
+                aria-hidden="true"
+                className="font-mono text-[10px] leading-relaxed text-stone-500"
+              >
+                ·
+              </span>
+              <span>{line}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {nextStep && (
+        <p className="mt-3 border-t border-stone-200 pt-2 text-xs leading-relaxed text-stone-900 dark:border-stone-800 dark:text-stone-100">
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-500 dark:text-stone-500">
+            Nächster Schritt
+          </span>
+          <span className="ml-2">{nextStep}</span>
+        </p>
+      )}
+    </section>
   );
 }
 

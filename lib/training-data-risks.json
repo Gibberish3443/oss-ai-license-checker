@@ -6,9 +6,9 @@
     "legal_issues": [
       {
         "issue": "TDM-Schranke und Opt-out",
-        "description": "Für kommerzielles Text-Data-Mining ist ein Opt-out des Rechteinhabers nach Art. 4 DSM-RL / § 44b UrhG zu beachten. Ob maschinenlesbare Opt-outs (robots.txt, ai.txt, TDM-Reservation-Protokoll) durchgängig ausreichend dokumentiert sind, ist streitig.",
+        "description": "Für kommerzielles Text-Data-Mining ist ein Opt-out des Rechteinhabers nach Art. 4 DSM-RL / § 44b UrhG zu beachten. Ob maschinenlesbare Opt-outs (robots.txt, ai.txt, TDM-Reservation-Protokoll) durchgängig ausreichend dokumentiert sind, ist streitig. Das LG Hamburg, Urt. v. 27.09.2024 - 310 O 227/23 (Kneschke/LAION) ist dazu nur obiter dicta einschlägig, weil der Fall unter § 60d UrhG (wissenschaftliches TDM) entschieden wurde; höchstrichterliche Klärung des § 44b-Opt-outs steht aus.",
         "relevant_law": "§ 44b UrhG; Art. 4 DSM-RL (EU) 2019/790",
-        "leading_case": "LG Hamburg, Urt. v. 27.09.2024 - 310 O 227/23 (LAION)",
+        "leading_case": null,
         "quote": null,
         "clause_ref": null
       },
@@ -173,6 +173,98 @@
       "Amtliche Korpora bevorzugen (EUR-Lex, Rechtsprechung im Internet)",
       "Anonymisierung vor Training prüfen",
       "PSI-Richtlinie-konforme Open-Data-Portale als Quelle nutzen"
+    ]
+  },
+  {
+    "id": "books3-shadow-libraries",
+    "name": "Books3 / Shadow-Libraries (Library Genesis, Z-Library)",
+    "risk_level": "high",
+    "legal_issues": [
+      {
+        "issue": "Trainingsanteil aus rechtswidrig erlangten Buchkorpora",
+        "description": "Books3, Library Genesis und Z-Library sind rechtswidrig aggregierte Buchkorpora. Vervielfältigung zu Trainingszwecken ist unabhängig von der TDM-Schranke unzulässig, weil schon der Bezug der Vorlagen eine Urheberrechtsverletzung darstellt. Dieser Makel lässt sich durch TDM-Rechtfertigung nicht heilen.",
+        "relevant_law": "§§ 15, 16, 19a UrhG; 17 U.S.C. § 106",
+        "leading_case": "Authors Guild v. OpenAI (S.D.N.Y., MDL konsolidiert 2024); Tremblay v. OpenAI; Silverman v. Meta",
+        "quote": null,
+        "clause_ref": null
+      },
+      {
+        "issue": "Beweislast zur Datenprovenienz",
+        "description": "Ein Modellanbieter, der Books3/LibGen/Z-Library nicht ausschließt, trägt das Risiko, in einem Verletzungsverfahren die Rechtekette nicht darlegen zu können. Eigene Distributions-Entscheidungen importieren dieses Risiko in die Nutzer-Compliance.",
+        "relevant_law": "§ 138 ZPO (sekundäre Darlegungslast); Art. 8 DSM-RL",
+        "leading_case": null,
+        "quote": null,
+        "clause_ref": null
+      }
+    ],
+    "mitigation_hints": [
+      "Modelle meiden, deren Datensheets Books3, Library Genesis oder Z-Library nicht ausdrücklich ausschließen",
+      "Vor produktivem Einsatz eine Datenprovenienz-Erklärung des Anbieters einholen und archivieren",
+      "Output-Filter auf wortwörtliche Buchpassagen (Rolling-Hash / Memorization-Probes) einsetzen"
+    ]
+  },
+  {
+    "id": "laion-pair-datasets",
+    "name": "LAION-artige URL+ALT-Text-Pair-Datasets",
+    "risk_level": "high",
+    "legal_issues": [
+      {
+        "issue": "§ 60d UrhG — wissenschaftliches TDM bei Dataset-Erstellung",
+        "description": "LAION-5B & Co. enthalten keine Bildkopien, sondern URLs mit ALT-Text. Die Dataset-Erstellung durch wissenschaftliche Einrichtungen stützt sich auf § 60d UrhG (wissenschaftliches TDM); diese Schranke ist nicht opt-out-fähig, solange nicht-kommerzielle Forschung vorliegt. Genau dies war die tragende Norm im LG-Hamburg-Urteil.",
+        "relevant_law": "§ 60d UrhG; Art. 3 DSM-RL (EU) 2019/790",
+        "leading_case": "LG Hamburg, Urt. v. 27.09.2024 - 310 O 227/23 (Kneschke/LAION)",
+        "quote": null,
+        "clause_ref": null
+      },
+      {
+        "issue": "§ 44b UrhG — Nachnutzung durch kommerzielle Trainer",
+        "description": "Sobald ein ursprünglich unter § 60d erhobenes Pair-Dataset kommerziell nachgenutzt wird (etwa beim Fine-Tuning eines Foundation-Modells oder für abgeleitete Trainings), greift nicht § 60d, sondern § 44b UrhG. Damit wird die Opt-out-Frage wieder scharf: maschinenlesbare Reservation durch den Rechteinhaber ist zu respektieren, der Umfang tauglicher Opt-out-Formate ist höchstrichterlich ungeklärt.",
+        "relevant_law": "§ 44b UrhG; Art. 4 DSM-RL (EU) 2019/790",
+        "leading_case": null,
+        "quote": null,
+        "clause_ref": null
+      },
+      {
+        "issue": "Vermittlungs- und Störerhaftung bei referenzierten Bildquellen",
+        "description": "Auch wenn das Pair-Dataset selbst nur Metadaten enthält, können Abrufe zu rechtsverletzenden Vervielfältigungen beim Trainer oder Nutzer führen. Die Zuschreibung dieser Downstream-Kopien ist vertrags- und deliktsrechtlich ungeklärt. Getty Images v. Stability AI (UK High Court; D. Del.) ist hier der einschlägige Parallel-Fall aus einer anderen Rechtsordnung.",
+        "relevant_law": "§§ 97, 99 UrhG; Art. 17 DSM-RL (analog für Trainer-Plattformen)",
+        "leading_case": "Getty Images v. Stability AI (UK High Court; D. Del.)",
+        "quote": null,
+        "clause_ref": null
+      }
+    ],
+    "mitigation_hints": [
+      "Trainings- und Fine-Tuning-Pipelines auf Opt-out-Listen (TDM-Reservation, robots.txt, ai.txt) prüfen",
+      "Bildbezogene Ausgaben mit Similarity-Check gegen bekannte geschützte Bildkorpora absichern",
+      "Anbieter-Dokumentation zur Schrankennutzung (Forschung vs. kommerziell) als Vertragsgrundlage anfordern"
+    ]
+  },
+  {
+    "id": "synthetic-from-commercial-llm",
+    "name": "Synthetische Trainingsdaten aus kommerziellen LLM-Outputs",
+    "risk_level": "medium",
+    "legal_issues": [
+      {
+        "issue": "Vertragsverletzung durch \"no competing models\"-Klauseln",
+        "description": "Outputs von OpenAI, Anthropic oder Google stehen unter ToS-Klauseln, die die Nutzung zum Training konkurrierender Foundation-Modelle untersagen. Das Problem ist primär vertragsrechtlich (ToS-Bruch mit Schadensersatz- und Kündigungsfolgen), nicht urheberrechtlich.",
+        "relevant_law": "§§ 241, 280 BGB (Vertragsverletzung); OpenAI ToS § 2(c); Anthropic AUP; Google API ToS",
+        "leading_case": null,
+        "quote": null,
+        "clause_ref": null
+      },
+      {
+        "issue": "Durchschlagen der Upstream-Rechtekette",
+        "description": "Synthetische Daten können Reproduktionen geschützter Trainingsinhalte des Upstream-Modells enthalten. Eine saubere synthetische Quelle schützt nicht automatisch vor Verletzungen, die der Upstream-Anbieter ungewollt mittransportiert.",
+        "relevant_law": "§§ 15, 16 UrhG; 17 U.S.C. § 106",
+        "leading_case": null,
+        "quote": null,
+        "clause_ref": null
+      }
+    ],
+    "mitigation_hints": [
+      "Vor Einsatz die aktuelle Fassung der Upstream-ToS auf \"no competing models\"-Klauseln prüfen und archivieren",
+      "Synthetische Datensätze auf memorierte Upstream-Passagen stichprobenhaft testen",
+      "Eigene Modelle nicht als Konkurrenzprodukt zum Upstream-Anbieter vermarkten, wenn Upstream-Outputs im Trainingsset enthalten waren"
     ]
   }
 ]

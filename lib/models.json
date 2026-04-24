@@ -83,5 +83,26 @@
     "vendor": "Moonshot AI",
     "license_id": "kimi-k2-modified-mit",
     "notes": "Aktuellere Kimi-K2-Variante. Relevanter modified-MIT-Fall mit schwellenabhängiger Branding-Pflicht."
+  },
+  {
+    "id": "flux-1-schnell",
+    "name": "FLUX.1 [schnell]",
+    "vendor": "Black Forest Labs Inc.",
+    "license_id": "apache-2-0",
+    "notes": "Apache-Tier des FLUX-Multi-Tier-Portfolios: freizügig nutzbar, kommerziell unproblematisch. Pendant zu dev (non-commercial) und pro (API-only)."
+  },
+  {
+    "id": "flux-1-dev",
+    "name": "FLUX.1 [dev]",
+    "vendor": "Black Forest Labs Inc.",
+    "license_id": "flux-1-dev-nc",
+    "notes": "Non-Commercial-Tier des FLUX-Portfolios. Kommerzielle Nutzung ausschließlich über BFL-Separatlizenz; Content-Filter und Use-Based Restrictions vertraglich einbezogen."
+  },
+  {
+    "id": "flux-1-pro",
+    "name": "FLUX.1 [pro]",
+    "vendor": "Black Forest Labs Inc.",
+    "license_id": "flux-1-pro-proprietary",
+    "notes": "API-only-Tier des FLUX-Portfolios. Keine Gewichte, kein öffentlicher Lizenztext. TODO: offizielle BFL-API-Terms als Vendor-Beleg archivieren, sobald eine stabile Fassung erreichbar ist."
   }
 ]

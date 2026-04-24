@@ -775,7 +775,7 @@
   {
     "id": "kimi-k2-modified-mit",
     "name": "Kimi K2 Modified MIT License",
-    "category": "multi-tier-licensing",
+    "category": "osi-permissive",
     "spdx_identifier": null,
     "version": "2025",
     "official_source": {
@@ -795,10 +795,16 @@
     },
     "restrictions": [
       {
+        "id": "kimi-threshold-values",
+        "clause_ref": "Modification paragraph, sentence 1",
+        "quote": "more than 100 million monthly active users, or more than 20 million US dollars",
+        "effect": "Schwellen: ab 100 Mio. MAU oder 20 Mio. USD Monatsumsatz greift die Branding-Pflicht; unterhalb wirkt die Lizenz wie reines MIT."
+      },
+      {
         "id": "kimi-threshold-branding",
-        "clause_ref": "Modification paragraph",
+        "clause_ref": "Modification paragraph, sentence 2",
         "quote": "you shall prominently display \"Kimi K2\" on the user interface of such product",
-        "effect": "Ab 100 Mio. MAU oder 20 Mio. USD Monatsumsatz ist prominentes \"Kimi K2\"-Branding in der UI Pflicht."
+        "effect": "Bei Schwellenüberschreitung ist prominentes \"Kimi K2\"-Branding in der UI des jeweiligen Produkts oder Dienstes Pflicht."
       },
       {
         "id": "kimi-base-mit",
@@ -807,11 +813,12 @@
         "effect": "Grund-MIT-Attribution bleibt bestehen."
       }
     ],
-    "notes": "Klassisches MIT plus schwellenabhängige Branding-Pflicht. Unterhalb der Schwelle wirkt wie reines MIT; oberhalb entsteht Attribution/Marketing-Pflicht.",
+    "notes": "Klassisches MIT plus schwellenabhängige Branding-Pflicht (Single-Tier mit Schwellen-Zusatz, kein echtes Multi-Tier). Unterhalb der Schwelle wirkt wie reines MIT; oberhalb entsteht Attribution/Marketing-Pflicht. Deshalb Kategorie osi-permissive mit has_usage_threshold-Flag statt multi-tier-licensing.",
     "additional_compliance_flags": {
       "entity_list_status": "none",
       "training_hardware_origin": "unknown",
       "publisher_jurisdiction": "CN"
-    }
+    },
+    "has_usage_threshold": true
   }
 ]

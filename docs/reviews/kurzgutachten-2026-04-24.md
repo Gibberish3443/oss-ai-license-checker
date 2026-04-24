@@ -160,10 +160,11 @@ Anwendungsbereich**:
 | § 60d UrhG | wissenschaftliches TDM      | nein             | Art. 3      |
 | § 44b UrhG | kommerzielles / sonstiges   | ja (nutzungsvorbehalt) | Art. 4 |
 
-Die Privilegierung in § 60d ist strenger an nicht-kommerzielle
-Forschungseinrichtungen gebunden (§ 60d Abs. 2 UrhG) und kennt
-keinen Opt-out. § 44b deckt den kommerziellen Graubereich ab, lässt
-aber einen maschinenlesbaren Nutzungsvorbehalt zu.
+Die Privilegierung in § 60d ist an wissenschaftliche Forschung und
+privilegierte Forschungsorganisationen bzw. Kulturerbeeinrichtungen
+gebunden und kennt keinen Opt-out. § 44b deckt den kommerziellen und
+sonstigen Nicht-§-60d-Bereich ab, lässt aber einen maschinenlesbaren
+Nutzungsvorbehalt zu.
 
 ### Welche Norm hat LAION entschieden?
 

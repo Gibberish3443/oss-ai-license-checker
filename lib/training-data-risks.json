@@ -43,7 +43,7 @@
       {
         "issue": "Copyleft-Durchschlag auf generierten Code",
         "description": "Ob Outputs, die auf GPL-/AGPL-lizenziertem Trainingscode basieren, selbst copyleft-gebunden sind, ist juristisch offen. Unternehmen mit restriktiver Inbound-Policy sollten dies für Copilot-ähnliche Tools bewerten.",
-        "relevant_law": "GPL-2.0/3.0 Section 5; AGPL-3.0 Section 13",
+        "relevant_law": "GPL-2.0 Section 2(b); GPL-3.0/AGPL-3.0 Section 5; urheberrechtliche Bearbeitung/Übernahme",
         "leading_case": "Doe v. GitHub, Inc. (N.D. Cal. 2022, teilw. abgewiesen 2024)",
         "quote": null,
         "clause_ref": null
@@ -99,7 +99,7 @@
       {
         "issue": "Plattform-Terms vs. Nutzer-Rechteinhaberschaft",
         "description": "Plattform-ToS räumen der Plattform typischerweise eine Lizenz ein, nicht aber Dritten. Die Nutzerinhalte selbst bleiben beim Verfasser. Ein Freibrief zum KI-Training ist daraus in der Regel nicht ableitbar.",
-        "relevant_law": "§§ 31 ff. UrhG (Lizenzkette); Art. 3 DSM-RL",
+        "relevant_law": "§§ 31 ff. UrhG (Lizenzkette); Art. 3/4 DSM-RL je nach Forschungs- oder Nutzungszweck",
         "leading_case": null,
         "quote": null,
         "clause_ref": null
@@ -134,8 +134,8 @@
       },
       {
         "issue": "Leistungsschutzrecht Presseverleger",
-        "description": "Presseverleger-LSR schützt journalistische Veröffentlichungen gegen Online-Nutzung durch Dienste der Informationsgesellschaft für zwei Jahre. Erfasst auch ausschnittweise Übernahme.",
-        "relevant_law": "§ 87g UrhG",
+        "description": "Presseverleger-LSR schützt journalistische Veröffentlichungen gegen Online-Nutzung durch Dienste der Informationsgesellschaft für zwei Jahre. Erfasst auch Teile von Presseveröffentlichungen, aber nicht einzelne Wörter oder sehr kurze Auszüge.",
+        "relevant_law": "§ 87g Abs. 1, Abs. 2 Nr. 4 UrhG",
         "leading_case": null,
         "quote": null,
         "clause_ref": null
@@ -154,8 +154,8 @@
     "legal_issues": [
       {
         "issue": "Grundsatz der Gemeinfreiheit amtlicher Werke",
-        "description": "Amtliche Werke (Gesetze, Urteile, Verwaltungsvorschriften) sind nach § 5 UrhG gemeinfrei. Verwendung für Training ist urheberrechtlich unproblematisch.",
-        "relevant_law": "§ 5 UrhG",
+        "description": "Amtliche Kerntexte wie Gesetze, Verordnungen, amtliche Erlasse, Bekanntmachungen, Entscheidungen und amtlich verfasste Leitsätze genießen nach § 5 UrhG keinen urheberrechtlichen Schutz. Redaktionelle Zusätze, private Normwerke, Datenbankrechte und Datenschutzfragen sind davon getrennt zu prüfen.",
+        "relevant_law": "§ 5 Abs. 1-3 UrhG",
         "leading_case": null,
         "quote": null,
         "clause_ref": null
@@ -191,7 +191,7 @@
       {
         "issue": "Beweislast zur Datenprovenienz",
         "description": "Ein Modellanbieter, der Books3/LibGen/Z-Library nicht ausschließt, trägt das Risiko, in einem Verletzungsverfahren die Rechtekette nicht darlegen zu können. Eigene Distributions-Entscheidungen importieren dieses Risiko in die Nutzer-Compliance.",
-        "relevant_law": "§ 138 ZPO (sekundäre Darlegungslast); Art. 8 DSM-RL",
+        "relevant_law": "§ 138 ZPO (sekundäre Darlegungslast); allgemeine Darlegungs- und Beweislastregeln",
         "leading_case": null,
         "quote": null,
         "clause_ref": null
@@ -210,7 +210,7 @@
     "legal_issues": [
       {
         "issue": "§ 60d UrhG — wissenschaftliches TDM bei Dataset-Erstellung",
-        "description": "LAION-5B & Co. enthalten keine Bildkopien, sondern URLs mit ALT-Text. Die Dataset-Erstellung durch wissenschaftliche Einrichtungen stützt sich auf § 60d UrhG (wissenschaftliches TDM); diese Schranke ist nicht opt-out-fähig, solange nicht-kommerzielle Forschung vorliegt. Genau dies war die tragende Norm im LG-Hamburg-Urteil.",
+        "description": "LAION-5B & Co. enthalten keine Bildkopien, sondern URLs mit ALT-Text. Die Dataset-Erstellung durch wissenschaftliche Einrichtungen stützt sich auf § 60d UrhG (wissenschaftliches TDM); diese Schranke ist nicht opt-out-fähig, sofern die Voraussetzungen für privilegierte Forschungsorganisationen oder Kulturerbeeinrichtungen erfüllt sind. Genau dies war die tragende Norm im LG-Hamburg-Urteil.",
         "relevant_law": "§ 60d UrhG; Art. 3 DSM-RL (EU) 2019/790",
         "leading_case": "LG Hamburg, Urt. v. 27.09.2024 - 310 O 227/23 (Kneschke/LAION)",
         "quote": null,
@@ -247,7 +247,7 @@
       {
         "issue": "Vertragsverletzung durch \"no competing models\"-Klauseln",
         "description": "Outputs von OpenAI, Anthropic oder Google stehen unter ToS-Klauseln, die die Nutzung zum Training konkurrierender Foundation-Modelle untersagen. Das Problem ist primär vertragsrechtlich (ToS-Bruch mit Schadensersatz- und Kündigungsfolgen), nicht urheberrechtlich.",
-        "relevant_law": "§§ 241, 280 BGB (Vertragsverletzung); OpenAI ToS § 2(c); Anthropic AUP; Google API ToS",
+        "relevant_law": "§§ 241, 280 BGB (Vertragsverletzung); OpenAI Terms of Use/Services Agreement; Anthropic AUP; Google API ToS",
         "leading_case": null,
         "quote": null,
         "clause_ref": null

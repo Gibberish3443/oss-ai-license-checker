@@ -235,10 +235,10 @@
         "id": "agpl3-network",
         "clause_ref": "Section 13",
         "quote": "your modified version must prominently offer all users interacting with it remotely through",
-        "effect": "Netzwerk-Nutzung löst Offenlegungspflicht aus: Quellcode muss Endnutzern zugänglich sein."
+        "effect": "Bei modifizierten AGPL-Versionen mit Remote-Netzinteraktion muss der korrespondierende Quellcode Endnutzern zugänglich sein."
       }
     ],
-    "notes": "Für SaaS/Hosted-Services entscheidend: Section 13 hebelt das „Distribution-is-trigger\"-Modell der GPL aus. Viele kommerzielle Lizenznehmer meiden AGPL in Inbound-Richtung."
+    "notes": "Für SaaS/Hosted-Services entscheidend, wenn modifizierte AGPL-Software mit Nutzern remote interagiert. Viele kommerzielle Lizenznehmer meiden AGPL in Inbound-Richtung."
   },
   {
     "id": "lgpl-2-1",

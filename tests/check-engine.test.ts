@@ -204,7 +204,7 @@ describe("runCheck", () => {
         models: ["qwen3-235b"],
         codeDependencies: ["gpl-2-0"],
         trainingData: [],
-        useCase: "internal-commercial",
+        useCase: "redistribution",
       });
 
       expect(result.overallRisk).toBe("red");
@@ -212,6 +212,22 @@ describe("runCheck", () => {
         result.modelCodeConflicts.some((conflict) => conflict.severity === "high"),
       ).toBe(true);
       expect(result.matrix[0]?.[0]?.status).toBe("incompatible");
+    });
+
+    it("Apache-2.0 x GPL-2.0 blockiert nicht ohne Weitergabe", () => {
+      const result = runCheck({
+        models: ["qwen3-235b"],
+        codeDependencies: ["gpl-2-0"],
+        trainingData: [],
+        useCase: "internal-commercial",
+      });
+
+      expect(result.complete).toBe(true);
+      expect(result.matrix[0]?.[0]?.status).toBe("compatible");
+      expect(
+        result.modelCodeConflicts.some((conflict) => conflict.severity === "high"),
+      ).toBe(false);
+      expect(result.overallRisk).not.toBe("red");
     });
 
     it("AGPL-Netzwerk-Copyleft erzeugt im SaaS-Use-Case eine high-UCV", () => {

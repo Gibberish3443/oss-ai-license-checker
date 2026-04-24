@@ -326,16 +326,16 @@
     {
       "license_a": "apache-2-0",
       "license_b": "gpl-2-0",
-      "compatibility": "incompatible",
-      "reasoning": "FSF-dokumentierte Inkompatibilität: Apache-2.0 Section 3 (Patent-Retaliation) ist eine Zusatzbedingung, die GPL-2 nicht zulässt ('no further restrictions'). Praktische Lösung: auf GPL-3 migrieren oder Apache-Code durch permissive Alternative ersetzen.",
+      "compatibility": "conditional",
+      "reasoning": "FSF-dokumentierte Inkompatibilität bei Weitergabe kombinierter Werke: Apache-2.0 Section 3 (Patent-Retaliation) ist eine Zusatzbedingung, die GPL-2 nicht zulässt ('no further restrictions'). Ohne Conveying/Distribution entsteht dieser Lizenzkonflikt regelmäßig noch nicht; bei Redistribution bleibt die praktische Lösung, auf GPL-3 zu migrieren oder Apache-Code durch eine permissive Alternative zu ersetzen.",
       "caveats": [
         "Lösung: GPL-2 → GPL-3 'or later' upgraden",
         "Legacy-Projekte sorgfältig prüfen"
       ],
       "scenarios": {
-        "research-only": "incompatible",
-        "internal-commercial": "incompatible",
-        "saas-external": "incompatible",
+        "research-only": "compatible",
+        "internal-commercial": "compatible",
+        "saas-external": "conditional",
         "redistribution": "incompatible"
       },
       "reviewed_by_user": false

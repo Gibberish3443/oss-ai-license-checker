@@ -56,16 +56,16 @@ unterschiedliche Klauseln scharf stellen:
 Die aktive Registry in [`lib/models.json`](lib/models.json) ist bewusst konservativ gehalten und
 enthält zehn LLMs, die aktuell den Markt prägen:
 
-- **Llama 4 Maverick** — Source-available-Referenz mit MAU-Schwelle und AUP
-- **Gemma 4 31B** — seit April 2026 unter Apache-2.0 (Ablösung der Gemma Terms)
-- **Qwen3-235B-A22B** — Apache-Generalist
-- **Qwen3-Coder-480B-A35B-Instruct** — Apache, Coding- und Agentic-Spezialist
-- **DeepSeek-V3.2** — MIT
-- **Phi-4-reasoning-plus** — MIT
-- **Mistral Small 4** — Apache, praktisches Open-Hybrid-Modell
-- **Mistral Large 3** — Apache, offenes Mistral-Flaggschiff
-- **OLMo 3.1 32B Instruct** — vollständig offene Ai2-Referenz
-- **Kimi-K2-Instruct-0905** — modified MIT mit schwellenabhängiger Branding-Pflicht
+- **[Llama 4 Maverick](https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E-Instruct)** — Source-available-Referenz mit MAU-Schwelle und AUP
+- **[Gemma 4 31B](https://huggingface.co/google/gemma-4-31B-it)** — seit April 2026 unter Apache-2.0 (Ablösung der Gemma Terms)
+- **[Qwen3-235B-A22B](https://huggingface.co/Qwen/Qwen3-235B-A22B)** — Apache-Generalist
+- **[Qwen3-Coder-480B-A35B-Instruct](https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct)** — Apache, Coding- und Agentic-Spezialist
+- **[DeepSeek-V3.2](https://huggingface.co/deepseek-ai/DeepSeek-V3.2)** — MIT
+- **[Phi-4-reasoning-plus](https://huggingface.co/microsoft/Phi-4-reasoning-plus)** — MIT
+- **[Mistral Small 4](https://huggingface.co/mistralai/Mistral-Small-4-119B-2603)** — Apache, praktisches Open-Hybrid-Modell
+- **[Mistral Large 3](https://huggingface.co/mistralai/Mistral-Large-3-675B-Instruct-2512-BF16)** — Apache, offenes Mistral-Flaggschiff
+- **[OLMo 3.1 32B Instruct](https://huggingface.co/allenai/Olmo-3.1-32B-Instruct)** — vollständig offene Ai2-Referenz
+- **[Kimi-K2-Instruct-0905](https://huggingface.co/moonshotai/Kimi-K2-Instruct-0905)** — modified MIT mit schwellenabhängiger Branding-Pflicht
 
 Bildmodelle (FLUX.1, Stable Diffusion 3.5) und ältere Regime bleiben als Snapshot-Referenzen im
 Korpus erhalten, sind aber nicht Teil der aktiven Matrix.

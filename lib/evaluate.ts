@@ -485,6 +485,7 @@ function pairFinding(
     dependency_license_id: dependencyLicense.id,
     dependency_license_name: dependencyLicense.name,
     matrix_status: status,
+    matrix_reviewed: status === "self" ? true : pair?.reviewed_by_user ?? false,
     clause: evidence(clause.license, clause.restriction),
     explanation: clause.explanation,
     recommendation:
@@ -537,6 +538,16 @@ function stringFlag(value: unknown): string | null {
   return typeof value === "string" && value.trim() ? value : null;
 }
 
+function entityListFlag(value: unknown): string | null {
+  if (Array.isArray(value)) {
+    const entries = value.filter(
+      (entry): entry is string => typeof entry === "string" && entry.trim() !== "",
+    );
+    return entries.length > 0 ? entries.join(", ") : null;
+  }
+  return stringFlag(value);
+}
+
 function complianceFinding(
   model: ModelLike,
   lookup: Registry,
@@ -546,18 +557,17 @@ function complianceFinding(
   const license = lookup.getLicense(model.license_id);
   if (!license) return null;
 
-  const rawModel = model as unknown as Record<string, unknown>;
+  const modelFlags = model.compliance_flags;
   const licenseFlags = license.additional_compliance_flags;
-  const entityListStatus = stringFlag(
-    rawModel.entity_list_status ?? licenseFlags?.entity_list_status,
+  const entityListStatus = entityListFlag(
+    modelFlags?.entity_list_status ?? licenseFlags?.entity_list_status,
   );
   const hardwareOrigin = stringFlag(
-    rawModel.hardware_origin ??
-      rawModel.training_hardware_origin ??
+    modelFlags?.training_hardware_origin ??
       licenseFlags?.training_hardware_origin,
   );
   const publisherJurisdiction = stringFlag(
-    rawModel.publisher_jurisdiction ?? licenseFlags?.publisher_jurisdiction,
+    modelFlags?.publisher_jurisdiction ?? licenseFlags?.publisher_jurisdiction,
   );
 
   const flags = [
@@ -580,6 +590,7 @@ function complianceFinding(
     model_name: model.name,
     license_id: license.id,
     license_name: license.name,
+    license_snapshot_date: license.official_source.snapshot_date,
     flags,
   };
 }

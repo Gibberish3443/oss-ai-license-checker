@@ -36,12 +36,17 @@ export interface OfficialSource {
   publisher: string;
 }
 
-export type EntityListStatus =
-  | "none"
+export type EntityListEntry =
   | "US_Entity_List"
   | "US_SDN"
+  | "US_MEU"
+  | "US_UVL"
+  | "US_1260H"
+  | "UK_OFSI"
   | "EU_Sanctions"
-  | "unknown";
+  | "CN_UEL";
+
+export type EntityListStatus = "none" | "unknown" | EntityListEntry[];
 
 export type HardwareOrigin =
   | "unknown"
@@ -68,6 +73,7 @@ export interface License {
   restrictions: LicenseRestriction[];
   notes: string;
   additional_compliance_flags?: AdditionalComplianceFlags;
+  has_usage_threshold?: boolean;
   legacy?: boolean;
 }
 
@@ -112,6 +118,7 @@ export interface Model {
   vendor: string;
   license_id: string;
   notes: string;
+  compliance_flags?: AdditionalComplianceFlags;
 }
 
 export const CURATED_STATUSES = [
@@ -138,6 +145,8 @@ export interface CompatibilityPair {
   caveats: string[];
   scenarios: Record<UseCaseId, Compatibility>;
   reviewed_by_user?: boolean;
+  reviewed_on?: string;
+  review_ref?: string;
 }
 
 export interface CompatibilityMatrix {
@@ -220,6 +229,7 @@ export interface PairFinding {
   dependency_license_id: string;
   dependency_license_name: string;
   matrix_status: Compatibility | "self";
+  matrix_reviewed: boolean;
   clause: ClauseEvidence;
   explanation: string;
   recommendation: string;
@@ -251,6 +261,7 @@ export interface ComplianceFlagFinding {
   model_name: string;
   license_id: string;
   license_name: string;
+  license_snapshot_date: string;
   flags: ComplianceFlag[];
 }
 

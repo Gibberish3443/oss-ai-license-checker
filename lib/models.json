@@ -18,21 +18,36 @@
     "name": "Qwen3-235B-A22B",
     "vendor": "Alibaba Cloud / Qwen Team",
     "license_id": "apache-2-0",
-    "notes": "Aktuelle große Qwen-Generalisten-Referenz. Apache-2.0 und für 2026 weiterhin ein zentraler Open-Weights-Benchmark."
+    "notes": "Aktuelle große Qwen-Generalisten-Referenz. Apache-2.0 und für 2026 weiterhin ein zentraler Open-Weights-Benchmark.",
+    "compliance_flags": {
+      "entity_list_status": "none",
+      "training_hardware_origin": "unknown",
+      "publisher_jurisdiction": "CN"
+    }
   },
   {
     "id": "qwen3-coder-480b",
     "name": "Qwen3-Coder-480B-A35B-Instruct",
     "vendor": "Alibaba Cloud / Qwen Team",
     "license_id": "apache-2-0",
-    "notes": "Wichtiger Coding- und Agentic-Spezialist. Separat vom Generalisten geführt, weil er einen anderen realen Einsatzfall abdeckt."
+    "notes": "Wichtiger Coding- und Agentic-Spezialist. Separat vom Generalisten geführt, weil er einen anderen realen Einsatzfall abdeckt.",
+    "compliance_flags": {
+      "entity_list_status": "none",
+      "training_hardware_origin": "unknown",
+      "publisher_jurisdiction": "CN"
+    }
   },
   {
     "id": "deepseek-v3-2",
     "name": "DeepSeek-V3.2",
     "vendor": "DeepSeek AI",
     "license_id": "mit",
-    "notes": "Offizieller Nachfolger von V3.2-Exp seit 1. Dezember 2025. Relevanter MIT-Fall für große Open-Weight-Reasoning- und Agent-Modelle."
+    "notes": "Offizieller Nachfolger von V3.2-Exp seit 1. Dezember 2025. Relevanter MIT-Fall für große Open-Weight-Reasoning- und Agent-Modelle. TODO: Trainings-Hardware-Herkunft belegen (Huawei-Ascend-Berichte betreffen V3.1-Inference, nicht V3.2-Training).",
+    "compliance_flags": {
+      "entity_list_status": "none",
+      "training_hardware_origin": "unknown",
+      "publisher_jurisdiction": "CN"
+    }
   },
   {
     "id": "phi-4-reasoning-plus",

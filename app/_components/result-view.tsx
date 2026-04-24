@@ -63,22 +63,28 @@ const FINDING_LABEL: Record<FindingSeverity, string> = {
   notice: "Hinweis",
 };
 
-type SectionTone = "conflict" | "notice" | "default";
+type TabTone = "conflict" | "notice" | "default";
 
-const SECTION_ACCENT: Record<SectionTone, string> = {
-  conflict: "border-l-4 border-l-red-600 dark:border-l-red-400",
-  notice: "border-l-4 border-l-amber-600 dark:border-l-amber-400",
-  default: "",
-};
-
-const SECTION_COUNT_BADGE: Record<SectionTone, string> = {
+const TAB_ACTIVE: Record<TabTone, string> = {
   conflict:
-    "bg-red-100 text-red-900 dark:bg-red-950/50 dark:text-red-200",
+    "border-red-500 bg-red-50 text-red-900 dark:border-red-400 dark:bg-red-950/40 dark:text-red-100",
   notice:
-    "bg-amber-100 text-amber-900 dark:bg-amber-950/50 dark:text-amber-200",
+    "border-amber-500 bg-amber-50 text-amber-900 dark:border-amber-400 dark:bg-amber-950/40 dark:text-amber-100",
   default:
-    "bg-stone-200 text-stone-800 dark:bg-stone-800 dark:text-stone-200",
+    "border-stone-500 bg-stone-100 text-stone-900 dark:border-stone-400 dark:bg-stone-800 dark:text-stone-100",
 };
+
+const TAB_IDLE =
+  "border-stone-300 bg-white/60 text-stone-700 hover:bg-stone-100 dark:border-stone-700 dark:bg-stone-950/50 dark:text-stone-300 dark:hover:bg-stone-900";
+
+const TAB_BADGE_ACTIVE: Record<TabTone, string> = {
+  conflict: "bg-red-200 text-red-900 dark:bg-red-900/70 dark:text-red-100",
+  notice: "bg-amber-200 text-amber-900 dark:bg-amber-900/70 dark:text-amber-100",
+  default: "bg-stone-300 text-stone-900 dark:bg-stone-700 dark:text-stone-100",
+};
+
+const TAB_BADGE_IDLE =
+  "bg-stone-200 text-stone-700 dark:bg-stone-800 dark:text-stone-300";
 
 const STATUS_LEGEND: Array<{ status: CellStatus; label: string }> = [
   { status: "compatible", label: "Kompatibel" },
@@ -104,6 +110,15 @@ function countStatus(result: CheckResult, status: CellStatus): number {
     }
   }
   return count;
+}
+
+type TabId = "conflict" | "notice" | "training" | "compliance" | "steps";
+
+interface TabConfig {
+  id: TabId;
+  label: string;
+  count: number;
+  tone: TabTone;
 }
 
 export default function ResultView({
@@ -211,72 +226,13 @@ export default function ResultView({
         nextStep={verdict.nextStep}
       />
 
-      {(conflictFindings.length > 0 ||
-        noticeFindings.length > 0 ||
-        trainingFindings.length > 0 ||
-        complianceFindings.length > 0 ||
-        result.recommendations.length > 0) && (
-        <div className="grid gap-3 xl:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.8fr)]">
-          <div className="space-y-3">
-            {conflictFindings.length > 0 && (
-              <CollapsibleSection
-                title="Konflikte"
-                count={conflictFindings.length}
-                tone="conflict"
-                defaultOpen
-              >
-                <p className="mb-3 text-[11px] italic leading-relaxed text-stone-500 dark:text-stone-400">
-                  Katalog-Einordnung (keine Vertragsauslegung).
-                </p>
-                <FindingList findings={conflictFindings} />
-              </CollapsibleSection>
-            )}
-            {noticeFindings.length > 0 && (
-              <CollapsibleSection
-                title="Hinweise"
-                count={noticeFindings.length}
-                tone="notice"
-              >
-                <p className="mb-3 text-[11px] italic leading-relaxed text-stone-500 dark:text-stone-400">
-                  Katalog-Einordnung (keine Vertragsauslegung).
-                </p>
-                <FindingList findings={noticeFindings} />
-              </CollapsibleSection>
-            )}
-          </div>
-
-          <aside className="space-y-3">
-            {trainingFindings.length > 0 && (
-              <CollapsibleSection
-                title="Trainingsdaten"
-                count={trainingFindings.length}
-                tone={
-                  trainingFindings.some((f) => f.severity === "conflict")
-                    ? "conflict"
-                    : "notice"
-                }
-                defaultOpen={trainingFindings.some(
-                  (f) => f.severity === "conflict",
-                )}
-              >
-                <TrainingList findings={trainingFindings} />
-              </CollapsibleSection>
-            )}
-            {complianceFindings.length > 0 && (
-              <CollapsibleSection
-                title="Compliance"
-                count={complianceFindings.length}
-                tone="default"
-              >
-                <ComplianceList findings={complianceFindings} />
-              </CollapsibleSection>
-            )}
-            {result.recommendations.length > 0 && (
-              <Recommendations recommendations={result.recommendations.slice(0, 5)} />
-            )}
-          </aside>
-        </div>
-      )}
+      <FindingsPanel
+        conflictFindings={conflictFindings}
+        noticeFindings={noticeFindings}
+        trainingFindings={trainingFindings}
+        complianceFindings={complianceFindings}
+        recommendations={result.recommendations}
+      />
 
       <p className="border-t border-stone-300 pt-3 font-mono text-[10px] uppercase leading-relaxed tracking-[0.16em] text-stone-500 dark:border-stone-700 dark:text-stone-500">
         Der Report zeigt nur kuratierte Katalogregeln und lokale
@@ -364,51 +320,163 @@ function VerdictCard({
   );
 }
 
-function CollapsibleSection({
-  title,
-  count,
-  tone = "default",
-  defaultOpen = false,
-  children,
+function FindingsPanel({
+  conflictFindings,
+  noticeFindings,
+  trainingFindings,
+  complianceFindings,
+  recommendations,
 }: {
-  title: string;
-  count: number;
-  tone?: SectionTone;
-  defaultOpen?: boolean;
-  children: ReactNode;
+  conflictFindings: PairFinding[];
+  noticeFindings: PairFinding[];
+  trainingFindings: TrainingRiskFinding[];
+  complianceFindings: ComplianceFlagFinding[];
+  recommendations: string[];
 }) {
-  const [open, setOpen] = useState(defaultOpen);
+  const tabs = useMemo<TabConfig[]>(() => {
+    const all: TabConfig[] = [
+      {
+        id: "conflict",
+        label: "Konflikte",
+        count: conflictFindings.length,
+        tone: "conflict",
+      },
+      {
+        id: "notice",
+        label: "Hinweise",
+        count: noticeFindings.length,
+        tone: "notice",
+      },
+      {
+        id: "training",
+        label: "Trainingsdaten",
+        count: trainingFindings.length,
+        tone: trainingFindings.some((f) => f.severity === "conflict")
+          ? "conflict"
+          : "notice",
+      },
+      {
+        id: "compliance",
+        label: "Compliance",
+        count: complianceFindings.length,
+        tone: "default",
+      },
+      {
+        id: "steps",
+        label: "Schritte",
+        count: Math.min(recommendations.length, 5),
+        tone: "default",
+      },
+    ];
+    return all.filter((tab) => tab.count > 0);
+  }, [
+    conflictFindings,
+    noticeFindings,
+    trainingFindings,
+    complianceFindings,
+    recommendations,
+  ]);
+
+  const [activeId, setActiveId] = useState<TabId | null>(tabs[0]?.id ?? null);
+
+  if (tabs.length === 0) return null;
+
+  const active = tabs.find((tab) => tab.id === activeId) ?? tabs[0];
+
   return (
-    <details
-      open={open}
-      onToggle={(event) =>
-        setOpen((event.currentTarget as HTMLDetailsElement).open)
-      }
-      className={`rounded-md border border-stone-300 bg-white/70 dark:border-stone-800 dark:bg-stone-950/60 ${SECTION_ACCENT[tone]}`}
+    <section
+      aria-label="Befunde"
+      className="rounded-md border border-stone-300 bg-white/70 dark:border-stone-800 dark:bg-stone-950/60"
     >
-      <summary
-        className="flex cursor-pointer select-none list-none items-center justify-between gap-3 px-3 py-2.5"
+      <div
+        role="tablist"
+        aria-label="Befund-Kategorien"
+        className="flex flex-wrap gap-2 border-b border-stone-200 p-3 dark:border-stone-800"
       >
-        <span className="flex items-center gap-3">
-          <span
-            aria-hidden="true"
-            className="inline-block font-mono text-[10px] leading-none text-stone-500 transition-transform dark:text-stone-400"
-            style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)" }}
-          >
-            ▸
-          </span>
-          <h3 className="text-base font-semibold leading-tight">{title}</h3>
-          <span
-            className={`rounded-sm px-1.5 py-0.5 font-mono text-[10px] leading-none ${SECTION_COUNT_BADGE[tone]}`}
-          >
-            {count}
-          </span>
-        </span>
-      </summary>
-      <div className="border-t border-stone-200 px-3 py-3 dark:border-stone-800">
-        {children}
+        {tabs.map((tab) => {
+          const isActive = tab.id === active.id;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              onClick={() => setActiveId(tab.id)}
+              className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+                isActive ? TAB_ACTIVE[tab.tone] : TAB_IDLE
+              }`}
+            >
+              <span>{tab.label}</span>
+              <span
+                className={`rounded-full px-1.5 py-0.5 font-mono text-[10px] leading-none ${
+                  isActive ? TAB_BADGE_ACTIVE[tab.tone] : TAB_BADGE_IDLE
+                }`}
+              >
+                {tab.count}
+              </span>
+            </button>
+          );
+        })}
       </div>
-    </details>
+      <div role="tabpanel" className="p-3">
+        <TabContent
+          activeId={active.id}
+          conflictFindings={conflictFindings}
+          noticeFindings={noticeFindings}
+          trainingFindings={trainingFindings}
+          complianceFindings={complianceFindings}
+          recommendations={recommendations}
+        />
+      </div>
+    </section>
+  );
+}
+
+function TabContent({
+  activeId,
+  conflictFindings,
+  noticeFindings,
+  trainingFindings,
+  complianceFindings,
+  recommendations,
+}: {
+  activeId: TabId;
+  conflictFindings: PairFinding[];
+  noticeFindings: PairFinding[];
+  trainingFindings: TrainingRiskFinding[];
+  complianceFindings: ComplianceFlagFinding[];
+  recommendations: string[];
+}): ReactNode {
+  if (activeId === "conflict") {
+    return (
+      <>
+        <Hint text="Katalog-Einordnung (keine Vertragsauslegung)." />
+        <FindingList findings={conflictFindings} />
+      </>
+    );
+  }
+  if (activeId === "notice") {
+    return (
+      <>
+        <Hint text="Katalog-Einordnung (keine Vertragsauslegung)." />
+        <FindingList findings={noticeFindings} />
+      </>
+    );
+  }
+  if (activeId === "training") {
+    return <TrainingList findings={trainingFindings} />;
+  }
+  if (activeId === "compliance") {
+    return <ComplianceList findings={complianceFindings} />;
+  }
+  return <RecommendationList items={recommendations.slice(0, 5)} />;
+}
+
+function Hint({ text }: { text: string }) {
+  return (
+    <p className="mb-3 text-[11px] italic leading-relaxed text-stone-500 dark:text-stone-400">
+      {text}
+    </p>
   );
 }
 
@@ -522,7 +590,7 @@ function ComplianceList({ findings }: { findings: ComplianceFlagFinding[] }) {
           <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-stone-500 dark:text-stone-500">
             Stand Snapshot: {finding.license_snapshot_date}
           </p>
-          <dl className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3 xl:grid-cols-1">
+          <dl className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
             {finding.flags.map((flag) => (
               <div key={`${finding.id}:${flag.label}`}>
                 <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-stone-500 dark:text-stone-500">
@@ -540,23 +608,18 @@ function ComplianceList({ findings }: { findings: ComplianceFlagFinding[] }) {
   );
 }
 
-function Recommendations({ recommendations }: { recommendations: string[] }) {
+function RecommendationList({ items }: { items: string[] }) {
   return (
-    <section className="rounded-md border border-stone-300 bg-stone-100/70 p-3 dark:border-stone-800 dark:bg-stone-900/60">
-      <h3 className="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-500 dark:text-stone-500">
-        Nächste Schritte
-      </h3>
-      <ol className="mt-2 space-y-2">
-        {recommendations.map((recommendation, index) => (
-          <li key={recommendation} className="flex gap-2 text-xs leading-relaxed">
-            <span className="font-mono text-[10px] text-stone-500">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <span>{recommendation}</span>
-          </li>
-        ))}
-      </ol>
-    </section>
+    <ol className="space-y-2">
+      {items.map((item, index) => (
+        <li key={item} className="flex gap-3 text-xs leading-relaxed">
+          <span className="font-mono text-[10px] text-stone-500">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <span className="text-stone-800 dark:text-stone-200">{item}</span>
+        </li>
+      ))}
+    </ol>
   );
 }
 

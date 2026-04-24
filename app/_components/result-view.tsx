@@ -83,6 +83,10 @@ export default function ResultView({
   riskById,
 }: Props) {
   const risk = result.overallRisk;
+  const unreviewedMatrixCells = result.matrix
+    .flat()
+    .filter((cell) => cell.reviewed_by_user === false).length;
+
   return (
     <div>
       <div
@@ -109,6 +113,12 @@ export default function ResultView({
           Use-Case: {useCase.name} · Modelle: {result.rows.length} · Code-Lizenzen:{" "}
           {result.cols.length} · Matrix: {result.complete ? "vollständig" : "unvollständig"}
         </p>
+        {unreviewedMatrixCells > 0 && (
+          <p className="mt-3 max-w-[60ch] text-sm leading-relaxed text-stone-700 dark:text-stone-300">
+            {unreviewedMatrixCells} Matrixzellen basieren auf generischer
+            Einordnung und sind noch nicht als manuell reviewed markiert.
+          </p>
+        )}
       </div>
 
       <ReportSection rubric="Matrix" title="Kompatibilitätsmatrix">

@@ -115,7 +115,7 @@ export default function Home() {
           <p className="mt-6 max-w-[58ch] text-[17px] leading-[1.6] text-stone-700 dark:text-stone-300">
             Prüft die Lizenzlage einer Open-Weight-KI-Komposition entlang dreier Achsen:
             Modelllizenz, Lizenzen der Code-Abhängigkeiten und Risiken aus den Trainingsdaten.
-            Deterministisch im Browser, gegen einen kuratierten Katalog. Kein Rechtsrat —
+            Deterministisch im Browser, gegen einen bewerteten Katalog. Kein Rechtsrat —
             Orientierung für die eigene Due Diligence.
           </p>
         </header>
@@ -202,8 +202,8 @@ export default function Home() {
                 Quelle
               </p>
               <p className="mt-2 normal-case tracking-normal">
-                Matrix deckt kuratierte Modell- ↔ Code-Paare ab. Fehlende Paare
-                werden als „ungeprüft" ausgewiesen.
+                Matrix deckt bewertete Modell- ↔ Code-Paare ab. Fehlende Paare
+                werden als „ungeprüft“ ausgewiesen.
               </p>
             </div>
           </div>

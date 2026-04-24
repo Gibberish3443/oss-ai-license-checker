@@ -94,6 +94,16 @@ export default function MatrixGrid({
                     className={`border-b border-zinc-200 px-3 py-2 align-top dark:border-zinc-800 ${STATUS_CELL[cell.status]}`}
                   >
                     <div className="font-semibold">{STATUS_LABEL[cell.status]}</div>
+                    {cell.reviewed_by_user === false && (
+                      <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.16em] opacity-80">
+                        generisch bewertet
+                      </div>
+                    )}
+                    {cell.reviewed_by_user === true && (
+                      <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.16em] opacity-80">
+                        manuell reviewed
+                      </div>
+                    )}
                     <p className="mt-1 text-xs leading-snug">
                       {cell.reasoning}
                     </p>

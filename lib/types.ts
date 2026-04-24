@@ -159,6 +159,7 @@ export interface CompatibilityCell {
   status: CellStatus;
   reasoning: string;
   caveats: string[];
+  reviewed_by_user?: boolean;
 }
 
 export interface MatrixRow {

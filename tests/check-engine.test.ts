@@ -86,6 +86,33 @@ describe("runCheck", () => {
       expect(result.recommendations.length).toBeGreaterThan(0);
     });
 
+    it("Matrixzellen übernehmen den manuellen Review-Status aus dem Katalog", () => {
+      const input = cloneInput();
+      const pair = input.compatibilityMatrix.pairs.find(
+        (entry) =>
+          entry.license_a === "llama-4-community" &&
+          entry.license_b === "apache-2-0",
+      );
+
+      expect(pair).toBeDefined();
+      if (!pair) {
+        throw new Error("Testpaar fehlt in der Registry");
+      }
+      pair.reviewed_by_user = true;
+
+      const result = runCheck(
+        {
+          models: ["llama-4-maverick"],
+          codeDependencies: ["apache-2-0"],
+          trainingData: [],
+          useCase: "saas-external",
+        },
+        loadRegistry(input),
+      );
+
+      expect(result.matrix[0]?.[0]?.reviewed_by_user).toBe(true);
+    });
+
     it("C: self-pair erzeugt keine Konflikte", () => {
       const result = runCheck({
         models: ["qwen3-235b"],

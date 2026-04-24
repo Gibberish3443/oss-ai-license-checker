@@ -371,6 +371,7 @@ export function runCheck(
         status,
         reasoning: pair.reasoning,
         caveats: pair.caveats,
+        reviewed_by_user: pair.reviewed_by_user ?? false,
       });
 
       const severity = severityForStatus(status);

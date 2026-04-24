@@ -133,7 +133,8 @@ Maßgeblich für die Rechtsanwendung bleibt immer die aktuelle Fassung beim Rech
 
 Die Kompatibilitätsbewertungen in [`lib/compatibility-matrix.json`](lib/compatibility-matrix.json)
 tragen ein Flag `reviewed_by_user`, mit dem unterschieden wird, welche Paare bereits manuell
-geprüft und welche auf generischer Einordnung beruhen.
+geprüft und welche auf generischer Einordnung beruhen. Der aktuelle Stand wird in der UI
+sichtbar ausgewiesen.
 
 ## Referenzen
 

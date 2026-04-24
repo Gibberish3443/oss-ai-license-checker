@@ -148,8 +148,17 @@ export default function MatrixGrid({ result, modelById, licenseById }: Props) {
                           type="button"
                           onClick={() => setSelectedCell({ rowIndex, colIndex })}
                           aria-pressed={selected}
-                          className={`grid h-[72px] w-full min-w-[118px] place-items-center rounded-md border p-2 text-center transition-all ${
+                          aria-label={`${STATUS_DETAIL_LABEL[cell.status]}${
+                            cell.reviewed_by_user === false
+                              ? ", generisch bewertet"
+                              : ""
+                          }`}
+                          className={`grid h-[64px] w-full min-w-[118px] place-items-center gap-1 rounded-md border p-2 text-center transition-all ${
                             STATUS_CELL[cell.status]
+                          } ${
+                            cell.reviewed_by_user === false
+                              ? "border-dashed"
+                              : ""
                           } ${
                             selected
                               ? "ring-2 ring-stone-950 ring-offset-2 ring-offset-background dark:ring-stone-50"
@@ -163,11 +172,6 @@ export default function MatrixGrid({ result, modelById, licenseById }: Props) {
                           <span className="font-mono text-[11px] uppercase tracking-[0.14em]">
                             {STATUS_LABEL[cell.status]}
                           </span>
-                          {cell.reviewed_by_user === false && (
-                            <span className="font-mono text-[9px] uppercase tracking-[0.12em] opacity-75">
-                              generisch
-                            </span>
-                          )}
                         </button>
                       </td>
                     );
@@ -201,11 +205,13 @@ export default function MatrixGrid({ result, modelById, licenseById }: Props) {
               <DetailLine
                 label="Review"
                 value={
-                  activeCell.reviewed_by_user === true
-                    ? "manuell reviewed"
-                    : activeCell.reviewed_by_user === false
-                      ? "generisch bewertet"
-                      : "synthetisch"
+                  activeCell.status === "self"
+                    ? "identische Lizenz"
+                    : activeCell.reviewed_by_user === true
+                      ? "manuell reviewed"
+                      : activeCell.reviewed_by_user === false
+                        ? "generisch bewertet"
+                        : "identische Lizenz"
                 }
               />
             </div>

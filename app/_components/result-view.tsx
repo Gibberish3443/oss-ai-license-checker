@@ -211,21 +211,25 @@ export default function ResultView({
 
 function StatusLegend({ result }: { result: CheckResult }) {
   return (
-    <ul className="flex flex-wrap items-center gap-x-4 gap-y-2">
+    <ul className="flex flex-wrap items-center gap-x-5 gap-y-2">
       {STATUS_LEGEND.map(({ status, label }) => {
         const count = countStatus(result, status);
         if (count === 0) return null;
         return (
           <li
             key={status}
-            className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-stone-600 dark:text-stone-400"
+            className="inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.16em] text-stone-600 dark:text-stone-400"
           >
-            <span
-              aria-hidden="true"
-              className={`h-2 w-2 rounded-full ${STATUS_LEGEND_DOT[status]}`}
-            />
-            <span>{label}</span>
-            <span className="text-stone-500 dark:text-stone-500">{count}</span>
+            <span className="inline-flex items-center gap-1.5">
+              <span
+                aria-hidden="true"
+                className={`h-2 w-2 rounded-full ${STATUS_LEGEND_DOT[status]}`}
+              />
+              <span>{label}</span>
+            </span>
+            <span className="rounded-sm bg-stone-200 px-1.5 py-0.5 text-[10px] leading-none text-stone-800 dark:bg-stone-800 dark:text-stone-200">
+              {count}
+            </span>
           </li>
         );
       })}

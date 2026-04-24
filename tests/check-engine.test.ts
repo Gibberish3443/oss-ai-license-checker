@@ -114,8 +114,10 @@ describe("runCheck", () => {
     });
 
     it("C: self-pair erzeugt keine Konflikte", () => {
+      // Modell ohne compliance_flags wählen, sonst triggert der Compliance-Notice
+      // zurecht yellow und das Self-Pair-Verhalten ist nicht mehr isoliert prüfbar.
       const result = runCheck({
-        models: ["qwen3-235b"],
+        models: ["gemma-4-31b"],
         codeDependencies: ["apache-2-0"],
         trainingData: [],
         useCase: "research-only",

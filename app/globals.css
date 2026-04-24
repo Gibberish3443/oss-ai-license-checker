@@ -1,21 +1,35 @@
 @import "tailwindcss";
 
+/* Editorial tokens: stone palette + accent-ink/gold, Instrument Serif display */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafaf9;
+  --foreground: #1c1917;
+  --hairline: #d6d3d1;
+  --muted: #57534e;
+  --accent-ink: #1b263b;
+  --accent-gold: #a16207;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-hairline: var(--hairline);
+  --color-muted: var(--muted);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-gold: var(--accent-gold);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-instrument-serif);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0c0a09;
+    --foreground: #f5f5f4;
+    --hairline: #44403c;
+    --muted: #a8a29e;
+    --accent-ink: #c9d4e6;
+    --accent-gold: #d9a441;
   }
 }
 

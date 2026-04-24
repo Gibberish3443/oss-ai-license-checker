@@ -31,10 +31,10 @@ const RISK_LABEL: Record<TrainingDataRisk["risk_level"], string> = {
   high: "hoch",
 };
 
-const RISK_BADGE: Record<TrainingDataRisk["risk_level"], string> = {
-  low: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200",
-  medium: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200",
-  high: "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-200",
+const RISK_DOT: Record<TrainingDataRisk["risk_level"], string> = {
+  low: "bg-emerald-700 dark:bg-emerald-400",
+  medium: "bg-amber-700 dark:bg-amber-400",
+  high: "bg-red-700 dark:bg-red-400",
 };
 
 function toggleInArray(list: string[], value: string): string[] {
@@ -80,51 +80,54 @@ export default function InputForm({
 
   return (
     <form
-      className="space-y-8"
+      className="flex flex-col gap-10"
       onSubmit={(e) => e.preventDefault()}
       aria-label="Eingabemaske"
     >
       <Section
-        step={1}
+        rubric="Schritt 01 / Use-Case"
         title="Use-Case"
         description="Wofür soll die Kombination eingesetzt werden? Steuert, welche Szenario-Spalte der Matrix ausgewertet wird."
       >
-        <fieldset className="grid gap-2 sm:grid-cols-2">
+        <fieldset className="divide-y divide-stone-200 dark:divide-stone-800">
           <legend className="sr-only">Use-Case</legend>
-          {useCases.map((uc) => (
-            <label
-              key={uc.id}
-              className={`flex cursor-pointer gap-3 rounded-md border p-3 text-sm transition-colors ${
-                useCase === uc.id
-                  ? "border-indigo-500 bg-indigo-50 dark:border-indigo-400 dark:bg-indigo-950/40"
-                  : "border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700"
-              }`}
-            >
-              <input
-                type="radio"
-                name="useCase"
-                value={uc.id}
-                checked={useCase === uc.id}
-                onChange={() => onUseCaseChange(uc.id)}
-                className="mt-1"
-              />
-              <span className="flex-1">
-                <span className="block font-medium">{uc.name}</span>
-                <span className="mt-1 block text-xs text-zinc-600 dark:text-zinc-400">
-                  {uc.description}
+          {useCases.map((uc) => {
+            const active = useCase === uc.id;
+            return (
+              <label
+                key={uc.id}
+                className={`flex cursor-pointer gap-3 py-2.5 text-sm transition-colors ${
+                  active
+                    ? "border-l-2 border-[var(--accent-ink)] bg-stone-100 pl-3 dark:bg-stone-900"
+                    : "border-l-2 border-transparent pl-3 hover:bg-stone-50 dark:hover:bg-stone-900/60"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="useCase"
+                  value={uc.id}
+                  checked={active}
+                  onChange={() => onUseCaseChange(uc.id)}
+                  className="mt-1 accent-stone-800 dark:accent-stone-200"
+                />
+                <span className="flex-1">
+                  <span className="block font-medium">{uc.name}</span>
+                  <span className="mt-1 block text-xs text-stone-600 dark:text-stone-400">
+                    {uc.description}
+                  </span>
                 </span>
-              </span>
-            </label>
-          ))}
+              </label>
+            );
+          })}
         </fieldset>
       </Section>
 
       <Section
-        step={2}
+        rubric="Schritt 02 / Modelle"
         title="Modelle"
         description="Welche Open-Weight-Modelle sollen geprüft werden? Jedes Modell zieht seine Modelllizenz in die Matrix."
       >
-        <fieldset className="grid gap-2 sm:grid-cols-2">
+        <fieldset className="divide-y divide-stone-200 dark:divide-stone-800">
           <legend className="sr-only">Modelle</legend>
           {models.map((m) => {
             const license = licenseById.get(m.license_id);
@@ -132,24 +135,24 @@ export default function InputForm({
             return (
               <label
                 key={m.id}
-                className={`flex cursor-pointer gap-3 rounded-md border p-3 text-sm transition-colors ${
+                className={`flex cursor-pointer gap-3 py-2.5 text-sm transition-colors ${
                   checked
-                    ? "border-indigo-500 bg-indigo-50 dark:border-indigo-400 dark:bg-indigo-950/40"
-                    : "border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700"
+                    ? "border-l-2 border-[var(--accent-ink)] bg-stone-100 pl-3 dark:bg-stone-900"
+                    : "border-l-2 border-transparent pl-3 hover:bg-stone-50 dark:hover:bg-stone-900/60"
                 }`}
               >
                 <input
                   type="checkbox"
                   checked={checked}
                   onChange={() => onModelsChange(toggleInArray(selectedModels, m.id))}
-                  className="mt-1"
+                  className="mt-1 accent-stone-800 dark:accent-stone-200"
                 />
                 <span className="flex-1">
                   <span className="block font-medium">{m.name}</span>
-                  <span className="mt-0.5 block text-xs text-zinc-600 dark:text-zinc-400">
+                  <span className="mt-0.5 block text-xs text-stone-600 dark:text-stone-400">
                     {m.vendor}
                   </span>
-                  <span className="mt-1 inline-block rounded bg-zinc-100 px-2 py-0.5 font-mono text-[0.7rem] text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                  <span className="mt-1 inline-block font-mono text-[11px] uppercase tracking-[0.12em] text-stone-500 dark:text-stone-400">
                     {license?.name ?? m.license_id}
                   </span>
                 </span>
@@ -160,11 +163,11 @@ export default function InputForm({
       </Section>
 
       <Section
-        step={3}
+        rubric="Schritt 03 / Code-Deps"
         title="Code-Abhängigkeiten"
         description="Lizenzen der im Projekt verwendeten Libraries. Mehrere Deps pro Lizenz? Anzahl rechts anpassen."
       >
-        <fieldset className="grid gap-2 sm:grid-cols-2">
+        <fieldset className="divide-y divide-stone-200 dark:divide-stone-800">
           <legend className="sr-only">Code-Abhängigkeiten</legend>
           {licenses.map((l) => {
             const count = codeDepCounts[l.id] ?? 0;
@@ -172,28 +175,28 @@ export default function InputForm({
             return (
               <div
                 key={l.id}
-                className={`flex items-start gap-3 rounded-md border p-3 text-sm transition-colors ${
+                className={`flex items-start gap-3 py-2.5 text-sm transition-colors ${
                   active
-                    ? "border-indigo-500 bg-indigo-50 dark:border-indigo-400 dark:bg-indigo-950/40"
-                    : "border-zinc-200 dark:border-zinc-800"
+                    ? "border-l-2 border-[var(--accent-ink)] bg-stone-100 pl-3 dark:bg-stone-900"
+                    : "border-l-2 border-transparent pl-3"
                 }`}
               >
                 <input
                   type="checkbox"
                   checked={active}
                   onChange={() => toggleDep(l.id)}
-                  className="mt-1"
+                  className="mt-1 accent-stone-800 dark:accent-stone-200"
                   aria-label={`${l.name} als Abhängigkeit aufnehmen`}
                 />
                 <div className="flex-1">
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <span className="block font-medium">{l.name}</span>
-                      <span className="mt-0.5 block text-xs text-zinc-600 dark:text-zinc-400">
+                      <span className="mt-0.5 block text-xs text-stone-600 dark:text-stone-400">
                         {l.category}
                       </span>
                     </div>
-                    <label className="flex items-center gap-1 text-xs text-zinc-600 dark:text-zinc-400">
+                    <label className="flex items-baseline gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-stone-500 dark:text-stone-400">
                       <span aria-hidden="true">Anzahl</span>
                       <input
                         type="number"
@@ -202,7 +205,7 @@ export default function InputForm({
                         value={count}
                         onChange={(e) => updateDepCount(l.id, e.target.value)}
                         aria-label={`Anzahl Abhängigkeiten mit Lizenz ${l.name}`}
-                        className="w-16 rounded border border-zinc-300 px-2 py-1 text-right font-mono text-sm dark:border-zinc-700 dark:bg-zinc-900"
+                        className="w-14 border-0 border-b border-stone-400 bg-transparent px-0 py-0.5 text-right font-mono text-sm text-stone-900 focus:border-[var(--accent-ink)] focus:outline-none focus:ring-0 dark:border-stone-600 dark:text-stone-100"
                       />
                     </label>
                   </div>
@@ -214,21 +217,21 @@ export default function InputForm({
       </Section>
 
       <Section
-        step={4}
+        rubric="Schritt 04 / Trainingsdaten"
         title="Trainingsdaten-Risiken"
         description="Bekannte Risiken aus den Trainingskorpora der eingesetzten Modelle. Optional, beeinflusst die Ampel ab Risiko „mittel“."
       >
-        <fieldset className="grid gap-2 sm:grid-cols-2">
+        <fieldset className="divide-y divide-stone-200 dark:divide-stone-800">
           <legend className="sr-only">Trainingsdaten-Risiken</legend>
           {trainingRisks.map((r) => {
             const checked = selectedTrainingRisks.includes(r.id);
             return (
               <label
                 key={r.id}
-                className={`flex cursor-pointer gap-3 rounded-md border p-3 text-sm transition-colors ${
+                className={`flex cursor-pointer gap-3 py-2.5 text-sm transition-colors ${
                   checked
-                    ? "border-indigo-500 bg-indigo-50 dark:border-indigo-400 dark:bg-indigo-950/40"
-                    : "border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700"
+                    ? "border-l-2 border-[var(--accent-ink)] bg-stone-100 pl-3 dark:bg-stone-900"
+                    : "border-l-2 border-transparent pl-3 hover:bg-stone-50 dark:hover:bg-stone-900/60"
                 }`}
               >
                 <input
@@ -237,14 +240,19 @@ export default function InputForm({
                   onChange={() =>
                     onTrainingRisksChange(toggleInArray(selectedTrainingRisks, r.id))
                   }
-                  className="mt-1"
+                  className="mt-1 accent-stone-800 dark:accent-stone-200"
                 />
                 <span className="flex-1">
                   <span className="flex items-center gap-2">
                     <span className="font-medium">{r.name}</span>
                     <span
-                      className={`rounded px-2 py-0.5 text-[0.7rem] font-medium ${RISK_BADGE[r.risk_level]}`}
+                      className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-stone-500 dark:text-stone-400"
+                      aria-label={`Risiko ${RISK_LABEL[r.risk_level]}`}
                     >
+                      <span
+                        aria-hidden="true"
+                        className={`inline-block h-1.5 w-1.5 rounded-full ${RISK_DOT[r.risk_level]}`}
+                      />
                       {RISK_LABEL[r.risk_level]}
                     </span>
                   </span>
@@ -259,7 +267,7 @@ export default function InputForm({
         <button
           type="button"
           onClick={onReset}
-          className="text-sm text-zinc-600 underline-offset-2 hover:text-zinc-900 hover:underline dark:text-zinc-400 dark:hover:text-zinc-100"
+          className="font-serif text-[14px] italic text-stone-600 transition-colors hover:text-[var(--accent-gold)] dark:text-stone-400 dark:hover:text-[var(--accent-gold)]"
         >
           Eingaben zurücksetzen
         </button>
@@ -269,26 +277,28 @@ export default function InputForm({
 }
 
 function Section({
-  step,
+  rubric,
   title,
   description,
   children,
 }: {
-  step: number;
+  rubric: string;
   title: string;
   description: string;
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950">
-      <header className="mb-4">
-        <h2 className="flex items-baseline gap-2 text-lg font-semibold">
-          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-900 text-xs font-semibold text-white dark:bg-zinc-100 dark:text-zinc-900">
-            {step}
-          </span>
+    <section className="border-t border-stone-300 pt-8 first:border-t-0 first:pt-0 dark:border-stone-700">
+      <header className="mb-5">
+        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-stone-500 dark:text-stone-500">
+          {rubric}
+        </p>
+        <h2 className="mt-2 font-serif text-[28px] leading-[1.05] tracking-tight">
           {title}
         </h2>
-        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{description}</p>
+        <p className="mt-3 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
+          {description}
+        </p>
       </header>
       {children}
     </section>

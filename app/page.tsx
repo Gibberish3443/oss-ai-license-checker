@@ -86,28 +86,42 @@ export default function Home() {
 
   const currentUseCase = data.useCaseById.get(useCase);
 
+  const today = new Date().toLocaleDateString("de-DE", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+
   return (
-    <div className="min-h-full bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
-      <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-        <header className="mb-8 border-b border-zinc-200 pb-6 dark:border-zinc-800">
-          <h1 className="text-3xl font-semibold tracking-tight">
-            OSS AI License Checker
-          </h1>
-          <p className="mt-2 max-w-3xl text-sm text-zinc-600 dark:text-zinc-400">
+    <div className="min-h-full">
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-10">
+        <header className="mb-10">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <h1 className="font-serif text-[56px] leading-[0.95] tracking-tight sm:text-[72px]">
+              OSS AI License Checker
+            </h1>
+            <p className="font-mono text-[11px] uppercase leading-relaxed tracking-[0.2em] text-stone-500 dark:text-stone-400">
+              <span className="block">Stand {today}</span>
+              <span className="block">
+                {data.licenses.length} Lizenzen · {data.models.length} Modelle ·{" "}
+                {data.trainingRisks.length} Risiken
+              </span>
+            </p>
+          </div>
+          <div
+            aria-hidden="true"
+            className="mt-8 border-t border-stone-900 dark:border-stone-100"
+          />
+          <p className="mt-6 max-w-[58ch] text-[17px] leading-[1.6] text-stone-700 dark:text-stone-300">
             Prüft die Lizenzlage einer Open-Weight-KI-Komposition entlang dreier Achsen:
             Modelllizenz, Lizenzen der Code-Abhängigkeiten und Risiken aus den Trainingsdaten.
-            Die Bewertung läuft komplett deterministisch im Browser gegen einen kuratierten
-            Lizenz- und Matrix-Katalog.
-          </p>
-          <p className="mt-3 text-xs text-zinc-500 dark:text-zinc-500">
-            Stand Katalog: {data.licenses.length} aktive Lizenzen, {data.models.length} Modelle,
-            {" "}{data.trainingRisks.length} Trainingsdaten-Risiken. Kein Rechtsrat — Orientierung
-            für die eigene Due Diligence.
+            Deterministisch im Browser, gegen einen kuratierten Katalog. Kein Rechtsrat —
+            Orientierung für die eigene Due Diligence.
           </p>
         </header>
 
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
-          <div>
+        <div className="grid gap-12 lg:grid-cols-[280px_minmax(0,1fr)]">
+          <aside className="lg:sticky lg:top-8 lg:self-start">
             <InputForm
               models={data.models}
               licenses={data.licenses}
@@ -124,16 +138,20 @@ export default function Home() {
               onUseCaseChange={setUseCase}
               onReset={reset}
             />
-          </div>
+          </aside>
 
-          <div>
+          <main>
             {check.error ? (
               <div
                 role="alert"
-                className="rounded-lg border border-red-300 bg-red-50 p-5 text-red-900 dark:border-red-700 dark:bg-red-950/40 dark:text-red-100"
+                className="border-l-2 border-red-700 pl-5 py-4 dark:border-red-400"
               >
-                <h2 className="text-base font-semibold">Prüfung nicht möglich</h2>
-                <p className="mt-2 text-sm">{check.error}</p>
+                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-red-700 dark:text-red-300">
+                  Prüfung nicht möglich
+                </p>
+                <h2 className="mt-2 font-serif text-[28px] leading-tight text-red-900 dark:text-red-100">
+                  {check.error}
+                </h2>
               </div>
             ) : check.result && currentUseCase ? (
               <ResultView
@@ -144,26 +162,51 @@ export default function Home() {
                 riskById={data.riskById}
               />
             ) : (
-              <div className="rounded-lg border border-dashed border-zinc-300 bg-white p-8 text-center text-sm text-zinc-600 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-400">
-                <p className="font-medium text-zinc-900 dark:text-zinc-100">
-                  Noch keine Prüfung
+              <div className="flex min-h-[320px] flex-col items-start justify-center py-16">
+                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-stone-500 dark:text-stone-500">
+                  Wartend
                 </p>
-                <p className="mt-2">
-                  Use-Case wählen, mindestens ein Modell markieren und optional Code-Deps
-                  und Trainingsdaten-Risiken ergänzen. Das Ergebnis erscheint hier, sobald
-                  eine Auswahl steht.
+                <p className="mt-3 font-serif text-[40px] leading-[1.05] tracking-tight text-stone-900 dark:text-stone-100">
+                  Noch keine Prüfung.
+                </p>
+                <p className="mt-4 max-w-[44ch] text-sm leading-relaxed text-stone-600 dark:text-stone-400">
+                  Use-Case, mindestens ein Modell, optional Code-Deps und Trainingsdaten —
+                  das Verdikt erscheint, sobald die Auswahl steht.
                 </p>
               </div>
             )}
-          </div>
+          </main>
         </div>
 
-        <footer className="mt-12 border-t border-zinc-200 pt-6 text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-500">
-          <p>
-            Katalog und Prüflogik unter MIT-Lizenz. Quellcode und Lizenz-Snapshots im
-            Repo. Stand der Paare: {data.licenses.length} aktive Lizenzen in der
-            Registry, Matrix deckt kuratierte Modell- ↔ Code-Paare ab.
-          </p>
+        <footer className="mt-16 border-t border-stone-300 pt-8 dark:border-stone-700">
+          <div className="grid gap-6 font-mono text-[11px] leading-relaxed text-stone-600 sm:grid-cols-3 dark:text-stone-400">
+            <div>
+              <p className="uppercase tracking-[0.2em] text-stone-500 dark:text-stone-500">
+                Katalog
+              </p>
+              <p className="mt-2 normal-case tracking-normal">
+                {data.licenses.length} aktive Lizenzen · {data.models.length} Modelle ·{" "}
+                {data.trainingRisks.length} Trainingsdaten-Risiken
+              </p>
+            </div>
+            <div>
+              <p className="uppercase tracking-[0.2em] text-stone-500 dark:text-stone-500">
+                Lizenz
+              </p>
+              <p className="mt-2 normal-case tracking-normal">
+                MIT — Katalog und Prüflogik. Lizenz-Snapshots im Repo.
+              </p>
+            </div>
+            <div>
+              <p className="uppercase tracking-[0.2em] text-stone-500 dark:text-stone-500">
+                Quelle
+              </p>
+              <p className="mt-2 normal-case tracking-normal">
+                Matrix deckt kuratierte Modell- ↔ Code-Paare ab. Fehlende Paare
+                werden als „ungeprüft" ausgewiesen.
+              </p>
+            </div>
+          </div>
         </footer>
       </div>
     </div>

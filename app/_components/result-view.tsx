@@ -36,20 +36,37 @@ const RISK_DESCRIPTION: Record<OverallRisk, string> = {
     "Mindestens ein Lizenzpaar fehlt in der kuratierten Matrix. Ergebnis ist ungeprüft — Paare müssen manuell bewertet werden, bevor eine Ampel vergeben werden kann.",
 };
 
-const RISK_COLORS: Record<OverallRisk, string> = {
-  green:
-    "border-emerald-500 bg-emerald-50 text-emerald-900 dark:border-emerald-400 dark:bg-emerald-950/40 dark:text-emerald-100",
-  yellow:
-    "border-amber-500 bg-amber-50 text-amber-900 dark:border-amber-400 dark:bg-amber-950/40 dark:text-amber-100",
-  red: "border-red-500 bg-red-50 text-red-900 dark:border-red-400 dark:bg-red-950/40 dark:text-red-100",
-  missing:
-    "border-zinc-500 bg-zinc-100 text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100",
+const RISK_HERO_BG: Record<OverallRisk, string> = {
+  green: "bg-emerald-50 dark:bg-emerald-950/30",
+  yellow: "bg-amber-50 dark:bg-amber-950/30",
+  red: "bg-red-50 dark:bg-red-950/30",
+  missing: "bg-stone-100 dark:bg-stone-900/60",
 };
 
-const SEVERITY_BADGE: Record<"high" | "medium" | "low", string> = {
-  high: "bg-red-100 text-red-900 dark:bg-red-900/40 dark:text-red-100",
-  medium: "bg-amber-100 text-amber-900 dark:bg-amber-900/40 dark:text-amber-100",
-  low: "bg-emerald-100 text-emerald-900 dark:bg-emerald-900/40 dark:text-emerald-100",
+const RISK_INK: Record<OverallRisk, string> = {
+  green: "text-emerald-900 dark:text-emerald-100",
+  yellow: "text-amber-900 dark:text-amber-100",
+  red: "text-red-900 dark:text-red-100",
+  missing: "text-stone-900 dark:text-stone-100",
+};
+
+const RISK_RUBRIC_INK: Record<OverallRisk, string> = {
+  green: "text-emerald-800 dark:text-emerald-300",
+  yellow: "text-amber-800 dark:text-amber-300",
+  red: "text-red-800 dark:text-red-300",
+  missing: "text-stone-700 dark:text-stone-300",
+};
+
+const SEVERITY_LINE: Record<"high" | "medium" | "low", string> = {
+  high: "border-red-700 dark:border-red-400",
+  medium: "border-amber-700 dark:border-amber-400",
+  low: "border-emerald-700 dark:border-emerald-400",
+};
+
+const SEVERITY_INK: Record<"high" | "medium" | "low", string> = {
+  high: "text-red-800 dark:text-red-300",
+  medium: "text-amber-800 dark:text-amber-300",
+  low: "text-emerald-800 dark:text-emerald-300",
 };
 
 const SEVERITY_LABEL: Record<"high" | "medium" | "low", string> = {
@@ -65,192 +82,238 @@ export default function ResultView({
   licenseById,
   riskById,
 }: Props) {
+  const risk = result.overallRisk;
   return (
-    <div className="space-y-6">
+    <div>
       <div
         role="status"
         aria-live="polite"
-        className={`rounded-lg border-l-4 p-5 ${RISK_COLORS[result.overallRisk]}`}
+        className={`border-b border-stone-300 dark:border-stone-700 ${RISK_HERO_BG[risk]} -mx-4 px-4 py-10 sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10`}
       >
-        <h2 className="text-xl font-semibold">{RISK_HEADLINE[result.overallRisk]}</h2>
-        <p className="mt-2 text-sm">{RISK_DESCRIPTION[result.overallRisk]}</p>
-        <p className="mt-3 text-xs opacity-80">
-          Use-Case: <span className="font-medium">{useCase.name}</span>
-          {" · "}
-          Modelle: {result.rows.length}
-          {" · "}
-          Code-Lizenzen: {result.cols.length}
-          {" · "}
-          Matrix: {result.complete ? "vollständig" : "unvollständig"}
+        <p
+          className={`font-mono text-[11px] uppercase tracking-[0.22em] ${RISK_RUBRIC_INK[risk]}`}
+        >
+          Verdikt
+        </p>
+        <h2
+          className={`mt-3 font-serif text-[48px] leading-[1.02] tracking-tight ${RISK_INK[risk]}`}
+        >
+          {RISK_HEADLINE[risk]}
+        </h2>
+        <p
+          className={`mt-5 max-w-[60ch] text-[17px] leading-[1.55] ${RISK_INK[risk]}`}
+        >
+          {RISK_DESCRIPTION[risk]}
+        </p>
+        <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.18em] text-stone-600 dark:text-stone-400">
+          Use-Case: {useCase.name} · Modelle: {result.rows.length} · Code-Lizenzen:{" "}
+          {result.cols.length} · Matrix: {result.complete ? "vollständig" : "unvollständig"}
         </p>
       </div>
 
-      <section className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950">
-        <h3 className="text-base font-semibold">Kompatibilitätsmatrix</h3>
-        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-          Zeilen = Modelle, Spalten = deduplizierte Code-Lizenzen. Status bezieht sich auf
-          den aktuellen Use-Case. Begründung und Auflagen stehen jeweils direkt in der Zelle.
+      <ReportSection rubric="Matrix" title="Kompatibilitätsmatrix">
+        <p className="mb-6 text-sm text-stone-600 dark:text-stone-400">
+          Zeilen = Modelle, Spalten = deduplizierte Code-Lizenzen. Status bezieht sich
+          auf den aktuellen Use-Case. Begründung und Auflagen stehen jeweils direkt in
+          der Zelle.
         </p>
-        <div className="mt-4">
-          <MatrixGrid
-            result={result}
-            modelById={modelById}
-            licenseById={licenseById}
-          />
-        </div>
-      </section>
+        <MatrixGrid
+          result={result}
+          modelById={modelById}
+          licenseById={licenseById}
+        />
+      </ReportSection>
 
       {result.missingPairs.length > 0 && (
-        <section className="rounded-lg border border-zinc-300 bg-zinc-50 p-5 dark:border-zinc-700 dark:bg-zinc-900">
-          <h3 className="text-base font-semibold">Fehlende Matrix-Paare</h3>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-            Diese Paare sind in der kuratierten Matrix nicht bewertet und müssen vor Produktiveinsatz
-            manuell geprüft werden.
+        <ReportSection
+          rubric="Fehlende Paare"
+          title="Fehlende Matrix-Paare"
+        >
+          <p className="mb-4 text-sm text-stone-600 dark:text-stone-400">
+            Diese Paare sind in der kuratierten Matrix nicht bewertet und müssen vor
+            Produktiveinsatz manuell geprüft werden.
           </p>
-          <ul className="mt-3 space-y-1 text-sm">
+          <ul className="space-y-2">
             {result.missingPairs.map((p) => (
               <li
                 key={`${p.license_a}|${p.license_b}|${p.context}`}
-                className="font-mono"
+                className="border-l-2 border-stone-400 pl-4 py-1 font-mono text-sm dark:border-stone-600"
               >
                 {p.license_a} ↔ {p.license_b}
-                <span className="ml-2 text-xs font-sans text-zinc-500 dark:text-zinc-400">
+                <span className="ml-2 text-xs text-stone-500 dark:text-stone-400">
                   ({p.context})
                 </span>
               </li>
             ))}
           </ul>
-        </section>
+        </ReportSection>
       )}
 
       {result.modelCodeConflicts.length > 0 && (
-        <section className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950">
-          <h3 className="text-base font-semibold">Lizenz-Konflikte</h3>
-          <ul className="mt-3 space-y-3 text-sm">
+        <ReportSection rubric="Konflikte" title="Lizenz-Konflikte">
+          <ul className="space-y-4">
             {result.modelCodeConflicts.map((c, i) => (
               <li
                 key={`${c.license_a}|${c.license_b}|${c.severity}|${i}`}
-                className="rounded border border-zinc-200 p-3 dark:border-zinc-800"
+                className={`border-l-2 pl-4 py-2 ${SEVERITY_LINE[c.severity]}`}
               >
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-mono text-xs">
+                <div className="flex flex-wrap items-baseline gap-3">
+                  <span className="font-mono text-[13px]">
                     {c.license_a} ↔ {c.license_b}
                   </span>
                   <span
-                    className={`rounded px-2 py-0.5 text-[0.7rem] font-medium ${SEVERITY_BADGE[c.severity]}`}
+                    className={`font-mono text-[10px] uppercase tracking-[0.18em] ${SEVERITY_INK[c.severity]}`}
                   >
                     {SEVERITY_LABEL[c.severity]}
                   </span>
                 </div>
-                <p className="mt-2 text-zinc-700 dark:text-zinc-300">{c.reasoning}</p>
+                <p className="mt-2 text-sm leading-relaxed text-stone-700 dark:text-stone-300">
+                  {c.reasoning}
+                </p>
               </li>
             ))}
           </ul>
-        </section>
+        </ReportSection>
       )}
 
       {result.useCaseViolations.length > 0 && (
-        <section className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950">
-          <h3 className="text-base font-semibold">Use-Case-Verstöße</h3>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-            Scheitern einzelner Lizenzen am gewählten Use-Case, unabhängig von Inter-License-Konflikten.
+        <ReportSection rubric="Use-Case" title="Use-Case-Verstöße">
+          <p className="mb-4 text-sm text-stone-600 dark:text-stone-400">
+            Scheitern einzelner Lizenzen am gewählten Use-Case, unabhängig von
+            Inter-License-Konflikten.
           </p>
-          <ul className="mt-3 space-y-2 text-sm">
+          <ul className="space-y-4">
             {result.useCaseViolations.map((v) => {
               const license = licenseById.get(v.license_id);
               return (
                 <li
                   key={`${v.license_id}|${v.severity}|${v.violation}`}
-                  className="flex flex-col gap-1 rounded border border-zinc-200 p-3 dark:border-zinc-800"
+                  className={`border-l-2 pl-4 py-2 ${SEVERITY_LINE[v.severity]}`}
                 >
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-medium">{license?.name ?? v.license_id}</span>
+                  <div className="flex flex-wrap items-baseline gap-3">
+                    <span className="font-serif text-[17px] italic">
+                      {license?.name ?? v.license_id}
+                    </span>
                     <span
-                      className={`rounded px-2 py-0.5 text-[0.7rem] font-medium ${SEVERITY_BADGE[v.severity]}`}
+                      className={`font-mono text-[10px] uppercase tracking-[0.18em] ${SEVERITY_INK[v.severity]}`}
                     >
                       {SEVERITY_LABEL[v.severity]}
                     </span>
                   </div>
-                  <p className="text-zinc-700 dark:text-zinc-300">{v.violation}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-stone-700 dark:text-stone-300">
+                    {v.violation}
+                  </p>
                 </li>
               );
             })}
           </ul>
-        </section>
+        </ReportSection>
       )}
 
       {result.trainingDataFlags.length > 0 && (
-        <section className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950">
-          <h3 className="text-base font-semibold">Trainingsdaten-Flags</h3>
-          <ul className="mt-3 space-y-3 text-sm">
+        <ReportSection
+          rubric="Trainingsdaten"
+          title="Trainingsdaten-Flags"
+        >
+          <ul className="space-y-4">
             {result.trainingDataFlags.map((f) => {
               const risk = riskById.get(f.risk_id);
               return (
                 <li
                   key={f.risk_id}
-                  className="rounded border border-zinc-200 p-3 dark:border-zinc-800"
+                  className={`border-l-2 pl-4 py-2 ${SEVERITY_LINE[f.risk_level]}`}
                 >
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-medium">{risk?.name ?? f.risk_id}</span>
+                  <div className="flex flex-wrap items-baseline gap-3">
+                    <span className="font-serif text-[17px] italic">
+                      {risk?.name ?? f.risk_id}
+                    </span>
                     <span
-                      className={`rounded px-2 py-0.5 text-[0.7rem] font-medium ${SEVERITY_BADGE[f.risk_level]}`}
+                      className={`font-mono text-[10px] uppercase tracking-[0.18em] ${SEVERITY_INK[f.risk_level]}`}
                     >
                       {SEVERITY_LABEL[f.risk_level]}
                     </span>
                   </div>
-                  <p className="mt-2 text-zinc-700 dark:text-zinc-300">{f.reason}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-stone-700 dark:text-stone-300">
+                    {f.reason}
+                  </p>
                 </li>
               );
             })}
           </ul>
-        </section>
+        </ReportSection>
       )}
 
       {result.recommendations.length > 0 && (
-        <section className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950">
-          <h3 className="text-base font-semibold">Empfehlungen</h3>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-            Aggregiert aus Matrix-Caveats, Use-Case-Violations und Trainingsdaten-Mitigationen.
-            Sortiert nach Priorität.
+        <ReportSection rubric="Empfehlungen" title="Empfehlungen">
+          <p className="mb-4 text-sm text-stone-600 dark:text-stone-400">
+            Aggregiert aus Matrix-Caveats, Use-Case-Violations und
+            Trainingsdaten-Mitigationen. Sortiert nach Priorität.
           </p>
-          <ol className="mt-3 list-inside list-decimal space-y-1 text-sm text-zinc-800 dark:text-zinc-200">
-            {result.recommendations.map((r) => (
-              <li key={r}>{r}</li>
+          <ol className="space-y-3">
+            {result.recommendations.map((r, i) => (
+              <li key={r} className="flex gap-4 text-sm leading-relaxed">
+                <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-stone-500 dark:text-stone-500 pt-0.5">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="flex-1 text-stone-800 dark:text-stone-200">{r}</span>
+              </li>
             ))}
           </ol>
-        </section>
+        </ReportSection>
       )}
 
       {result.sources.length > 0 && (
-        <section className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950">
-          <h3 className="text-base font-semibold">Quellen</h3>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-            Lokale Lizenz-Snapshots der beteiligten Lizenzen. Klauselreferenzen beziehen sich auf den
-            jeweiligen Snapshot.
+        <ReportSection rubric="Quellen" title="Quellen">
+          <p className="mb-4 text-sm text-stone-600 dark:text-stone-400">
+            Lokale Lizenz-Snapshots der beteiligten Lizenzen. Klauselreferenzen beziehen
+            sich auf den jeweiligen Snapshot.
           </p>
-          <ul className="mt-3 space-y-2 text-sm">
+          <ul className="divide-y divide-stone-200 dark:divide-stone-800">
             {result.sources.map((s) => {
               const license = licenseById.get(s.license_id);
               return (
-                <li
-                  key={s.license_id}
-                  className="rounded border border-zinc-200 p-3 dark:border-zinc-800"
-                >
-                  <div className="font-medium">{license?.name ?? s.license_id}</div>
-                  <div className="mt-1 font-mono text-xs text-zinc-600 dark:text-zinc-400">
+                <li key={s.license_id} className="py-3">
+                  <div className="font-serif text-[17px] italic">
+                    {license?.name ?? s.license_id}
+                  </div>
+                  <div className="mt-1 font-mono text-[12px] text-stone-600 dark:text-stone-400">
                     licenses/{s.snapshot_path}
                   </div>
                   {s.clause_refs.length > 0 && (
-                    <div className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
-                      Klauseln: {s.clause_refs.join(", ")}
+                    <div className="mt-1 font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500 dark:text-stone-500">
+                      Klauseln · {s.clause_refs.join(", ")}
                     </div>
                   )}
                 </li>
               );
             })}
           </ul>
-        </section>
+        </ReportSection>
       )}
     </div>
+  );
+}
+
+function ReportSection({
+  rubric,
+  title,
+  children,
+}: {
+  rubric: string;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="border-t border-stone-300 pt-10 mt-10 dark:border-stone-700">
+      <header className="mb-6">
+        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-stone-500 dark:text-stone-500">
+          {rubric}
+        </p>
+        <h3 className="mt-2 font-serif text-[32px] leading-[1.05] tracking-tight">
+          {title}
+        </h3>
+      </header>
+      {children}
+    </section>
   );
 }

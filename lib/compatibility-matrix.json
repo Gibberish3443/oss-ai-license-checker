@@ -55,18 +55,21 @@
       "license_a": "llama-4-community",
       "license_b": "gpl-3-0",
       "compatibility": "conditional",
-      "reasoning": "GPL-3-Code zwingt die gesamte Code-Auslieferung unter GPL-3. Die Modellgewichte bleiben unter Llama und werden von GPL nicht erfasst, solange Gewichte nicht als Werkteil des GPL-Projekts qualifiziert werden. Beide Regime parallel.",
+      "reasoning": "GPL-3-Code zwingt die gesamte Code-Auslieferung unter GPL-3. Die Modellgewichte bleiben unter Llama und werden von GPL nicht erfasst, solange Gewichte nicht als Werkteil des GPL-Projekts qualifiziert werden. Für Research und rein interne Nutzung laufen beide Regime parallel; sobald aber an Dritte verteilt wird, trifft GPL-3 § 7 ('no further restrictions') frontal auf die Llama-AUP und die MAU-Schwelle. Das Bundle lässt sich dann nicht mehr unter GPL-3 weitergeben.",
       "caveats": [
         "Gesamte Code-App muss GPL-3 lizenziert werden",
-        "GPL-3 Section 7: Keine zusätzlichen Restriktionen auf Code-Teil — Llama-Pflichten gelten für Modell, nicht Code"
+        "GPL-3 § 7 scharf gestellt erst bei Distribution: Llama-AUP und MAU-Schwelle sind als 'further restrictions' lesbar, sobald sie faktisch an den GPL-Code-Anteil binden",
+        "Research und interner Einsatz bleiben tragfähig, weil kein kombiniertes Werk an Dritte weitergeht"
       ],
       "scenarios": {
         "research-only": "compatible",
         "internal-commercial": "conditional",
         "saas-external": "conditional",
-        "redistribution": "conditional"
+        "redistribution": "incompatible"
       },
-      "reviewed_by_user": false
+      "reviewed_by_user": true,
+      "reviewed_on": "2026-04-24",
+      "review_ref": "docs/reviews/kurzgutachten-2026-04-24.md#a1"
     },
     {
       "license_a": "llama-4-community",
@@ -89,18 +92,21 @@
       "license_a": "llama-4-community",
       "license_b": "agpl-3-0",
       "compatibility": "conditional",
-      "reasoning": "AGPL-Netzwerkklausel (§ 13) und Llama-MAU-Schwelle triggern unabhängig voneinander bei SaaS. AGPL erzwingt Source-Offenlegung deiner App gegenüber Endnutzern; Llama erzwingt Separatlizenz ab 700 Mio. MAU.",
+      "reasoning": "AGPL-Netzwerkklausel (§ 13) zieht schon die bloße Netz-Bereitstellung in die Copyleft-Reichweite, AGPL § 7 verbietet parallel jede 'further restriction'. Die Llama-AUP und die MAU-Schwelle erfüllen diese Rolle gegenüber dem Code-Anteil. SaaS-Bereitstellung an Dritte und Redistribution kollidieren damit frontal; Research und interne Nutzung ohne externe Bereitstellung bleiben tragfähig.",
       "caveats": [
-        "AGPL-Offenlegung und Llama-Branding parallel erfüllen",
-        "Bei SaaS: Quellcode-Angebot an Endnutzer + Llama-AUP-Durchreichung"
+        "AGPL § 13 aktiviert die Source-Pflicht bereits bei Netzbereitstellung — zusammen mit Llama-AUP entsteht die GPL-§-7-Kollision schon im SaaS",
+        "Research und rein interner Einsatz (kein Netzdienst, keine Weitergabe) bleiben conditional tragfähig",
+        "Unterschied zu Llama × GPL-3: dort erst bei Redistribution incompatible, hier zusätzlich bei SaaS-external"
       ],
       "scenarios": {
         "research-only": "compatible",
         "internal-commercial": "conditional",
-        "saas-external": "conditional",
-        "redistribution": "conditional"
+        "saas-external": "incompatible",
+        "redistribution": "incompatible"
       },
-      "reviewed_by_user": false
+      "reviewed_by_user": true,
+      "reviewed_on": "2026-04-24",
+      "review_ref": "docs/reviews/kurzgutachten-2026-04-24.md#a1"
     },
     {
       "license_a": "llama-4-community",
@@ -188,9 +194,11 @@
       "license_a": "kimi-k2-modified-mit",
       "license_b": "gpl-3-0",
       "compatibility": "conditional",
-      "reasoning": "MIT-Code ist GPL-3-kompatibel. Die Kimi-Schwellen-Branding-Klausel ist eine zusätzliche Vertragspflicht auf Modell-Ebene und verletzt GPL-3 Section 7 nur dann, wenn sie als Einschränkung auf den GPL-Code ausgelegt würde — sie greift aber auf Modell-UI, nicht auf Code.",
+      "reasoning": "Unterhalb der Kimi-Schwelle (100 Mio. MAU oder 20 Mio. USD Monatsumsatz) wirkt Kimi wie reines MIT, und MIT × GPL-3 ist nach FSF-Liste kompatibel. Oberhalb tritt die UI-Branding-Pflicht hinzu, deren Einordnung unter GPL-3 § 7 umstritten ist: sie lässt sich als zulässige Attribution-Erhaltung i.S.v. § 7(b) oder als unzulässige weitergehende Restriktion nach § 7 Abs. 1 lesen. Katalog-Einordnung bleibt conditional, weil das Tool den Schwellenzustand nicht als Eingabe-Dimension erfasst.",
       "caveats": [
-        "Abgrenzung 'Code-Werk' vs. 'Modell-UI-Pflicht' juristisch dokumentieren"
+        "Unterhalb der Schwelle: Kimi verhält sich wie MIT, MIT × GPL-3 ist kompatibel",
+        "Oberhalb der Schwelle ungeklärt: Branding-Pflicht als § 7(b) GPL-3 ('Preserving attributions') oder als § 7 Abs. 1 ('further restrictions')?",
+        "Dogmatisch näher an Attribution-Erhaltung als an Use-Based Restriction, aber vor Release im konkreten Einzelfall prüfen"
       ],
       "scenarios": {
         "research-only": "compatible",
@@ -198,7 +206,9 @@
         "saas-external": "conditional",
         "redistribution": "conditional"
       },
-      "reviewed_by_user": false
+      "reviewed_by_user": true,
+      "reviewed_on": "2026-04-24",
+      "review_ref": "docs/reviews/kurzgutachten-2026-04-24.md#a2"
     },
     {
       "license_a": "kimi-k2-modified-mit",
@@ -218,9 +228,11 @@
       "license_a": "kimi-k2-modified-mit",
       "license_b": "agpl-3-0",
       "compatibility": "conditional",
-      "reasoning": "AGPL-SaaS-Offenlegung + Kimi-Schwellen-Branding greifen beide im SaaS. Doppelt conditional, aber vereinbar.",
+      "reasoning": "Unterhalb der Kimi-Schwelle verhält sich Kimi wie reines MIT, das MIT × AGPL-3 ist kompatibel; AGPL § 13 ergänzt die Source-Pflicht bei Netzbereitstellung. Oberhalb tritt die UI-Branding-Pflicht hinzu und kollidiert mit derselben § 7-Frage wie bei GPL-3: zulässige Attribution-Erhaltung nach § 7(b) oder unzulässige 'further restriction' nach § 7 Abs. 1? AGPL erzwingt zusätzlich im SaaS die Offenlegung; beide Pflichten laufen parallel.",
       "caveats": [
-        "Bei SaaS: AGPL-Quellcode-Angebot + Kimi-UI-Branding parallel"
+        "Bei SaaS: AGPL-Quellcode-Angebot an Endnutzer + Kimi-UI-Branding parallel",
+        "Oberhalb der Schwelle ungeklärt: Branding als § 7(b) AGPL-3 oder als § 7 Abs. 1?",
+        "Unterhalb der Schwelle kein § 7-Konflikt; AGPL-Netzwerkklausel bleibt als eigenständige Pflicht"
       ],
       "scenarios": {
         "research-only": "compatible",
@@ -228,7 +240,9 @@
         "saas-external": "conditional",
         "redistribution": "conditional"
       },
-      "reviewed_by_user": false
+      "reviewed_by_user": true,
+      "reviewed_on": "2026-04-24",
+      "review_ref": "docs/reviews/kurzgutachten-2026-04-24.md#a2"
     },
     {
       "license_a": "kimi-k2-modified-mit",
@@ -497,7 +511,7 @@
       "reasoning": "EPL-2 ist weak copyleft auf EPL-Dateien; MIT-Code bleibt getrennt. Patent-Retaliation der EPL wirkt nur auf EPL-Teil.",
       "caveats": [
         "EPL-Dateien bei Modifikation offenlegen",
-        "Secondary-License-Option nach EPL 3.2 beachten"
+        "Secondary-License-Option nach EPL 2.0 Section 3.2 beachten"
       ],
       "scenarios": {
         "research-only": "compatible",
@@ -572,6 +586,110 @@
         "internal-commercial": "compatible",
         "saas-external": "compatible",
         "redistribution": "compatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "flux-1-dev-nc",
+      "license_b": "mit",
+      "compatibility": "incompatible",
+      "reasoning": "FLUX.1 [dev] NC untersagt kommerzielle Nutzung und legt Use-Based Restrictions sowie Content-Filter-Pflichten fest. MIT-Code ist zwar unproblematisch, aber das Gesamtprodukt erbt die NC-Beschränkung und die Use-Based Restrictions; kommerzielle oder distributionsorientierte Einsätze scheitern daran.",
+      "caveats": [
+        "Kommerzielle Nutzung nur mit BFL-Separatlizenz",
+        "Content-Filter-Pflicht und Use-Based Restrictions durchreichen"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "incompatible",
+        "saas-external": "incompatible",
+        "redistribution": "incompatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "flux-1-dev-nc",
+      "license_b": "apache-2-0",
+      "compatibility": "incompatible",
+      "reasoning": "Apache-2.0 regelt Code und Patent-Grant, kollidiert aber nicht mit FLUX-NC. Ausschlaggebend bleibt die FLUX-NC-Klausel: kommerzielle, SaaS- oder Distributionsnutzung ist ohne BFL-Separatlizenz unzulässig; Apache ändert daran nichts.",
+      "caveats": [
+        "Apache-NOTICE beibehalten",
+        "FLUX-NC-Restriktionen und Content-Filter-Pflicht unabhängig erfüllen"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "incompatible",
+        "saas-external": "incompatible",
+        "redistribution": "incompatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "flux-1-dev-nc",
+      "license_b": "gpl-3-0",
+      "compatibility": "incompatible",
+      "reasoning": "GPL-3 § 7 verbietet weitergehende Restriktionen auf dem Code-Teil. FLUX-NC-Use-Based Restrictions und die NC-Klausel wirken zwar auf das Modell, nicht auf den Code; dennoch bleibt die Kombination außerhalb von Research ungeeignet, weil das Gesamtprodukt unter der FLUX-NC-Schranke steht.",
+      "caveats": [
+        "§ 7 GPL-3 vs. FLUX-Use-Based Restrictions: Abgrenzung Code-Werk vs. Modell-Werk dokumentieren",
+        "Kommerzielle, SaaS- und Distributionsnutzung nur mit BFL-Separatlizenz möglich"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "incompatible",
+        "saas-external": "incompatible",
+        "redistribution": "incompatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "flux-1-dev-nc",
+      "license_b": "agpl-3-0",
+      "compatibility": "incompatible",
+      "reasoning": "AGPL-3 § 13 verlangt Source-Angebot an Netzwerknutzer; AGPL ist wie GPL-3 empfindlich gegen Zusatzbeschränkungen. FLUX-NC blockiert kommerzielle, SaaS- und Distributionsnutzung unabhängig davon. Research bleibt die einzige tragfähige Kombination.",
+      "caveats": [
+        "§ 13 AGPL und FLUX-Content-Filter-Pflicht parallel erfüllen, falls trotz NC-Verbot ein Research-Dienst betrieben wird",
+        "Produktive SaaS-Nutzung nur mit BFL-Separatlizenz"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "incompatible",
+        "saas-external": "incompatible",
+        "redistribution": "incompatible"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "sd-3-5-community",
+      "license_b": "mit",
+      "compatibility": "conditional",
+      "reasoning": "MIT-Code ist unproblematisch. Stability-Community-Lizenz erlaubt kommerzielle Nutzung nur unterhalb der Revenue-Schwelle von 1 Mio. USD und verbietet das Training konkurrierender Foundation-Modelle. Beide Pflichten müssen vertraglich und technisch durchgesetzt werden.",
+      "caveats": [
+        "1-Mio-USD-Revenue-Gate periodisch prüfen; oberhalb Enterprise-Lizenz bei Stability AI",
+        "No-Foundation-Model-Training-Klausel vertraglich durchreichen",
+        "\"Powered by Stability AI\"-Attribution prominent anzeigen"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "conditional",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
+      },
+      "reviewed_by_user": false
+    },
+    {
+      "license_a": "sd-3-5-community",
+      "license_b": "apache-2-0",
+      "compatibility": "conditional",
+      "reasoning": "Apache-NOTICE und Patent-Grant bleiben wirksam. Stability-Community-Lizenz zieht Revenue-Gate, No-Foundation-Model-Training und Attribution als parallele Pflichten auf das Modell-Teil des Gesamtwerks.",
+      "caveats": [
+        "Apache-NOTICE beibehalten",
+        "1-Mio-USD-Revenue-Gate periodisch prüfen",
+        "No-Foundation-Model-Training-Klausel und \"Powered by Stability AI\" parallel durchsetzen"
+      ],
+      "scenarios": {
+        "research-only": "compatible",
+        "internal-commercial": "conditional",
+        "saas-external": "conditional",
+        "redistribution": "conditional"
       },
       "reviewed_by_user": false
     }

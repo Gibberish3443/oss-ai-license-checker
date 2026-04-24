@@ -234,3 +234,69 @@ incompatible" wechseln, ohne den Nutzer mit numerischen Eingaben zu
 
 Nicht in diesem Review umgesetzt. Als TODO für einen späteren Block
 festgehalten. Kein Code-Change pending.
+
+---
+
+## Ausblick: Matrix-Nachgelagerte Abschnitte verschlanken (Pfad B)
+
+Unterhalb der eigentlichen Kompatibilitätsmatrix folgen mehrere
+Info-Blöcke (Konflikte, Hinweise, Trainingsdatenrisiken,
+Compliance-Flags). Aktuell werden sie als durchlaufender Fließtext
+unterhalb der Matrix ausgegeben. Bei mehreren ausgewählten Modellen
+summiert sich das zu einem langen Scroll-Pfad.
+
+### Ziel
+
+Die Detailtiefe erhalten, die Sichtbarkeit aber steuerbar machen:
+
+- **Verschachtelung per `<details>`** — die Blöcke „Konflikte",
+  „Hinweise" und „Trainingsdaten" klappen standardmäßig
+  zusammengefaltet ein. Geöffnet bleiben sollte nur, was Blocker
+  enthält.
+- **Textboxen / Cards** — inhaltliche Gruppen in visuell abgegrenzte
+  Flächen legen, damit das Auge Ankerpunkte findet.
+- **Gruppierung nach Schwere** — zuerst Blocker, dann Conditional,
+  dann informelle Hinweise. Innerhalb der Gruppe nach Modell
+  sortieren.
+
+### Status
+
+Pfad B in diesem Review nicht umgesetzt. Pfad A (Kosmetik in der
+Matrix selbst) wurde vorgezogen.
+
+---
+
+## Ausblick: Regelbasiertes Fazit unter der Matrix (Pfad C)
+
+Die Matrix zeigt einzelne Paar-Bewertungen. Was fehlt, ist eine
+verdichtete Gesamteinschätzung pro Szenario: „Für SaaS-Extern ist
+diese Kombination tragfähig / nicht tragfähig, weil …".
+
+### Randbedingungen
+
+- **Kein LLM im Checker.** Die Anwendung läuft als statische Seite
+  auf GitHub Pages und soll keine Laufzeit-KI einbinden.
+- **Transparenz.** Das Fazit muss aus den bereits vorliegenden
+  Feldern ableitbar sein, damit Nutzer den Schluss nachvollziehen.
+
+### Skizze eines Regelmechanismus
+
+Keine Regex auf Fließtext, sondern deterministische Regeln über die
+strukturierten Felder der Matrix:
+
+- `status === "incompatible"` in ≥1 Paar des aktiven Szenarios
+  → Fazit: **nicht tragfähig**, mit Liste der blockierenden Paare.
+- Alle Paare `compatible` → Fazit: **tragfähig**, mit Hinweis auf
+  Attributionspflichten aus den Lizenzen.
+- Mindestens ein `conditional`, kein `incompatible`
+  → Fazit: **tragfähig mit Auflagen**, mit Liste der offenen Punkte.
+
+Zusätzlich könnten Textbausteine pro Szenario (research-only,
+internal-commercial, saas-external, redistribution) ausgewählt und
+per Template befüllt werden. Die Bausteine liegen als Konstanten im
+Code, nicht als generierter Output.
+
+### Status
+
+Pfad C in diesem Review nicht umgesetzt. Vorgemerkt als eigener
+Block nach Abschluss von Pfad B.

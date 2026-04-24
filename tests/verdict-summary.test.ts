@@ -5,7 +5,7 @@ import { defaultRegistry } from "@/lib/registry";
 import { buildVerdictSummary } from "@/lib/verdict-summary";
 import type { UseCase, UseCaseId } from "@/lib/types";
 
-function useCase(id: UseCaseId): UseCase {
+function getUseCase(id: UseCaseId): UseCase {
   const value = defaultRegistry.getUseCase(id);
   if (!value) throw new Error(`UseCase fehlt: ${id}`);
   return value;
@@ -21,7 +21,7 @@ describe("buildVerdictSummary", () => {
       useCase: "internal-commercial",
     });
 
-    const summary = buildVerdictSummary(result, useCase("internal-commercial"));
+    const summary = buildVerdictSummary(result, getUseCase("internal-commercial"));
 
     expect(summary.tone).toBe("green");
     expect(summary.headline).toBe("Tragfähig im internen Betrieb");
@@ -37,7 +37,7 @@ describe("buildVerdictSummary", () => {
       useCase: "saas-external",
     });
 
-    const summary = buildVerdictSummary(result, useCase("saas-external"));
+    const summary = buildVerdictSummary(result, getUseCase("saas-external"));
 
     expect(summary.tone).toBe("red");
     expect(summary.headline).toBe("Für SaaS-Betrieb blockiert");
@@ -65,7 +65,7 @@ describe("buildVerdictSummary", () => {
       sources: [],
     };
 
-    const summary = buildVerdictSummary(result, useCase("redistribution"));
+    const summary = buildVerdictSummary(result, getUseCase("redistribution"));
 
     expect(summary.tone).toBe("missing");
     expect(summary.headline).toBe("Prüfung unvollständig");
@@ -83,7 +83,7 @@ describe("buildVerdictSummary", () => {
       useCase: "saas-external",
     });
 
-    const summary = buildVerdictSummary(result, useCase("saas-external"));
+    const summary = buildVerdictSummary(result, getUseCase("saas-external"));
 
     expect(summary.rationale.length).toBeLessThanOrEqual(3);
   });
@@ -103,7 +103,7 @@ describe("buildVerdictSummary", () => {
         trainingData: [],
         useCase: id,
       });
-      const summary = buildVerdictSummary(result, useCase(id));
+      const summary = buildVerdictSummary(result, getUseCase(id));
       expect(summary.headline).not.toBe("");
       expect(summary.headline).not.toMatch(/undefined/i);
     }

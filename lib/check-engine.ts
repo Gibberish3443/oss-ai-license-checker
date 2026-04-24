@@ -245,7 +245,7 @@ function evaluateUseCaseFit(
   if (sens.network_use && rights.copyleft === "network") {
     violations.push({
       license_id: license.id,
-      violation: `Network-Copyleft (AGPL-artig) greift im Use-Case "${useCase.name}" (Bereitstellung über Netzwerk). Geschlossene SaaS-Nutzung ist ohne Source-Angebot nicht tragfaehig.`,
+      violation: `Network-Copyleft (AGPL-artig) kann im Use-Case "${useCase.name}" greifen, insbesondere bei modifizierter Software mit Remote-Netzinteraktion. Geschlossene SaaS-Nutzung ist ohne Source-Angebot nicht tragfaehig.`,
       severity: "high",
     });
   }

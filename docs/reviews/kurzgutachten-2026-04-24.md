@@ -2,8 +2,9 @@
 
 > Rechtliche Einordnung einzelner Paarungen und Risikoklassen im
 > Katalog des `oss-ai-license-checker`. Das Gutachten ist
-> projektinterner Arbeitstand, keine Rechtsdienstleistung i.S.d.
-> § 2 RDG und ersetzt keine Einzelfallberatung.
+> projektinterner Arbeitstand. Es ersetzt keine rechtliche Prüfung
+> im konkreten fremden Einzelfall (§ 2 Abs. 1 RDG) und keine
+> Einzelfallberatung.
 
 Zweck: Die `review_ref`-Felder in
 [`lib/compatibility-matrix.json`](../../lib/compatibility-matrix.json)
@@ -43,9 +44,9 @@ die GPL nicht vorsieht und die deshalb als „further restriction" zu
 werten sind.
 
 **§ 13 AGPL-3.0 (Remote Network Interaction)** verschärft das
-Problem für SaaS-Szenarien: Wer ein AGPL-3.0-Werk über ein Netzwerk
-bereitstellt, muss den korrespondierenden Quelltext anbieten. Wenn
-dieser Downstream-Stack das Llama-Modell enthält, geraten die
+Problem für SaaS-Szenarien: Wer eine modifizierte AGPL-3.0-Version
+mit Remote-Netzinteraktion bereitstellt, muss den korrespondierenden
+Quelltext anbieten. Wenn dieser Downstream-Stack das Llama-Modell enthält, geraten die
 LCL-Pflichten (Branding, Schwellen-Lizenz) mit § 13 AGPL in
 Konflikt, weil der AGPL-Empfänger die Weiterverbreitung ohne
 LCL-Bindung erwarten dürfte.
@@ -57,10 +58,10 @@ unterschiedliche Wirkung:
 
 | Use Case             | Kombiniertes Werk an Dritte? | Ergebnis                                     |
 | -------------------- | ---------------------------- | -------------------------------------------- |
-| research-only        | nein (§ 60d-TDM intern)      | compatible (unverändert)                     |
+| research-only        | nein (nicht-kommerziell/intern) | compatible (unverändert)                  |
 | internal-commercial  | nein (In-House)              | compatible (unverändert)                     |
 | saas-external (GPL)  | nein — GPL kennt kein § 13   | conditional (Hinweis auf Vertrieb außerhalb) |
-| saas-external (AGPL) | ja (§ 13 AGPL)               | **incompatible**                             |
+| saas-external (AGPL) | externer AGPL-Netzdienst     | **incompatible**                             |
 | redistribution (GPL) | ja                           | **incompatible**                             |
 | redistribution (AGPL)| ja                           | **incompatible**                             |
 

@@ -234,9 +234,9 @@ function activeUseCaseClause(
         ...agplNetwork,
         severity: "conflict",
         explanation:
-          "Hosted SaaS aktiviert die AGPL-Netzwerkklausel; der Quellcode muss Nutzern des Dienstes angeboten werden.",
+          "Hosted SaaS kann die AGPL-Netzwerkklausel aktivieren; bei modifizierter Software mit Remote-Netzinteraktion muss der Quellcode Nutzern des Dienstes angeboten werden.",
         recommendation:
-          "Setze AGPL-Code nicht in einem geschlossenen SaaS ein oder plane ein vollstaendiges Source-Angebot fuer Endnutzer ein.",
+          "Setze AGPL-Code nicht in einem geschlossenen SaaS ein, wenn Section 13 greift, oder plane ein vollstaendiges Source-Angebot fuer Endnutzer ein.",
       };
     }
 

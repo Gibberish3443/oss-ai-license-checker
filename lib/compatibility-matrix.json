@@ -92,9 +92,9 @@
       "license_a": "llama-4-community",
       "license_b": "agpl-3-0",
       "compatibility": "conditional",
-      "reasoning": "AGPL-Netzwerkklausel (§ 13) zieht schon die bloße Netz-Bereitstellung in die Copyleft-Reichweite, AGPL § 7 verbietet parallel jede 'further restriction'. Die Llama-AUP und die MAU-Schwelle erfüllen diese Rolle gegenüber dem Code-Anteil. SaaS-Bereitstellung an Dritte und Redistribution kollidieren damit frontal; Research und interne Nutzung ohne externe Bereitstellung bleiben tragfähig.",
+      "reasoning": "AGPL-Netzwerkklausel (§ 13) zieht modifizierte AGPL-Komponenten mit Remote-Netzinteraktion in die Source-Offering-Pflicht; AGPL § 7 verbietet parallel jede 'further restriction'. Die Llama-AUP und die MAU-Schwelle erfüllen diese Rolle gegenüber dem Code-Anteil. SaaS-Bereitstellung an Dritte und Redistribution kollidieren damit frontal, sobald der AGPL-Stack entsprechend betroffen ist; Research und interne Nutzung ohne externe Bereitstellung bleiben tragfähig.",
       "caveats": [
-        "AGPL § 13 aktiviert die Source-Pflicht bereits bei Netzbereitstellung — zusammen mit Llama-AUP entsteht die GPL-§-7-Kollision schon im SaaS",
+        "AGPL § 13 aktiviert die Source-Pflicht bei modifizierten Remote-Netzkomponenten — zusammen mit Llama-AUP entsteht die GPL-§-7-Kollision schon im SaaS",
         "Research und rein interner Einsatz (kein Netzdienst, keine Weitergabe) bleiben conditional tragfähig",
         "Unterschied zu Llama × GPL-3: dort erst bei Redistribution incompatible, hier zusätzlich bei SaaS-external"
       ],
@@ -228,9 +228,9 @@
       "license_a": "kimi-k2-modified-mit",
       "license_b": "agpl-3-0",
       "compatibility": "conditional",
-      "reasoning": "Unterhalb der Kimi-Schwelle verhält sich Kimi wie reines MIT, das MIT × AGPL-3 ist kompatibel; AGPL § 13 ergänzt die Source-Pflicht bei Netzbereitstellung. Oberhalb tritt die UI-Branding-Pflicht hinzu und kollidiert mit derselben § 7-Frage wie bei GPL-3: zulässige Attribution-Erhaltung nach § 7(b) oder unzulässige 'further restriction' nach § 7 Abs. 1? AGPL erzwingt zusätzlich im SaaS die Offenlegung; beide Pflichten laufen parallel.",
+      "reasoning": "Unterhalb der Kimi-Schwelle verhält sich Kimi wie reines MIT, das MIT × AGPL-3 ist kompatibel; AGPL § 13 ergänzt die Source-Pflicht bei modifizierten Remote-Netzkomponenten. Oberhalb tritt die UI-Branding-Pflicht hinzu und kollidiert mit derselben § 7-Frage wie bei GPL-3: zulässige Attribution-Erhaltung nach § 7(b) oder unzulässige 'further restriction' nach § 7 Abs. 1? AGPL erzwingt zusätzlich im SaaS die Offenlegung; beide Pflichten laufen parallel.",
       "caveats": [
-        "Bei SaaS: AGPL-Quellcode-Angebot an Endnutzer + Kimi-UI-Branding parallel",
+        "Bei SaaS: AGPL-Quellcode-Angebot für modifizierte Remote-Komponenten + Kimi-UI-Branding parallel",
         "Oberhalb der Schwelle ungeklärt: Branding als § 7(b) AGPL-3 oder als § 7 Abs. 1?",
         "Unterhalb der Schwelle kein § 7-Konflikt; AGPL-Netzwerkklausel bleibt als eigenständige Pflicht"
       ],
@@ -310,9 +310,9 @@
       "license_a": "agpl-3-0",
       "license_b": "mit",
       "compatibility": "conditional",
-      "reasoning": "Wie GPL-3: MIT integrierbar, Ergebnis AGPL-3. Zusätzlich greift § 13 AGPL bei SaaS: Quellcode-Angebot an Netzwerknutzer.",
+      "reasoning": "Wie GPL-3: MIT integrierbar, Ergebnis AGPL-3. Zusätzlich kann § 13 AGPL bei SaaS greifen, wenn modifizierte AGPL-Software mit Remote-Netzinteraktion bereitgestellt wird: Quellcode-Angebot an Netzwerknutzer.",
       "caveats": [
-        "AGPL-§-13-Source-Offering bei Hosted-Service",
+        "AGPL-§-13-Source-Offering für modifizierte Hosted-Komponenten",
         "MIT-Notice behalten"
       ],
       "scenarios": {

@@ -227,7 +227,7 @@
       {
         "issue": "Vermittlungs- und Störerhaftung bei referenzierten Bildquellen",
         "description": "Auch wenn das Pair-Dataset selbst nur Metadaten enthält, können Abrufe zu rechtsverletzenden Vervielfältigungen beim Trainer oder Nutzer führen. Die Zuschreibung dieser Downstream-Kopien ist vertrags- und deliktsrechtlich ungeklärt. Getty Images v. Stability AI (UK High Court; D. Del.) ist hier der einschlägige Parallel-Fall aus einer anderen Rechtsordnung.",
-        "relevant_law": "§§ 97, 99 UrhG; Art. 17 DSM-RL (analog für Trainer-Plattformen)",
+        "relevant_law": "§§ 97, 99 UrhG; allgemeine Störer-/Teilnehmerhaftung",
         "leading_case": "Getty Images v. Stability AI (UK High Court; D. Del.)",
         "quote": null,
         "clause_ref": null

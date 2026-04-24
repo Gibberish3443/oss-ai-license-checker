@@ -19,7 +19,7 @@ Offline-Korpus aller im Tool zitierten Lizenztexte. Die Snapshots sind eingefror
 | ISC License | `osi_isc_2026-04-23.html` | OSI-approved, permissive |
 | Boost Software License 1.0 | `boost_bsl-1-0_2026-04-23.txt` | OSI-approved, permissive |
 | MPL 2.0 | `mozilla_mpl-2-0_2026-04-23.html` | OSI-approved, weak copyleft |
-| EPL 2.0 | `eclipse_epl-2-0_2026-04-23.html` | OSI-approved, weak copyleft |
+| EPL 2.0 | `eclipse_epl-2-0-plain_2026-04-24.txt` | OSI-approved, weak copyleft |
 | LGPL 2.1 | `fsf_lgpl-2-1_2026-04-23.txt` | OSI-approved, weak copyleft |
 | LGPL 3.0 | `fsf_lgpl-3-0_2026-04-23.txt` | OSI-approved, weak copyleft |
 | GPL 2.0 | `fsf_gpl-2-0_2026-04-23.txt` | OSI-approved, strong copyleft |

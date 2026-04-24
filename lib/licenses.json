@@ -358,7 +358,7 @@
       {
         "id": "isc-attribution",
         "clause_ref": "Paragraph 2",
-        "quote": "The above copyright notice and this permission notice shall appear in all",
+        "quote": "the above copyright notice and this permission notice appear in all copies",
         "effect": "Copyright-Notice und Lizenztext in allen Kopien."
       }
     ],
@@ -433,9 +433,9 @@
     "spdx_identifier": "EPL-2.0",
     "version": "2.0",
     "official_source": {
-      "url": "https://www.eclipse.org/legal/epl-2.0/",
-      "snapshot_date": "2026-04-23",
-      "local_snapshot": "eclipse_epl-2-0_2026-04-23.html",
+      "url": "https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt",
+      "snapshot_date": "2026-04-24",
+      "local_snapshot": "eclipse_epl-2-0-plain_2026-04-24.txt",
       "publisher": "Eclipse Foundation"
     },
     "rights": {
@@ -450,8 +450,8 @@
     "restrictions": [
       {
         "id": "epl2-secondary-license",
-        "clause_ref": "Section 3.2",
-        "quote": "a Contributor may include the Program in a Larger Work if it complies",
+        "clause_ref": "Section 3.2(a)",
+        "quote": "the Program may be made available under the terms of such Secondary Licenses",
         "effect": "Secondary-License-Option erlaubt Kombination mit GPL, muss aber deklariert werden."
       }
     ],
@@ -665,7 +665,7 @@
       {
         "id": "flux-dev-content-filter",
         "clause_ref": "Section 2(e)",
-        "quote": "implement and maintain content filtering measures (\"Content Filters\") for your use of the",
+        "quote": "implement and maintain content filtering measures (“Content Filters”) for your use of the",
         "effect": "Content-Filter oder Pre-Distribution-Review verpflichtend; KI-Offenlegung soweit gesetzlich erforderlich."
       },
       {

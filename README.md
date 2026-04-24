@@ -11,8 +11,9 @@ auf einer automatisierten „ja/nein"-Antwort.
 
 ## Motivation
 
-SPDX deckt klassisches Open-Source gut ab, reicht aber für den AI-Bereich nicht aus. Es fehlen
-insbesondere:
+SPDX liefert Lizenz-Identifier und mit dem AI-Profil (SPDX 3.0) inzwischen auch ein
+Beschreibungsschema für Modell-Metadaten. Für die Compliance-*Entscheidung* im AI-Bereich reicht
+das aber nicht aus. Es fehlen insbesondere:
 
 - die Abgrenzung *Source-Available* gegenüber *OSI-approved* (Llama, frühere Gemma-Generationen)
 - der Umgang mit *Responsible-AI*-Klauseln (OpenRAIL, Use-Based Restrictions)

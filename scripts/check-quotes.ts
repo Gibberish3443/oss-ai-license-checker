@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const ROOT = join(__dirname, "..");
+const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const MAX_WORDS = 15;
 
 type Finding = {
@@ -12,7 +13,8 @@ type Finding = {
 };
 
 function countWords(text: string): number {
-  return text.trim().split(/\s+/).filter(Boolean).length;
+  const trimmed = text.trim();
+  return trimmed ? trimmed.split(/\s+/).length : 0;
 }
 
 function walk(
@@ -21,7 +23,7 @@ function walk(
   findings: Finding[],
   file: string,
 ): void {
-  if (obj === null || obj === undefined) return;
+  if (obj === null) return;
   if (Array.isArray(obj)) {
     obj.forEach((item, i) => walk(item, `${path}[${i}]`, findings, file));
     return;
@@ -44,7 +46,7 @@ function walk(
 function checkFile(relativePath: string): Finding[] {
   const full = join(ROOT, relativePath);
   const raw = readFileSync(full, "utf8");
-  const data = JSON.parse(raw);
+  const data: unknown = JSON.parse(raw);
   const findings: Finding[] = [];
   walk(data, "", findings, relativePath);
   return findings;
@@ -56,18 +58,7 @@ const TARGETS = [
   "lib/compatibility-matrix.json",
 ];
 
-const allFindings: Finding[] = [];
-for (const file of TARGETS) {
-  try {
-    allFindings.push(...checkFile(file));
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    if (!msg.includes("ENOENT")) {
-      console.error(`Error reading ${file}: ${msg}`);
-      process.exit(2);
-    }
-  }
-}
+const allFindings = TARGETS.flatMap(checkFile);
 
 if (allFindings.length > 0) {
   console.error(
